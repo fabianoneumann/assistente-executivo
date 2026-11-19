@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposta — {{parceiro}} · {{titulo}}</title>
+<!-- MARCA: as fontes. Troque junto com --font-sans e --font-mono no :root. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MARCA: os tokens. Troque só este bloco (e as fontes no <head>)
+     para pôr a identidade da equipe; o resto do CSS lê daqui.
+     Padrão: tema claro, Space Grotesk + JetBrains Mono.
+     ============================================================ */
+  :root {
+    --bg:        #FFFFFF;
+    --surface:   #F6F7F9;
+    --surface-2: #EEF0F3;
+    --ink:       #14141A;
+    --ink-soft:  #33343D;
+    --muted:     #6B7280;
+    --faint:     #9CA3AF;
+    --line:      #E5E7EB;
+    --line-2:    #D9DCE1;
+    --accent:    #0091B5;
+    --accent-br: #00D4FF;
+    --purple:    #A855F7;
+    --grad:      linear-gradient(135deg, var(--accent-br) 0%, var(--purple) 100%);
+
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --container: 820px;
+  }
+
+  /* ---- base ---- */
+  * , *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .doc { max-width: var(--container); margin: 0 auto; padding: 56px clamp(24px, 5vw, 56px) 80px; }
+
+  .keyline { height: 3px; background: var(--grad); border-radius: 9999px; }
+
+  /* ---- cabeçalho ---- */
+  header { margin-top: 40px; }
+  .overline {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); font-family: var(--font-mono);
+  }
+  h1 {
+    font-weight: 700; font-size: clamp(30px, 4.4vw, 44px);
+    line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); margin: 12px 0 8px;
+  }
+  .subtitle { font-size: 18px; color: var(--muted); margin: 0 0 28px; max-width: 62ch; }
+
+  .meta {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 14px 32px; padding: 20px 24px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; margin-bottom: 8px;
+  }
+  .meta div { font-size: 14px; }
+  .meta .label {
+    display: block; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 2px;
+  }
+  .meta .value { color: var(--ink); font-weight: 500; }
+
+  /* ---- seções ---- */
+  section { margin-top: 48px; }
+  h2 {
+    font-weight: 700; font-size: 24px; letter-spacing: -0.01em;
+    color: var(--ink); margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: 0; }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- frentes (cartões) ---- */
+  .frente {
+    border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px 26px; margin-bottom: 16px; background: var(--bg); position: relative;
+  }
+  .frente.reco { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .frente h3 { font-size: 19px; font-weight: 600; color: var(--ink); margin: 0 0 4px; }
+  .frente .kicker {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 12px;
+  }
+  .frente ul { margin: 0; padding-left: 18px; }
+  .frente li { margin-bottom: 6px; }
+  .frente .depois { margin-top: 12px; margin-bottom: 0; }
+  .badge {
+    position: absolute; top: 20px; right: 22px;
+    font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); background: var(--surface);
+    border: 1px solid var(--accent); border-radius: 9999px; padding: 4px 10px;
+  }
+  .invest {
+    font-family: var(--font-mono); font-size: 15px; color: var(--ink);
+    border-top: 1px solid var(--line); padding-top: 12px; margin-top: 16px; font-weight: 500;
+  }
+  .invest .v { font-weight: 600; }
+
+  .strategic { border: 1px dashed var(--line-2); border-radius: 14px; padding: 22px 26px; background: var(--surface); margin-top: 4px; }
+  .strategic h3 { font-size: 18px; color: var(--ink); margin: 0 0 6px; }
+  .strategic p:last-child { margin-bottom: 0; }
+
+  /* ---- tabela de investimento ---- */
+  table { width: 100%; border-collapse: collapse; margin-top: 4px; font-size: 14px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td .money { font-family: var(--font-mono); color: var(--ink); font-weight: 600; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; white-space: nowrap; font-family: var(--font-mono); }
+  tr.destaque td { background: var(--surface); color: var(--ink); font-weight: 600; }
+  .depois-da-tabela { margin-top: 16px; }
+
+  /* ---- listas de condições e passos ---- */
+  .clean { list-style: none; padding: 0; margin: 0; }
+  .clean li { padding: 10px 0 10px 26px; position: relative; border-bottom: 1px solid var(--line); max-width: 72ch; }
+  .clean li:last-child { border-bottom: none; }
+  .clean li::before { content: ""; position: absolute; left: 4px; top: 18px; width: 6px; height: 6px; border-radius: 9999px; background: var(--accent); }
+
+  ol.steps { counter-reset: step; list-style: none; padding: 0; margin: 0; }
+  ol.steps li { counter-increment: step; padding: 10px 0 10px 40px; position: relative; border-bottom: 1px solid var(--line); max-width: 70ch; }
+  ol.steps li:last-child { border-bottom: none; }
+  ol.steps li::before {
+    content: counter(step); position: absolute; left: 0; top: 9px;
+    width: 26px; height: 26px; border-radius: 9999px; background: var(--surface); border: 1px solid var(--line-2);
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--accent); display: grid; place-items: center;
+  }
+
+  /* ---- quem conduz ---- */
+  .about { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px 26px; }
+  .about h2 { margin-bottom: 10px; }
+
+  /* ---- rodapé ---- */
+  footer {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 14px; color: var(--muted);
+  }
+  footer .name { color: var(--ink); font-weight: 600; }
+  footer .role { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .contact span { display: block; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .colophon { width: 100%; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint); }
+
+  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; } }
+
+  /* ---- impressão / PDF ---- */
+  @media print {
+    body { font-size: 12pt; }
+    .doc { max-width: none; padding: 0; }
+    .frente, .about, .strategic, .meta { break-inside: avoid; }
+    section { break-inside: avoid-page; }
+    a { color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="keyline"></div>
+
+  <header>
+    <span class="overline">{{tipo: Proposta Comercial, Proposta de Continuidade, Levantamento de Demandas}}</span>
+    <h1>{{titulo}}</h1>
+    <p class="subtitle">{{subtitulo: em uma ou duas frases, o que a proposta oferece e para quê}}</p>
+
+    <div class="meta">
+      <div><span class="label">Preparado para</span><span class="value">{{razao_social}}</span></div>
+      <div><span class="label">A/C</span><span class="value">{{contato}}</span></div>
+      <div><span class="label">Preparado por</span><span class="value">{{autor}}</span></div>
+      <div><span class="label">{{rotulo: Consultoria, Escopo ou outro campo que o parceiro precise ver}}</span><span class="value">{{valor_do_rotulo}}</span></div>
+      <div><span class="label">Prazo</span><span class="value">{{prazo}}</span></div>
+      <div><span class="label">Data</span><span class="value">{{data_extenso}}</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> Contexto</h2>
+    <p>{{contexto: de onde se parte, o que o parceiro pediu ou o que o trabalho anterior mostrou; um parágrafo por ideia, com o essencial em negrito}}</p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> {{frentes: o nome da seção das frentes, como "As frentes de trabalho"}}</h2>
+    <!-- Um cartão por frente. Para destacar a recomendada: class="frente reco" e o <span class="badge">Recomendada</span>. -->
+    <div class="frente reco">
+      <span class="badge">Recomendada</span>
+      <h3>1. {{frente: o nome da frente}}</h3>
+      <p class="kicker">{{kicker: o papel ou a natureza da frente, em poucas palavras}}</p>
+      <p>{{descricao: o que a frente faz, em uma ou duas frases}}</p>
+      <ul>
+        <li><strong>{{item: o entregável}}:</strong> {{detalhe: o que ele inclui}}</li>
+      </ul>
+      <!-- Opcional, quando o investimento vem por frente: -->
+      <div class="invest">Investimento: <span class="v">{{valor}}</span> {{periodicidade: / mês, por turma}}</div>
+    </div>
+    <div class="frente">
+      <h3>2. {{frente}}</h3>
+      <p class="kicker">{{kicker}}</p>
+      <p>{{descricao}}</p>
+      <p class="depois">{{entregavel: o que se entrega no fim da frente, e o que fica para outra fase}}</p>
+    </div>
+    <!-- Opcional: a frente estratégica, a explorar junto, em tracejado. -->
+    <div class="strategic">
+      <h3>{{estrategico: a frente a explorar em conjunto}}</h3>
+      <p>{{descricao_estrategica: o que ela abre e por que ainda não tem preço}}</p>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> Modelo de trabalho</h2>
+    <p>{{modelo: em uma frase, como o trabalho se divide entre quem conduz e a equipe do parceiro}}</p>
+    <ul class="clean">
+      <li><strong>{{ritmo: Entregas, reuniões e relatórios}}:</strong> {{ritmo_detalhe: a cadência de cada um}}</li>
+      <li><strong>Presença:</strong> {{presenca: quantos dias presenciais, para quê, e o que é remoto}}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> Opções</h2>
+    <!-- Opcional: só quando há mais de um formato. A recomendada vem primeiro. -->
+    <ul class="clean">
+      <li><strong>Recomendada — {{opcao}}.</strong> {{opcao_detalhe: o que ela inclui e por que é a recomendada}}</li>
+      <li><strong>Alternativa — {{opcao}}.</strong> {{opcao_detalhe: o que muda e o que fica para depois}}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span> Prazo e investimento</h2>
+    <table>
+      <thead>
+        <tr><th></th><th class="num">{{coluna: a primeira opção}}</th><th class="num">{{coluna: a segunda opção}}</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>{{linha: o componente do preço}}</td><td class="num">{{valor}}</td><td class="num">{{valor}}</td></tr>
+        <tr><td><strong>{{total: Valor de referência, Total}}</strong></td><td class="num">{{valor}}</td><td class="num">{{valor}}</td></tr>
+        <!-- Opcional: a linha em destaque, como uma condição especial. -->
+        <tr class="destaque"><td>{{condicao: o nome da condição}}</td><td class="num"><span class="money">{{valor}}</span><br>{{parcelas}}</td><td class="num"><span class="money">{{valor}}</span><br>{{parcelas}}</td></tr>
+      </tbody>
+    </table>
+    <p class="depois-da-tabela">{{explicacao: o que cada linha significa, e a razão de uma condição especial, se houver}}</p>
+    <ul class="clean">
+      <li><strong>Pagamento:</strong> {{pagamento: quando se paga, com ou sem entrada}}</li>
+      <li><strong>Início:</strong> {{inicio: a partir de quando o trabalho começa}}</li>
+      <li><strong>Forma de pagamento:</strong> {{forma: a combinar, ou o meio}}</li>
+      <li><strong>Validade:</strong> {{validade: quantos dias a proposta vale a partir da entrega}}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span> Não incluso e premissas</h2>
+    <ul class="clean">
+      <li><strong>{{fora: o que não está no preço}}:</strong> {{fora_detalhe: por quê, ou onde isso entra}}</li>
+      <li><strong>Natureza:</strong> {{natureza: o tipo de prestação de serviço e a confidencialidade}}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span> Propriedade</h2>
+    <!-- Opcional: quando o trabalho produz algo que alguém vai reutilizar. -->
+    <ul class="clean">
+      <li><strong>Do parceiro:</strong> {{propriedade_parceiro: o que é construído para ele e fica com ele}}</li>
+      <li><strong>De quem conduz:</strong> {{propriedade_autor: o que é seu e entra em licença de uso, e em que termos}}</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">08</span> Próximos passos</h2>
+    <ol class="steps">
+      <li>{{passo: o aceite e como ele vale (mensagem, assinatura)}}</li>
+      <li>{{passo: a definição do início e da opção}}</li>
+      <li>{{passo: o que acontece no primeiro período}}</li>
+    </ol>
+  </section>
+
+  <section class="about">
+    <h2>Quem conduz</h2>
+    <p><strong>{{autor}}</strong> — {{bio: a formação, a experiência e o que credencia para este trabalho, em três ou quatro frases}}</p>
+  </section>
+
+  <footer>
+    <div>
+      <span class="name">{{autor}}</span><br>
+      <span class="role">{{marca_autor}}</span>
+    </div>
+    <div class="contact">
+      <span>{{email}}</span>
+      <span>{{telefone}}</span>
+      <span><a href="{{link_perfil}}">{{rede: o nome da rede do link}}</a></span>
+    </div>
+    <div class="colophon">Proposta produzida com o assistente executivo de {{autor}}.</div>
+  </footer>
+</div>
+</body>
+</html>

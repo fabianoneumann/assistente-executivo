@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório Semanal — {{titulo}} ({{parceiro}}) · até {{data_extenso}}</title>
+<!-- MARCA: as fontes. Troque junto com --font-sans e --font-mono no :root. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MARCA: os tokens. Troque só este bloco (e as fontes no <head>)
+     para pôr a identidade da equipe; o resto do CSS lê daqui.
+     Padrão: tema claro, Space Grotesk + JetBrains Mono.
+     ============================================================ */
+  :root {
+    --bg:        #FFFFFF;
+    --surface:   #F6F7F9;
+    --surface-2: #EEF0F3;
+    --ink:       #14141A;
+    --ink-soft:  #33343D;
+    --muted:     #6B7280;
+    --faint:     #9CA3AF;
+    --line:      #E5E7EB;
+    --line-2:    #D9DCE1;
+    --accent:    #0091B5;
+    --accent-br: #00D4FF;
+    --purple:    #A855F7;
+    --grad:      linear-gradient(135deg, var(--accent-br) 0%, var(--purple) 100%);
+
+    /* O risco explícito da seção 04: o item que ameaça uma data. */
+    --risco:     #9A3412;
+
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --container: 820px;
+  }
+
+  /* ---- base ---- */
+  * , *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .doc { max-width: var(--container); margin: 0 auto; padding: 56px clamp(24px, 5vw, 56px) 80px; }
+
+  .keyline { height: 3px; background: var(--grad); border-radius: 9999px; }
+
+  /* ---- cabeçalho ---- */
+  header { margin-top: 40px; }
+  .overline {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); font-family: var(--font-mono);
+  }
+  h1 {
+    font-weight: 700; font-size: clamp(30px, 4.4vw, 44px);
+    line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); margin: 12px 0 8px;
+  }
+  .subtitle { font-size: 18px; color: var(--muted); margin: 0 0 28px; max-width: 62ch; }
+
+  .meta {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 14px 32px; padding: 20px 24px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; margin-bottom: 8px;
+  }
+  .meta div { font-size: 14px; }
+  .meta .label {
+    display: block; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 2px;
+  }
+  .meta .value { color: var(--ink); font-weight: 500; }
+  .meta .value a { color: var(--accent); text-decoration: none; }
+  .meta .value a:hover { text-decoration: underline; }
+
+  /* ---- seções ---- */
+  section { margin-top: 48px; }
+  h2 {
+    font-weight: 700; font-size: 24px; letter-spacing: -0.01em;
+    color: var(--ink); margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: 0; }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- itens com etiqueta ---- */
+  .clean { list-style: none; padding: 0; margin: 0; }
+  .clean li { padding: 10px 0 10px 26px; position: relative; border-bottom: 1px solid var(--line); max-width: 74ch; display: flex; gap: 12px; align-items: baseline; justify-content: space-between; }
+  .clean li:last-child { border-bottom: none; }
+  .clean li::before { content: ""; position: absolute; left: 4px; top: 18px; width: 6px; height: 6px; border-radius: 9999px; background: var(--accent); }
+  .clean li .txt { flex: 1; }
+  .clean.open li::before { background: var(--faint); }
+
+  .tag {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 9999px;
+    padding: 1px 9px; white-space: nowrap; flex-shrink: 0;
+  }
+
+  .nota { font-size: 14px; color: var(--muted); margin-top: 14px; max-width: 74ch; }
+
+  .risco { color: var(--risco); font-weight: 600; }
+
+  /* ---- rodapé ---- */
+  footer {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 14px; color: var(--muted);
+  }
+  footer .name { color: var(--ink); font-weight: 600; }
+  footer .role { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .contact span { display: block; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  footer .colophon { width: 100%; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint); }
+
+  @media (max-width: 560px) { .meta { grid-template-columns: 1fr; } .clean li { flex-wrap: wrap; } }
+
+  /* ---- impressão / PDF ---- */
+  @media print {
+    body { font-size: 12pt; }
+    .doc { max-width: none; padding: 0; }
+    .meta { break-inside: avoid; }
+    /* Seção longa flui entre páginas: forçá-la inteira para a página seguinte
+       abre faixas em branco no PDF. O que não se quebra é o item e o título
+       junto do que ele abre. */
+    section { break-inside: auto; }
+    h2 { break-after: avoid; }
+    .clean li { break-inside: avoid; }
+    a { color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="keyline"></div>
+
+  <header>
+    <span class="overline">Relatório Semanal</span>
+    <h1>{{titulo: o nome do projeto acompanhado}}</h1>
+    <p class="subtitle">{{subtitulo: "Acompanhamento das atividades", e o que mudou de fase nesta semana, em uma frase}}</p>
+
+    <div class="meta">
+      <div><span class="label">Preparado para</span><span class="value">{{razao_social}}</span></div>
+      <div><span class="label">A/C</span><span class="value">{{contato}}</span></div>
+      <div><span class="label">Preparado por</span><span class="value">{{autor}}</span></div>
+      <div><span class="label">Fase</span><span class="value">{{fase: a etapa do trabalho em que se está}}</span></div>
+      <div><span class="label">Período</span><span class="value">{{periodo: do corte anterior ao atual}} · {{numero}}º relatório</span></div>
+      <div><span class="label">Acompanhamento</span><span class="value"><a href="{{link_acompanhamento: o quadro ou as etapas do projeto}}">{{nome_do_link: Etapas no quadro}}</a></span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> Resumo</h2>
+    <!-- Um parágrafo por assunto, aberto pela frase que o resume em negrito. -->
+    <p><strong>{{manchete: o que mudou, em uma frase}}</strong> {{resumo: o que levou a isso e o que destrava, em linguagem de negócio}}</p>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> Concluído</h2>
+    <!-- Um item por entrega, com a tarefa como etiqueta. O que veio da equipe do parceiro leva o nome de quem fez, em negrito. -->
+    <ul class="clean">
+      <li><span class="txt"><strong>{{entrega: o que ficou pronto}}</strong> — {{detalhe: o que ela faz para quem usa, quem fez e quando}}</span><span class="tag">{{tarefas: os números das tarefas}}</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> Em andamento / próximos</h2>
+    <ul class="clean open">
+      <li><span class="txt"><strong>{{item: o que está em curso}}</strong> — {{detalhe: o que falta, o prazo da etapa e o que mudou nele desde o relatório anterior}}</span><span class="tag">{{tarefas}}</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> Em curso com terceiros</h2>
+    <!-- Cada linha com a data em que saiu das suas mãos. O que ameaça uma data vai em <span class="risco">, com a proposta. Nunca o nome de uma pessoa como motivo. -->
+    <ul class="clean open">
+      <li><span class="txt"><strong>{{com_quem: com quem está, e o quê}}</strong> — desde {{data_de_saida}}. {{efeito: o que espera por isso e o que se propõe, se ameaça uma data}}</span><span class="tag">{{tarefas}}</span></li>
+    </ul>
+    <p class="nota">{{andou: o que andou sem isso}}</p>
+  </section>
+
+  <footer>
+    <div>
+      <span class="name">{{autor}}</span><br>
+      <span class="role">{{marca_autor}}</span>
+    </div>
+    <div class="contact">
+      <span>{{email}}</span>
+      <span>{{telefone}}</span>
+      <span><a href="{{link_perfil}}">{{rede: o nome da rede do link}}</a></span>
+    </div>
+    <div class="colophon">Relatório produzido com o assistente executivo de {{autor}}.</div>
+  </footer>
+</div>
+</body>
+</html>

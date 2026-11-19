@@ -15,9 +15,9 @@ fora do .gitignore; o `.env` e as pastas `originals/` ignoradas ficam fora, porq
 - conteúdo de terceiro fora da régua: pasta `originals/` que iria ao git, `sources/archive/`, ficha sem o campo `licenca`,
   ficha de licença não livre com "Texto integral", ficha de prática própria;
 - o autor e o e-mail de cada commit do histórico;
-- a privacidade: se há registro pessoal (um arquivo de `finance/`, `health/` ou `maps/` que iria num commit e
-  não é o modelo, caminho a caminho: os READMEs, os guias de `maps/guides/` e as páginas em branco de
-  `maps/board/`) e algum remoto do GitHub é público, para com [PARE] e diz como deixar o repositório privado.
+- a privacidade: se há registro pessoal (um arquivo de `finance/`, `health/`, `maps/` ou `partners/` que iria num
+  commit e não é o modelo, caminho a caminho: os READMEs, os guias de `maps/guides/`, as páginas em branco de
+  `maps/board/` e o modelo de `partners/template/`) e algum remoto do GitHub é público, para com [PARE] e diz como deixar o repositório privado.
   Roda sempre, também com pastas. Pede o `gh` com login: quando há registro pessoal e a visibilidade de um remoto
   do GitHub não pôde ser conferida (sem o `gh`, sem login, sem acesso) ou os remotos não puderam ser lidos, sai
   com 3 ("não conferiu") e diz o que falta. O remoto fora do GitHub só gera aviso.
@@ -263,7 +263,8 @@ def conferir_git(termos: list[str]) -> list[tuple]:
     return achados
 
 
-PASTAS_PESSOAIS = ("finance", "health", "maps")
+# partners/ guarda dado de terceiro (parceiros, clientes) e segue a mesma regra: só em repositório privado
+PASTAS_PESSOAIS = ("finance", "health", "maps", "partners")
 # o modelo em branco, caminho a caminho: o que estiver fora desta lista, nestas pastas, é registro de quem usa
 MODELO_PESSOAL = {
     "finance/README.md", "finance/personal/README.md",
@@ -271,7 +272,10 @@ MODELO_PESSOAL = {
     "health/medical/README.md", "health/psychological/README.md",
     "maps/README.md", "maps/board/index.html", "maps/board/tokens.css",
     *(f"maps/guides/{g}.md" for g in ("big-five", "erec", "ikigai", "okr", "roda-da-vida", "swot", "vision-board")),
+    "partners/README.md",
 }
+# o modelo da pasta de um parceiro: tudo dentro dele é esqueleto, sem dado de ninguém
+MODELO_PREFIXOS = ("partners/template/",)
 # a página do quadro só é modelo enquanto traz o aviso de modelo em branco; preenchida no lugar, vira registro
 QUADRO_EM_BRANCO = {"maps/board/roda-da-vida.html", "maps/board/ikigai.html"}
 MARCA_EM_BRANCO = "Modelo em branco"
@@ -301,11 +305,11 @@ def e_modelo(rel: str) -> bool:
             return MARCA_EM_BRANCO in (RAIZ / rel).read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             return False
-    return rel in MODELO_PESSOAL
+    return rel in MODELO_PESSOAL or rel.startswith(MODELO_PREFIXOS)
 
 
 def registros_pessoais() -> list[str]:
-    """Os arquivos de finance/, health/ e maps/ que não são o modelo em branco: o registro pessoal de quem usa."""
+    """Os arquivos de finance/, health/, maps/ e partners/ que não são o modelo em branco: o registro de quem usa."""
     return sorted(rel for rel in _candidatos()[0] if not e_modelo(rel))
 
 
@@ -368,14 +372,14 @@ def conferir_privacidade() -> tuple[list[tuple], list[str], list[str], bool]:
     return achados, avisos, publicos, nao_conferiu
 
 
-NAO_CONFERIU = ("[NÃO CONFERIU] Há registro pessoal (finanças, saúde ou mapas) e não deu para saber se o repositório\n"
+NAO_CONFERIU = ("[NÃO CONFERIU] Há registro pessoal (finanças, saúde, mapas ou parceiros) e não deu para saber se o repositório\n"
                 "é privado. Instale o `gh` e rode `gh auth login`, e rode de novo; ou confira à mão no GitHub\n"
                 "(Settings > General > Danger Zone) que o repositório é privado antes do push.")
 
 
 def pare_publico(repos: list[str]) -> str:
     comandos = "\n".join(f"  gh repo edit {r} --visibility private --accept-visibility-change-consequences" for r in repos)
-    return ("[PARE] Há registro pessoal (finanças, saúde ou mapas) e o repositório no GitHub é público.\n"
+    return ("[PARE] Há registro pessoal (finanças, saúde, mapas ou parceiros) e o repositório no GitHub é público.\n"
             "Não faça push. Deixe o repositório privado antes:\n" + comandos + "\n"
             "ou no GitHub: Settings > General > Danger Zone > Change repository visibility > Private.\n"
             "Se um registro pessoal já foi enviado enquanto ele era público, considere que pode ter sido copiado.")

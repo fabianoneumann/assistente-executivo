@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatório de Entrega — {{titulo}} ({{parceiro}}) · {{periodo}}</title>
+<!-- MARCA: as fontes. Troque junto com --font-sans e --font-mono no :root. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     MARCA: os tokens. Troque só este bloco (e as fontes no <head>)
+     para pôr a identidade da equipe; o resto do CSS lê daqui.
+     Padrão: tema claro, Space Grotesk + JetBrains Mono, com os
+     marcadores de situação de cada item.
+     ============================================================ */
+  :root {
+    --bg:        #FFFFFF;
+    --surface:   #F6F7F9;
+    --surface-2: #EEF0F3;
+    --ink:       #14141A;
+    --ink-soft:  #33343D;
+    --muted:     #6B7280;
+    --faint:     #9CA3AF;
+    --line:      #E5E7EB;
+    --line-2:    #D9DCE1;
+    --accent:    #0091B5;
+    --accent-br: #00D4FF;
+    --purple:    #A855F7;
+    --grad:      linear-gradient(135deg, var(--accent-br) 0%, var(--purple) 100%);
+
+    /* Marcadores de situação */
+    --ok-bg: #E7F6EC;      --ok-ink: #166534;
+    --mudou-bg: #E6F4F8;   --mudou-ink: #0E5F75;
+    --parcial-bg: #FEF3E2; --parcial-ink: #9A3412;
+    --fora-bg: #EEF0F3;    --fora-ink: #374151;
+    --alem-bg: #F3EAFE;    --alem-ink: #6B21A8;
+
+    --font-sans: 'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --container: 820px;
+  }
+
+  /* ---- base ---- */
+  * , *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink-soft);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .doc { max-width: var(--container); margin: 0 auto; padding: 56px clamp(24px, 5vw, 56px) 80px; }
+  .keyline { height: 3px; background: var(--grad); border-radius: 9999px; }
+
+  /* ---- cabeçalho ---- */
+  header { margin-top: 40px; }
+  .overline {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--accent); font-family: var(--font-mono);
+  }
+  h1 {
+    font-weight: 700; font-size: clamp(30px, 4.4vw, 44px);
+    line-height: 1.08; letter-spacing: -0.02em; color: var(--ink); margin: 12px 0 8px;
+  }
+  .subtitle { font-size: 18px; color: var(--muted); margin: 0 0 28px; max-width: 62ch; }
+
+  .meta {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 14px 32px; padding: 20px 24px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; margin-bottom: 8px;
+  }
+  .meta div { font-size: 14px; }
+  .meta .label {
+    display: block; font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase; color: var(--faint); margin-bottom: 2px;
+  }
+  .meta .value { color: var(--ink); font-weight: 500; }
+  .meta .value a { color: var(--accent); text-decoration: none; }
+
+  /* ---- seções ---- */
+  section { margin-top: 48px; }
+  h2 {
+    font-weight: 700; font-size: 24px; letter-spacing: -0.01em;
+    color: var(--ink); margin: 0 0 16px; display: flex; align-items: baseline; gap: 12px;
+  }
+  h2 .num { font-family: var(--font-mono); font-size: 14px; font-weight: 600; color: var(--accent); letter-spacing: 0; }
+  h3 { font-size: 17px; font-weight: 600; color: var(--ink); margin: 0; line-height: 1.35; }
+  p { margin: 0 0 14px; max-width: 68ch; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  /* ---- os números do período ---- */
+  .numeros { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0 8px; }
+  .numeros div { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .numeros .n { display: block; font-family: var(--font-mono); font-size: 26px; font-weight: 600; color: var(--ink); line-height: 1.1; }
+  .numeros .d { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+  /* ---- legenda e marcadores ---- */
+  .legenda { display: flex; flex-wrap: wrap; gap: 8px 14px; font-size: 13px; color: var(--muted); margin: 8px 0 4px; }
+  .badge {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.02em;
+    border-radius: 9999px; padding: 2px 10px; white-space: nowrap; display: inline-block;
+  }
+  .badge.ok      { background: var(--ok-bg);      color: var(--ok-ink); }
+  .badge.mudou   { background: var(--mudou-bg);   color: var(--mudou-ink); }
+  .badge.parcial { background: var(--parcial-bg); color: var(--parcial-ink); }
+  .badge.fora    { background: var(--fora-bg);    color: var(--fora-ink); }
+  .badge.alem    { background: var(--alem-bg);    color: var(--alem-ink); }
+
+  /* ---- cada item da proposta: prometido, entregue, prova ---- */
+  .item { border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; margin-bottom: 12px; }
+  .item .topo { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
+  .item dl { margin: 0; display: grid; grid-template-columns: 92px 1fr; gap: 6px 14px; font-size: 15px; }
+  .item dt { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); padding-top: 4px; }
+  .item dd { margin: 0; max-width: 64ch; }
+  .item dd.prova { font-family: var(--font-mono); font-size: 12px; color: var(--accent); padding-top: 3px; }
+
+  /* ---- itens com etiqueta ---- */
+  .clean { list-style: none; padding: 0; margin: 0; }
+  .clean li { padding: 10px 0 10px 26px; position: relative; border-bottom: 1px solid var(--line); max-width: 74ch; display: flex; gap: 12px; align-items: baseline; justify-content: space-between; }
+  .clean li:last-child { border-bottom: none; }
+  .clean li::before { content: ""; position: absolute; left: 4px; top: 18px; width: 6px; height: 6px; border-radius: 9999px; background: var(--accent); }
+  .clean li .txt { flex: 1; }
+  .clean.open li::before { background: var(--faint); }
+  .tag {
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: var(--accent);
+    background: var(--surface); border: 1px solid var(--line); border-radius: 9999px;
+    padding: 1px 9px; white-space: nowrap; flex-shrink: 0;
+  }
+
+  .nota { font-size: 14px; color: var(--muted); margin-top: 14px; max-width: 74ch; }
+
+  /* ---- rodapé ---- */
+  footer {
+    margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; font-size: 14px; color: var(--muted);
+  }
+  footer .name { color: var(--ink); font-weight: 600; }
+  footer .role { font-family: var(--font-mono); font-size: 12px; color: var(--accent); }
+  .contact span { display: block; }
+  footer a { color: var(--accent); text-decoration: none; }
+  footer .colophon { width: 100%; margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint); }
+
+  @media (max-width: 560px) {
+    .meta { grid-template-columns: 1fr; }
+    .numeros { grid-template-columns: 1fr 1fr; }
+    .item dl { grid-template-columns: 1fr; }
+    .item .topo { flex-wrap: wrap; }
+    .clean li { flex-wrap: wrap; }
+  }
+
+  /* ---- impressão / PDF ---- */
+  @media print {
+    body { font-size: 11.5pt; }
+    .doc { max-width: none; padding: 0; }
+    .meta, .numeros { break-inside: avoid; }
+    section { break-inside: auto; }
+    h2 { break-after: avoid; }
+    .item, .clean li { break-inside: avoid; }
+    a { color: var(--ink); }
+  }
+</style>
+</head>
+<body>
+<div class="doc">
+  <div class="keyline"></div>
+
+  <header>
+    <span class="overline">Relatório de Entrega</span>
+    <h1>{{titulo: o nome do trabalho entregue}}</h1>
+    <p class="subtitle">{{subtitulo: a proposta de referência comparada, item a item, com o que foi feito no período: o entregue, a prova, o que mudou de lugar e o que fica para depois}}</p>
+
+    <div class="meta">
+      <div><span class="label">Preparado para</span><span class="value">{{razao_social}}</span></div>
+      <div><span class="label">A/C</span><span class="value">{{contato}}</span></div>
+      <div><span class="label">Preparado por</span><span class="value">{{autor}}</span></div>
+      <div><span class="label">Período</span><span class="value">{{periodo}}</span></div>
+      <div><span class="label">Referência</span><span class="value">{{referencia: a proposta ou o acordo com que se compara, com a data}}</span></div>
+      <div><span class="label">Acompanhamento</span><span class="value"><a href="{{link_acompanhamento}}">{{nome_do_link}}</a> · {{relatorios: quantos relatórios semanais}}</span></div>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> Em resumo</h2>
+    <!-- Um parágrafo por ideia: o que foi entregue, o que ficou aquém (e que o documento diz por quê), o que fica com quem. -->
+    <p><strong>{{manchete: o que se entregou do núcleo da proposta}}</strong> {{resumo: o que funciona, onde e desde quando}}</p>
+    <p><strong>{{aquem: o que ficou aquém, se ficou}}</strong> {{resumo_aquem: por quê, em uma ou duas frases}}</p>
+
+    <!-- Os números do período: de três a seis, cada um com a fonte da conta em .d. -->
+    <div class="numeros">
+      <div><span class="n">{{numero}}</span><span class="d">{{o_que_conta: o que o número mede e em que período}}</span></div>
+      <div><span class="n">{{numero}}</span><span class="d">{{o_que_conta}}</span></div>
+      <div><span class="n">{{numero}}</span><span class="d">{{o_que_conta}}</span></div>
+    </div>
+    <p class="nota">{{nota: o que as contas incluem e o que deixam fora}}</p>
+
+    <div class="legenda">
+      <span><span class="badge ok">Entregue</span></span>
+      <span><span class="badge mudou">Entregue de outro jeito</span> mudou a forma ou o mês, com o porquê</span>
+      <span><span class="badge parcial">Parcial</span></span>
+      <span><span class="badge fora">Fora, por decisão</span></span>
+      <!-- Opcional: <span><span class="badge alem">Além do prometido</span></span> -->
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> As frentes de trabalho</h2>
+    <p>{{origem: de que seção da proposta vêm os itens, e em que ordem}}</p>
+
+    <!-- Um cartão por item da proposta, com o marcador da situação: ok, mudou, parcial ou fora. -->
+    <div class="item">
+      <div class="topo"><h3>1. {{item: o nome do item, como na proposta}}</h3><span class="badge ok">Entregue</span></div>
+      <dl>
+        <dt>Prometido</dt><dd>{{prometido: o que a proposta disse, em uma frase}}</dd>
+        <dt>Entregue</dt><dd>{{entregue: o que foi feito, com as datas que contam}}</dd>
+        <dt>Prova</dt><dd class="prova">{{prova: as tarefas, as versões e os relatórios que mostram}}</dd>
+      </dl>
+    </div>
+
+    <div class="item">
+      <div class="topo"><h3>2. {{item}}</h3><span class="badge mudou">Entregue de outro jeito</span></div>
+      <dl>
+        <dt>Prometido</dt><dd>{{prometido}}</dd>
+        <dt>Entregue</dt><dd>{{entregue}}</dd>
+        <dt>A mudança</dt><dd>{{mudanca: o que mudou e por quê, com a decisão que levou a isso}}</dd>
+        <dt>Prova</dt><dd class="prova">{{prova}}</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> O roteiro</h2>
+    <p>{{origem_roteiro: a seção do roteiro na proposta, período a período}}</p>
+
+    <!-- Um cartão por período do roteiro (mês, quinzena, etapa). -->
+    <div class="item">
+      <div class="topo"><h3>{{periodo_do_roteiro: o nome e as datas}}</h3><span class="badge parcial">Parcial</span></div>
+      <dl>
+        <dt>Prometido</dt><dd>{{prometido}}</dd>
+        <dt>Entregue</dt><dd>{{entregue}}</dd>
+        <dt>Prova</dt><dd class="prova">{{prova}}</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> O modelo de trabalho</h2>
+    <p>{{origem_modelo: o que a proposta combinou sobre o jeito de trabalhar, e em que seções}}</p>
+    <ul class="clean">
+      <li><span class="txt"><strong>{{combinado: o que se combinou}}</strong> — {{como_foi: como foi cumprido, com as datas}}</span><span class="tag">{{prova}}</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span> Além do prometido</h2>
+    <ul class="clean">
+      <li><span class="txt"><strong>{{extra: o que se entregou fora do escopo}}</strong> — {{extra_detalhe: o que ele faz e quando entrou}}</span><span class="tag">{{prova}}</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span> O que mudou de lugar ou ficou aquém, e por quê</h2>
+    <ul class="clean open">
+      <li><span class="txt"><strong>{{desvio: o item}}</strong> — {{motivo: fora, aquém ou adiado, e o porquê, sem nomear pessoa como motivo}}</span><span class="tag">{{referencia_do_item}}</span></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span> O que fica com a equipe e para depois</h2>
+    <ul class="clean open">
+      <li><span class="txt"><strong>{{pendente: o que fica}}</strong> — {{com_quem: com quem fica, o que falta e onde está o roteiro}}</span><span class="tag">{{tarefas}}</span></li>
+    </ul>
+  </section>
+
+  <footer>
+    <div>
+      <span class="name">{{autor}}</span><br>
+      <span class="role">{{marca_autor}}</span>
+    </div>
+    <div class="contact">
+      <span>{{email}}</span>
+      <span>{{telefone}}</span>
+      <span><a href="{{link_perfil}}">{{rede: o nome da rede do link}}</a></span>
+    </div>
+    <div class="colophon">Relatório produzido com o assistente executivo de {{autor}}.</div>
+  </footer>
+</div>
+</body>
+</html>
