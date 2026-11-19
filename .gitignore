@@ -1,0 +1,29 @@
+# Chaves e configuração pessoal: nunca vão ao git
+.env
+.env.local
+.env.*.local
+.claude/settings.local.json
+
+# Material de terceiro guardado para trabalho (régua em knowledge/sources/README.md)
+originals/
+
+# O que falhou na última cópia do espelho da memória (assistant/README.md)
+assistant/.erro.log
+
+# Gerados
+__pycache__/
+*.pyc
+.venv/
+dist/
+node_modules/
+
+# A vida pessoal (finance/, health/, maps/) vai ao git do seu repositório privado. Se preferir que ela nunca
+# saia do seu computador, descomente as linhas abaixo (perde-se o histórico e a cópia no GitHub):
+# finance/**/*.md
+# health/**/*.md
+# maps/**/*.md
+# !**/README.md
+# !maps/guides/*.md
+
+# estado local de sincronização, que não vai ao repositório
+.vault-sync.json

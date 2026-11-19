@@ -1,0 +1,67 @@
+[
+ {
+  "query": "desenha um motor de avião em corte funcionando, com os módulos se separando no fim, pra tela em vídeo do post. a ficha com os números já tá em knowledge/sources",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "preciso de uma vista explodida de uma máquina de escrever mostrando como a tecla vira letra no papel, pra uma aula",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "anima o mecanismo de um relógio de engrenagens pra explicar o clock do processador, num Story de 6 segundos",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "faz o objeto que se move da tela de conceito: uma catraca de fichas que libera uma passagem por segundo, pra explicar o limitador de taxa",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "quero mostrar como um disco rígido lê um bit, com o braço indo e voltando e o prato girando, no traço da série e com as peças certas",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "pro artifact: uma bomba d'água por dentro, que se desmonta quando a pessoa clica, e mostra pressão e vazão vindo do mesmo modelo",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "mostra por dentro como a máquina de calcular mecânica faz o vai-um, as rodas girando, numa tela animada de 7 s",
+  "should_trigger": true,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "gera uma ilustração da máquina de Turing pra capa do post",
+  "should_trigger": false,
+  "esperada": "image-gen"
+ },
+ {
+  "query": "pesquisa quantas pás tem o fan de um motor turbofan comum e o diâmetro dele, com fonte",
+  "should_trigger": false,
+  "esperada": "research"
+ },
+ {
+  "query": "escreve o texto da tela do motor, o que cada parte faz, em três frases que caibam na coluna",
+  "should_trigger": false,
+  "esperada": "piece-script"
+ },
+ {
+  "query": "confere se a ponta da seta da tela 3 entra no alvo e se tem texto em cima do desenho",
+  "should_trigger": false,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "anota essa ideia antes que eu esqueça: um carrossel mostrando um transistor por dentro",
+  "should_trigger": false,
+  "esperada": "idea-capture"
+ },
+ {
+  "query": "revisa o objeto.md da tela do motor e vê se a lista de peças e a frase do movimento fazem sentido",
+  "should_trigger": false,
+  "esperada": "review"
+ }
+]

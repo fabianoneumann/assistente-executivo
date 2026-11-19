@@ -1,0 +1,116 @@
+---
+titulo: "Guidelines for Snowballing in Systematic Literature Studies and a Replication in Software Engineering"
+tipo: paper
+autor: "Claes Wohlin (Blekinge Institute of Technology)"
+url: "https://www.wohlin.eu/ease14.pdf"
+publicado_em: 2014-05-13
+capturado_em: 2026-11-03
+areas: [journalism]
+tags: [systematic-review, snowballing, backward-snowballing, forward-snowballing, citation-searching, start-set, screening, search-strategy, search-efficiency, citation-matrix, replication, software-engineering]
+licenca: "Protegido: '© 2014 ACM 978-1-4503-2476-2/14/05' e o aviso padrão da ACM na p. 1 do PDF (cópia para uso pessoal ou em sala de aula permitida sem taxa; republicar ou redistribuir exige permissão); o OpenAlex marca o DOI como acesso fechado e sem licença. Entra só a ficha; o integral está na cópia do autor (a url) e na ACM Digital Library, DOI 10.1145/2601248.2601268."
+---
+
+Ficha de estudo, em palavras próprias. Artigo de Claes Wohlin (Blekinge Institute of Technology, Suécia) na EASE '14 (International Conference on Evaluation and Assessment in Software Engineering), Londres, 13 e 14 de maio de 2014, publicada pela ACM; DOI 10.1145/2601248.2601268. O texto é protegido (aviso de copyright da ACM na primeira página) e o integral não entra; a cópia lida é a que o autor deixa no próprio site (a url), um PDF de 10 páginas, extraído com pdftotext e lido inteiro, com a Fig. 1 lida pela imagem da página. A Tabela 1 (matriz de citações) saiu desalinhada na extração e foi lida pela descrição do texto. Financiamento parcial do Industrial Excellence Center EASE (Embedded Applications Software Engineering).
+
+## A pergunta e o que o artigo entrega
+
+Na engenharia de software, os estudos sistemáticos de literatura (termo com que o autor junta revisões e mapeamentos sistemáticos) se tornaram comuns, na esteira da engenharia de software baseada em evidência, ideia que Kitchenham et al. cunharam com inspiração na medicina. O artigo persegue duas metas: propor um procedimento sistemático de bola de neve (*snowballing*) para esses estudos e pô-lo à prova, como ilustração e avaliação, numa replicação de revisão já publicada. Bola de neve: partir de um artigo e seguir as referências que ele faz (bola de neve **para trás**, *backward*) ou os trabalhos que o citam (**para frente**, *forward*) até chegar a outros. O acréscimo que o autor propõe é não parar na lista: examinar, com método, **onde e como** cada artigo é referenciado ou citado. As bases do procedimento são Webster e Watson (2002, sistemas de informação) e Wohlin e Prikladnicki (2013). A replicação toma o estudo de confiabilidade de MacDonell et al. (2010), em que dois grupos fizeram em paralelo, com busca em bases, duas revisões sobre a mesma pergunta; a bola de neve entra como terceira medida.
+
+## Por que não começar sempre pelas bases (trabalhos relacionados)
+
+- Kitchenham e Charters (2007), nas diretrizes de revisão sistemática, fixam como meta achar toda a pesquisa relevante. O autor aceita a meta, mas a julga dificilmente realizável, ainda mais em área ampla: na prática se trabalha com uma amostra do que existe, e a tarefa é que ela seja a melhor possível. O exemplo: uma revisão de Kitchenham et al. por busca manual achou 20 artigos relevantes; refeita com busca automática em bases, achou mais 33.
+- O caso parece dar a vitória à busca automática; o autor lê de outro modo: o que decide é ser sistemático, com busca manual ou automática. Automatizar não salva uma string ruim, e montar uma boa é muito difícil: o vocabulário da área muitas vezes não tem padrão, e termo amplo enche o resultado de irrelevantes, que pedem triagem manual longa e falível.
+- As diretrizes começam pelas bases e pedem, além delas, buscas complementares (listas de referências, literatura cinzenta, revistas e conferências específicas, pesquisadores da área). A maioria dos estudos não chega lá, pelo trabalho que as bases já dão (escolher bases, lidar com interfaces, sintaxes de string e limites diferentes, achar sinônimos). Para o autor, o resultado é que a busca em base costuma virar a estratégia inteira, e não só o começo, e pode deixar de fora literatura importante.
+- Greenhalgh e Peacock (2005) compararam três métodos de busca: seguir o protocolo, com quantas bases fossem, não garantiu eficiência; parte das fontes veio de conhecimento e contatos pessoais (estantes de biblioteca, colegas), e a bola de neve foi o melhor caminho para o que saiu em revistas obscuras.
+- Skoglund e Runeson (2009) testaram uma busca por referências para enxugar o lote inicial: em revisões de foco técnico, a precisão subiu com pouca perda de relevantes; em área ampla ou com termos gerais, o resultado não satisfez. Para o autor, sinal de que o melhor jeito de buscar depende do contexto.
+- Jalali e Wohlin (2012) puseram lado a lado dois estudos do mesmo tema, um pelas diretrizes de Kitchenham e Charters e outro pela bola de neve de Webster e Watson; como estes só esboçam os passos, faltam diretrizes detalhadas, lacuna que motiva o artigo. MacDonell et al. (2010) compararam duas revisões independentes com pergunta comum: trocar processo e pessoas não mudou o resultado, e a revisão sistemática pareceu robusta.
+
+## O procedimento (seção 3 e Fig. 1)
+
+A bola de neve troca só a busca; o resto do planejamento de Kitchenham e Charters continua valendo.
+
+**A figura.** Começa em "iniciar a busca de literatura" e "identificar um conjunto inicial provisório de artigos e avaliá-lo pelos critérios de inclusão e exclusão; os incluídos entram no procedimento". Dentro do bloco "Snowballing", duas colunas. Para trás: iterar entre (1) olhar o título na lista de referências e (2) olhar o lugar da referência no texto; depois (3) o resumo do artigo referenciado e (4) o artigo completo. Para frente: (1) o título do artigo que cita, (2) o resumo do que cita, (3) o lugar da citação no artigo que cita e (4) o artigo completo que cita. Em cada passo, nas duas direções, pode-se excluir o artigo ou incluí-lo provisoriamente para olhar mais. A inclusão final se decide pelo artigo completo, antes de ele entrar no novo conjunto que vai para a bola de neve. Itera-se até não aparecerem artigos novos; aí o procedimento termina.
+
+**Conjunto inicial (3.1).** O conjunto inicial (*start set*) ocupa na bola de neve o lugar que a string ocupa na busca em base: é o primeiro desafio. São dois: o **provisório**, que qualquer busca devolve, e o efetivo, só a parte dele que chega ao estudo final. Para não pender para nenhuma editora, o autor sugere o Google Scholar. Os traços de um bom conjunto inicial:
+
+- abrange as diferentes comunidades de onde pode vir artigo relevante, o que se torna especialmente crucial quando há risco de grupos (*clusters*) independentes, que não se citam;
+- não é pequeno demais, e o tamanho acompanha a amplitude da área (foco estreito pede menos artigos);
+- quando a busca transborda (termos gerais demais no Google Scholar), pode se resumir a alguns artigos relevantes e muito citados;
+- varia editora, ano e autor; na frase do autor, "The important issue here is diversity";
+- sai dos termos da pergunta de pesquisa e, de preferência, dos sinônimos deles, para não ficar preso a um vocabulário.
+
+Como a string, o conjunto inicial não tem fórmula; um começo possível é um artigo seminal e muito citado, e o autor deixa a questão para pesquisa futura. O exemplo de vocabulário vem de Jalali e Wohlin, sobre práticas ágeis em engenharia de software global: um artigo que falava em desenvolvimento "cross-continent" escapou da busca em base e apareceu na bola de neve.
+
+**Iterações (3.2).** Um artigo só alimenta a bola de neve depois de incluído com base no texto completo; do contrário, se ele cair depois, o que entrou a partir dele tem de ser desfeito (*rollback*).
+
+- *Para trás (3.2.1):* na lista de referências, dois cortes: os critérios básicos (idioma, ano, tipo de publicação, se só valem artigos revisados por pares) e o que já passou pela triagem, para trás ou para frente, nesta ou em outra iteração; sobram os candidatos de fato. A regra é esgotar o artigo aberto antes de abrir o novo. Da lista saem três pistas: o título (parece incluível?), o veículo (sai coisa relevante ali?) e os autores (já publicaram na área?). Autor desconhecido na área não é motivo de corte; autor assíduo nela só aumenta a chance de inclusão. O candidato que resiste é avaliado pelo trecho em que o artigo aberto o cita, que costuma revelar bastante do conteúdo sem obrigar a buscar o candidato. Só depois se abre o candidato: resumo primeiro, e então as partes que pesam para a decisão, percorrendo o texto em vez de lê-lo de ponta a ponta.
+- *Para frente (3.2.2):* quem cita o artigo em exame se vê no Google Scholar (o artigo diz que "Quotes are removed in Google Scholar, and only citations are used"). A triagem sobe um degrau só quando o anterior não decide: os dados do Google Scholar, o resumo, o trecho em que o artigo que cita menciona o já incluído, o texto completo.
+- *Inclusão e exclusão (3.2.3):* a decisão vem antes do uso na bola de neve, e a análise só considera o que veio de artigos incluídos. Cada iteração junta os achados numa pilha que abre a seguinte, uma de cada vez, para manter o rastro.
+
+**Autores (3.3).** O ciclo fecha quando nenhuma das duas direções traz novidade. Como complemento, o autor recomenda escrever aos autores dos incluídos, a começar pelos pesquisadores mais ativos na área, e recomeçar o procedimento a cada artigo novo que surgir. Outra via são as revistas e conferências mais prováveis de publicar sobre o tema, reconhecidas pelos veículos em que os incluídos saíram.
+
+**Extração de dados (3.4).** Entram todos os incluídos, guiados pelas perguntas de pesquisa; como a inclusão já exige o texto completo, a extração pode ser feita na mesma leitura.
+
+## A replicação (seção 4)
+
+**Ponto de partida.** O autor tinha lido MacDonell et al. de 6 a 12 meses antes de decidir replicar; decidido, voltou com atenção às seções 1 a 3, para replicar com justiça, e em especial à pergunta: que evidência há de que modelos de estimativa entre empresas (*cross-company*) são pelo menos tão bons quanto os de dentro da empresa (*within-company*) para prever o esforço de projetos de software. A replicação serve antes de tudo para mostrar e avaliar o procedimento; a resposta à pergunta vem no caminho.
+
+**Conjunto inicial (4.2).** Para fugir do viés de editora, busca no Google Scholar com as palavras "cross-company within-company software effort estimation" e período de 1995 a 2005 (o da revisão original), em 20 de agosto de 2013. Com período fechado, a data da busca quase não importa, diz o autor; em outros casos importa, porque o acervo das bases e o índice do Google Scholar mudam. Saíram 13 candidatos (C1 a C13). Três saíram por não serem artigo revisado por pares de revista, conferência ou workshop (C9, C12, C13); um porque outro candidato é extensão dele (C8, estendido por C7); seis por estarem fora do escopo, depois de lidos mais a fundo (C4, C5, C6, C7, C10, C11). Ficaram três, P1 a P3. O próprio autor aponta a fraqueza: os três têm um autor em comum, e um artigo de outra autoria teria reduzido o risco de perder o que não se liga a eles; ficou assim porque a decisão era partir da pergunta original.
+
+**Iteração 1 (4.3).** Para trás, os três artigos um por vez, só referências dentro do período:
+
+- P1: 17 referências, uma já incluída e uma já excluída; das 15 restantes, 4 saíram pelo ano e 4 pelo título ou tipo; 2 viraram candidatas pelo título (P6, P8) e 3 pelo modo como eram referenciadas (P4, P5, P7); 2 saíram pelo lugar e contexto da referência. Os 5 candidatos foram lidos inteiros e os 5 foram incluídos.
+- P2: 18 referências, a maioria igual às de P1; 4 novas. Nem título nem contexto decidiam; o resumo também não; os textos completos levaram a excluir as 4.
+- P3: 21 referências, muitas em comum com P1 e P2; 6 novas; 1 saiu pelo ano e 3 pelo título; 2 candidatas (P10 pelo título, P9 pelo contexto), lidas inteiras e incluídas.
+
+Para frente, pelo Google Scholar: os três artigos de partida são de 2004, 2004 e 2005, no fim do período, então há poucas citações; 5 artigos citam P1, 4 citam P2 e 1 cita P3, todos já no conjunto provisório. Balanço: 13 candidatos no conjunto inicial e 3 incluídos; 25 candidatos para trás (15 + 4 + 6) e 7 incluídos (P4 a P10); 38 avaliados e 10 incluídos até aqui.
+
+**Iteração 2 (4.4).** Os sete novos (P4 a P10) entram, primeiro para trás e depois para frente.
+
+- Para trás: P4 tem 33 referências, 28 percebidas como novas (14 saem pelo ano, 12 pelo título, 2 pelo contexto da referência; nenhuma entra). O autor avisa que as contagens podem ter erros aleatórios: com tantas referências, alguma pode ter sido vista duas vezes sem ele lembrar, já que não vale a pena registrar numa ferramenta o que se descarta na hora. P5: 32 referências, 12 novas (3 pelo ano, o resto pelo título). P6: 19, 8 novas (2 pelo ano, 6 pelo título). P7: 31, 9 novas (3 pelo ano, 5 pelo título, 1 pelo contexto). P8: 28, 1 nova, excluída pelo título. P9: 28, 18 novas (6 pelo ano, 12 pelo título). P10, o mais antigo: 28, 21 novas, todas fora pelo ano. Total: 97 referências novas (28 + 12 + 8 + 9 + 1 + 18 + 21), quase todas excluídas pelo ano ou pelo título; só três pediram olhar o contexto no artigo.
+- Para frente: P4 é citado por 62 candidatos; 11 já examinados; 40 saem pelo que o Google Scholar mostra (ano, tipo, idioma, título); 11 resumos lidos, 10 excluídos; 1 incluído depois do texto completo, P11. P5: 74 citações, 37 já vistas, 36 saem pelo Google Scholar, 1 resumo lido e excluído. P6: 36 citações, 26 já vistas, 10 saem pelo Google Scholar. P7: 47, 31 já vistas, 16 saem. P8: 12, 10 já vistas, 2 saem. P9: 3, 2 já vistas, 1 sai. P10: 17, 8 já vistas, 9 saem. Total: 126 citações novas (51 + 37 + 10 + 16 + 2 + 1 + 9), 12 resumos lidos, 1 artigo incluído.
+
+**Iteração 3 (4.5).** P11 tem 39 referências: 4 saem pelo ano, 13 já tinham sido vistas, 22 saem pelo título. É citado por 7 candidatos, todos excluídos pelo Google Scholar. São 33 candidatos examinados (4 + 22 + 7); o texto do artigo, nessa frase, diz "the second iteration".
+
+**Eficiência (4.6).** A medida: incluídos sobre candidatos examinados. O autor lembra o risco, conhecido, de ruído: artigos que, por não terem entrado no fim, idealmente nem teriam sido examinados. Contando todos os candidatos: conjunto inicial, 3 de 13 (23%); iteração 1, 7 de 25 (28%); iteração 2, 1 de 223 (0,4%); iteração 3, 0 de 33 (0%); total, (3 + 7 + 1 + 0) / (13 + 25 + 223 + 33) = 3,7%. Tirando da conta os candidatos da bola de neve para trás descartados pelo ano (trivial) ou pelo título na lista, a eficiência sobe; os da bola de neve para frente ficam todos na conta, porque exigem ler o Google Scholar ou ir ao artigo. Nessa conta: conjunto inicial, 3 de 13; para trás, 7 de 12 na iteração 1 (em vez de 7 de 25), 0 de 3 na iteração 2 (o texto diz "instead of 3 of 97") e 0 de 0 na iteração 3 (em vez de 0 de 26); para frente, 1 de 133 (0 + 126 + 7); total, (10 + 1) / (28 + 133) = 6,8%, com a bola de neve para trás muito eficaz. A ressalva do autor: o corte pelo título pede mão leve; rigoroso demais, teria deixado de fora P4, P5, P7, P9 e P11.
+
+**Autores (4.7).** O procedimento manda escrever aos autores, mas aqui isso ficou de fora: vários deles assinam a própria revisão replicada, e quem já a viu publicada poderia responder com viés. Os candidatos seriam Briand, Jeffrey, Kitchenham, Maxwell, Mendes, Ruhe e Wieczorek (mais de um artigo) e outros 11 com um artigo cada. Também ficaram de fora as demais buscas complementares, já que o ponto era pôr a bola de neve lado a lado com a busca que começa pelas bases.
+
+**Matriz de citações e linha do tempo (4.8).** A Tabela 1 marca com "X" quem cita quem entre os 11 artigos (por exemplo, P2 cita P4 a P8; P10 é citado por P3, P4, P6 e P9) e com "-" quando a citação não era possível porque o artigo citado ainda não existia. A linha do tempo: 1999, P10 e P4; 2000, P5 e P6; 2001, P7; 2002, P8; 2003, P9 e P11; 2004, P2 e P1; 2005, P3. O autor admite duas falhas do "-": publicar leva tempo, então um artigo de data anterior pode ainda não estar acessível quando o outro foi escrito; e autores citam trabalho próprio ainda inédito (P11 cita P2). O que a matriz mostra, segundo ele: os três do conjunto inicial são recentes no período, então quase tudo veio da bola de neve para trás; P10, o primeiro publicado, é citado por só quatro dos outros dez; P11 não é citado por nenhum, embora três artigos tenham saído depois e P1 a P3 tenham um autor em comum com ele, o que o autor chama de surpreendente. Qualquer um dos 11 leva aos outros pela bola de neve; para o autor, isso mostra uma força do método: como os autores da área se citam, a diferença de vocabulário não esconde os artigos.
+
+## As dez lições (4.9.1)
+
+1. O corte pelos critérios básicos (idioma, ano, tipo de publicação) se faz na própria lista de referências e quase não custa tempo.
+2. Referências que reaparecem em vários artigos, sobretudo de autores em comum, admitem duas leituras: a área está bem coberta, ou se caiu num único grupo (*cluster*) de artigos, com outros fora do alcance. Daí a exigência de um conjunto inicial variado e sem viés.
+3. Cada triagem traz um dilema que o autor chama de equilíbrio importante: subir de nível (do título ao resumo, do resumo ao texto) gasta leitura com artigos que vão sair, e cortar cedo arrisca perder um que devia entrar.
+4. Para trás, ir e voltar entre a lista e o trecho do texto em que cada referência aparece; quando um artigo entra, os outros que o texto cita de modo parecido podem ser candidatos fortes também.
+5. O equivalente da lição 4 para frente: no artigo novo, o trecho em que ele cita o incluído de origem aponta outros citados do mesmo modo. É um passo fácil de pular, porque nessa hora o artigo de origem já é conhecido e costuma não ser revisitado na bola de neve para trás.
+6. A ordem de trabalho muda quanto cada artigo rende para exame (cada um só é examinado ao aparecer pela primeira vez), sem mudar o total de cada etapa, que deve ser estável.
+7. Contar os artigos novos por etapa (conjunto inicial, iteração 1, iteração 2 e assim por diante): com bom ponto de partida, os novos incluídos devem diminuir de uma etapa para a outra.
+8. Contagem que não cai de forma clara pode ser sinal de um grupo de artigos de fora (lição 2), e aí vale uma busca nova com sinônimos dos termos da pergunta.
+9. A matriz de quem cita quem expõe os padrões de citação, e muitas células vazias sugerem artigos que escaparam; ela não ajuda, porém, quando existe um grupo independente de artigos (no sentido de 3.1, grupos que não se citam).
+10. A linha do tempo mostra que citações eram possíveis e dá pistas da atividade na área estudada.
+
+No balanço do autor, replicar não teve dificuldade, e o caso favorecia o método: qualquer um dos incluídos levava aos demais.
+
+## Ameaças à validade e comparação (4.9.2 e 4.10)
+
+**Validade.** A ameaça principal, segundo o autor, é ele ter lido o estudo original antes de replicá-lo, o que mal se evita, já que foi essa leitura que o convenceu de que o caso servia para ilustrar e avaliar o método. Entre a leitura e a replicação passaram de 6 a 12 meses; dos detalhes ele não lembrava, mas guardava a faixa do total esperado, entre 10 e 19 artigos nas revisões originais. Isso pode ter pesado nas decisões de inclusão e exclusão; se pesou, diz ele, mudou o ponto em que se decidiu, não quantos artigos foram examinados.
+
+**Comparação.** Os artigos identificados são os mesmos: nove estudos aparecem nas duas revisões de MacDonell et al. Aquele trabalho apontou um estudo que o tipo de análise deveria ter excluído; a replicação não desceu a esse nível, mas o estudo em questão é P11, justamente o que P1 a P3 não citam, e para o autor a matriz de citações pode sinalizar casos que pedem exame mais detalhado. Comparar eficiência é difícil: não fica claro o que equivale a "olhar um artigo na lista de referências", nem se os "recuperados" de MacDonell et al. devem ser postos contra todas as referências ou só contra as que sobram depois de tirar as não revisadas por pares e as já incluídas. Pondo os "revisados em detalhe" de MacDonell et al. ao lado dos casos em que aqui se avaliou o lugar da referência, o resumo ou o artigo inteiro (Tabela 2): 24 na revisão 1, 38 na revisão 2 e 38 na bola de neve, esforço parecido por essa medida; o esforço real das revisões não está disponível. Um benefício que o autor vê na bola de neve: ela se concentra em artigos que os incluídos de fato referenciam ou que os citam, e por isso pode trazer menos ruído que a busca em base.
+
+## Discussão e conclusão (seções 5 e 6)
+
+- Vantagem principal: começar por artigos relevantes e deixá-los guiar o resto. A lista de referências se lê com facilidade e, somada ao lugar e ao contexto de cada referência, quase sempre aponta direto os relevantes. A análise de citações pode pesar quando um artigo é muito citado, mas o que o Google Scholar mostra em geral ajuda bastante a decidir a inclusão ou exclusão provisória.
+- Para o autor, bola de neve e busca em base não precisam ser excludentes: o ideal é combinar abordagens para cobrir o máximo da literatura.
+- Pesquisa futura que o autor lista: como identificar um bom conjunto inicial; a eficiência das diferentes abordagens de busca; vantagens e desvantagens de cada uma em buscas de tipos diferentes (área ampla ou muito focada); e como montar uma abordagem híbrida em que as buscas se complementem.
+- Para **estender** (atualizar) um estudo de literatura, a bola de neve leva vantagem especial: um estudo novo quase certamente cita ao menos um dos relevantes anteriores ou o próprio estudo sistemático já feito. Daí o autor a declarar, "por dedução", melhor que a busca em base para essa tarefa, deixando a prova para pesquisa futura.
+- Conclusão: as duas metas foram cumpridas; a replicação chegou a resultado parecido com o das revisões originais; o caso favorecia o método, porque bastava achar um dos 10 ou 11 artigos. Para o autor, a bola de neve sistemática é uma alternativa real para começar um estudo de literatura, no lugar de partir sempre das bases; falta saber em que circunstâncias ela é a melhor escolha. O que faz o método funcionar, nas duas direções, é o lugar e o contexto das referências; a matriz de citações e a linha do tempo entram como meios de ver a área em conjunto.
+
+## Tudo o mais que ensina
+
+- **Ordem de leitura do candidato:** resumo primeiro, depois só as partes que pesam, até dar para decidir; nada de leitura linear.
+- **O que a lista de referências já diz:** antes de abrir o artigo novo, título, veículo e autores fazem o primeiro corte, e o trecho em que a referência aparece adianta o conteúdo.
+- **Rastreabilidade:** uma iteração por vez, com a pilha de novos guardada para a seguinte, e a contagem dos candidatos por etapa, que serve à medida de eficiência e ao sinal da lição 7.
+- **Contagens aproximadas:** o autor admite erros aleatórios nas contagens de referências "novas", porque o que se descartava na hora não ia para ferramenta nenhuma.
+- **Viés de quem replica:** o contato com autores que também escreveram a revisão replicada foi evitado para não contaminar a comparação.

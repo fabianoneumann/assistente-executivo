@@ -1,0 +1,9 @@
+# O que o Prettier não formata: o gerado, a base (o markdown é texto, sem quebra manual) e o que vem do kit
+# com as próprias conferências (as travas, o CI, o onboarding).
+package-lock.json
+node_modules/
+*.md
+.claude/
+.githooks/
+.github/
+onboarding/

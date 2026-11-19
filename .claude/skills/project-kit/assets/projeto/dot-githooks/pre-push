@@ -1,0 +1,13 @@
+#!/bin/sh
+# O pre-push do projeto: avisa quando a branch enviada está atrás da base do remoto, e o push segue.
+# A lógica e os testes estão em .githooks/hooks.py e test_hooks.py; o porquê, em knowledge/travas.md.
+py=""
+for p in python3 python py; do
+  if "$p" -c "import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)" >/dev/null 2>&1; then py=$p; break; fi
+done
+if [ -z "$py" ]; then
+  echo "[pre-push] sem Python 3.9 ou mais novo no PATH: a sincronizacao nao foi conferida." >&2
+  exit 0
+fi
+PYTHONUTF8=1 "$py" "$(dirname "$0")/hooks.py" pre-push "$@"
+exit 0

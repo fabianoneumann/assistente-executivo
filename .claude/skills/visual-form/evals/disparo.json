@@ -1,0 +1,92 @@
+[
+ {
+  "query": "deixa a tela 4 mais forte",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "o texto do post já travou e a escaleta tá com a coluna do que aparece; monta as telas no slides.html a partir do post de exemplo da série",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "a tela 6 do educativo tá muito carregada, deixa ela mais calma sem mexer no texto",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "roda a I2 do carrossel da semana contra os dois últimos posts do mesmo tipo e me diz que telas voltam",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "refaz o layout da sequência de Stories de terça: o texto tá encostando no adesivo da enquete e os desenhos de enfeite repetem a posição",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "a hierarquia das telas 3 e 5 não tá clara, não sei pra onde olhar primeiro. dá um jeito na forma",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "me mostra duas ou três alternativas de forma pra capa do post, uma com a imagem conduzindo e outra com o número",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "limpa a tela 8, tem anotação demais em volta do desenho",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "o roteiro dos Stories de quinta tá travado, agora faz o stories.html com a área segura e o texto acima da caixinha",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "encaixa o objeto que a object-anatomy devolveu na tela 5 do carrossel e confere as telas de novo",
+  "should_trigger": true,
+  "esperada": "visual-form"
+ },
+ {
+  "query": "gera uma ilustração de uma régua de cálculo",
+  "should_trigger": false,
+  "esperada": "image-gen"
+ },
+ {
+  "query": "anima o mecanismo de uma catraca que libera uma ficha por segundo, pra tela de conceito do post sobre limitador de taxa; a ficha com fonte tá em knowledge/sources",
+  "should_trigger": false,
+  "esperada": "object-anatomy"
+ },
+ {
+  "query": "mudei a tela 3 do post, regera só ela",
+  "should_trigger": false,
+  "esperada": "slides-export"
+ },
+ {
+  "query": "exporta o carrossel e sobe pro bucket, tá pronto",
+  "should_trigger": false,
+  "esperada": "slides-export"
+ },
+ {
+  "query": "reescreve o texto da tela 7, ficou comprido demais",
+  "should_trigger": false,
+  "esperada": "piece-script"
+ },
+ {
+  "query": "faz o post educativo da semana",
+  "should_trigger": false,
+  "esperada": "piece-creation"
+ },
+ {
+  "query": "cria uma landing page com hero, depoimentos e preço, em React",
+  "should_trigger": false,
+  "esperada": "frontend-design"
+ },
+ {
+  "query": "dá uma olhada se tem algo errado no texto das telas antes de travar",
+  "should_trigger": false,
+  "esperada": "review"
+ }
+]

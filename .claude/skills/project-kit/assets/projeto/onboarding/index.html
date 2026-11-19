@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Como trabalhamos</title>
+<style>
+  :root {
+    --fundo: #f7f6f2; --papel: #ffffff; --tinta: #1f2328; --suave: #5b636e; --linha: #d6d3cb;
+    --destaque: #2f6f4e; --destaque-fundo: #e3f0e8; --alerta: #9a5b13; --alerta-fundo: #f7ecdc;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --fundo: #14171b; --papel: #1c2026; --tinta: #e6e8eb; --suave: #a3abb5; --linha: #363c45;
+            --destaque: #7cc59c; --destaque-fundo: #1f3328; --alerta: #e0a95e; --alerta-fundo: #3a2c1a; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fundo); color: var(--tinta); font: 16px/1.55 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 1.9rem; margin: 0 0 4px; }
+  h2 { font-size: 1.25rem; margin: 40px 0 8px; }
+  p, li { color: var(--tinta); }
+  .sub { color: var(--suave); margin: 0 0 24px; }
+  .cartao { background: var(--papel); border: 1px solid var(--linha); border-radius: 10px; padding: 16px 18px; }
+  .botao { display: inline-block; background: var(--destaque); color: var(--papel); padding: 10px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; }
+  figure { margin: 16px 0 0; }
+  figcaption { color: var(--suave); font-size: .85rem; margin-top: 6px; }
+  svg { width: 100%; height: auto; display: block; }
+  svg .caixa { fill: var(--papel); stroke: var(--linha); stroke-width: 1.5; }
+  svg .pessoa { fill: var(--destaque-fundo); stroke: var(--destaque); stroke-width: 1.5; }
+  svg .maquina { fill: var(--alerta-fundo); stroke: var(--alerta); stroke-width: 1.5; }
+  svg text { fill: var(--tinta); font: 13px system-ui, sans-serif; }
+  svg .num { font-weight: 700; fill: var(--suave); }
+  svg .seta { stroke: var(--suave); stroke-width: 1.5; fill: none; marker-end: url(#ponta); }
+  svg .ponta { fill: var(--suave); }
+  table { width: 100%; border-collapse: collapse; font-size: .95rem; }
+  td, th { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--linha); vertical-align: top; }
+  code { font-size: .9em; }
+  .legenda { display: flex; gap: 16px; flex-wrap: wrap; color: var(--suave); font-size: .85rem; margin-top: 8px; }
+  .legenda span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .legenda .p::before { background: var(--destaque-fundo); border: 1px solid var(--destaque); }
+  .legenda .m::before { background: var(--alerta-fundo); border: 1px solid var(--alerta); }
+  footer { margin-top: 48px; color: var(--suave); font-size: .85rem; }
+  iframe.diagrama { display: block; width: 100%; height: 900px; border: 1px solid var(--linha); border-radius: 10px; background: var(--fundo); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Como trabalhamos</h1>
+  <p class="sub">{{NOME_HTML}}: {{DESCRICAO_HTML}}</p>
+
+  <h2>O que pegar agora</h2>
+  <div class="cartao">
+    <p>As issues abertas, sem dono e sem bloqueio, com a prioridade de cada uma ao lado: comece pela mais alta e atribua-se a ela.</p>
+    <a class="botao" href="https://github.com/{{REPO}}/issues?q=is%3Aissue+is%3Aopen+no%3Aassignee+-is%3Ablocked">Abrir a busca</a>
+    <p>A prioridade de cada uma sai de três perguntas, na ordem: <a href="diagramas/prioridade.html">a árvore da prioridade</a> (o porquê em <code>knowledge/metadados.md</code>).</p>
+  </div>
+
+  <h2>O fluxo por issue</h2>
+  <p>Oito passos, nesta ordem. A pessoa decide no plano; a máquina confere em três deles.</p>
+  <figure>
+    <svg viewBox="0 0 820 250" role="img" aria-labelledby="t-fluxo">
+      <title id="t-fluxo">Os oito passos do fluxo por issue, em duas linhas de quatro</title>
+      <defs><marker id="ponta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ponta" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+      <rect class="caixa" x="10" y="20" width="180" height="76" rx="8"/><text class="num" x="22" y="42">1</text><text x="22" y="62">Discussão inicial</text><text x="22" y="80">a spec contra o código</text>
+      <rect class="pessoa" x="220" y="20" width="180" height="76" rx="8"/><text class="num" x="232" y="42">2</text><text x="232" y="62">Plano</text><text x="232" y="80">o aceite da pessoa</text>
+      <rect class="caixa" x="430" y="20" width="180" height="76" rx="8"/><text class="num" x="442" y="42">3</text><text x="442" y="62">Branch</text><text x="442" y="80">&lt;issue&gt;-&lt;tema&gt;</text>
+      <rect class="caixa" x="640" y="20" width="170" height="76" rx="8"/><text class="num" x="652" y="42">4</text><text x="652" y="62">Implementar</text><text x="652" y="80">commit: hooks do git</text>
+      <rect class="maquina" x="640" y="150" width="170" height="76" rx="8"/><text class="num" x="652" y="172">5</text><text x="652" y="192">/code-review</text><text x="652" y="210">sobre a branch</text>
+      <rect class="caixa" x="430" y="150" width="180" height="76" rx="8"/><text class="num" x="442" y="172">6</text><text x="442" y="192">Validação da entrega</text><text x="442" y="210">e a exploratória</text>
+      <rect class="maquina" x="220" y="150" width="180" height="76" rx="8"/><text class="num" x="232" y="172">7</text><text x="232" y="192">Sincronizar e o PR</text><text x="232" y="210">o hook confere o corpo</text>
+      <rect class="maquina" x="10" y="150" width="180" height="76" rx="8"/><text class="num" x="22" y="172">8</text><text x="22" y="192">Squash</text><text x="22" y="210">com o CI verde</text>
+      <path class="seta" d="M190,58 H218"/><path class="seta" d="M400,58 H428"/><path class="seta" d="M610,58 H638"/>
+      <path class="seta" d="M725,96 V148"/><path class="seta" d="M640,188 H612"/><path class="seta" d="M430,188 H402"/><path class="seta" d="M220,188 H192"/>
+    </svg>
+    <figcaption>Os oito passos do <code>CLAUDE.md</code>; o porquê de cada passo em <code>knowledge/processo.md</code>.</figcaption>
+    <div class="legenda"><span class="p">a pessoa decide</span><span class="m">a máquina confere</span></div>
+  </figure>
+  <p>Quem fala com quem, do pedido ao PR: cada commit passa pelas travas do agente e pelos hooks do git, e a correção volta na mesma branch até o CI ficar verde.</p>
+  <figure>
+    <iframe class="diagrama" src="diagramas/sequencia.html" title="Quem fala com quem, do pedido ao PR" loading="lazy"></iframe>
+    <figcaption>O diagrama em tela cheia: <a href="diagramas/sequencia.html">diagramas/sequencia.html</a>.</figcaption>
+  </figure>
+
+  <h2>As travas</h2>
+  <p>O lembrete que se repetia virou código, na camada mais baixa que resolve. Toda trava recusa e diz o que falta, ou avisa; nenhuma pergunta.</p>
+  <figure>
+    <iframe class="diagrama" src="diagramas/travas.html" title="As travas em camadas: onde cada trava age e o que ela recusa" loading="lazy"></iframe>
+    <figcaption>As camadas e o que cada uma cobra, em <code>knowledge/travas.md</code>. O diagrama em tela cheia: <a href="diagramas/travas.html">diagramas/travas.html</a>.</figcaption>
+  </figure>
+
+  <h2>A versão</h2>
+  <p>A versão é uma tag anotada no <code>{{BASE}}</code>, criada pelo agente quando o CI está verde, a bateria inteira passou e as notas foram conferidas. Uma versão não se move: a correção vai na seguinte. O roteiro está em <code>knowledge/versao-e-dependencias.md</code>.</p>
+
+  <h2>Onde mora o quê</h2>
+  <table>
+    <tr><th>O quê</th><th>Onde</th></tr>
+    <tr><td>As instruções do agente</td><td><code>CLAUDE.md</code> (e o <code>AGENTS.md</code>, que aponta para ele)</td></tr>
+    <tr><td>A arquitetura, o plano, as decisões</td><td><code>knowledge/</code>, a partir do <code>knowledge/index.md</code></td></tr>
+    <tr><td>A spec de cada entrega</td><td>o corpo da issue, pelo modelo de <code>.github/ISSUE_TEMPLATE/</code></td></tr>
+    <tr><td>O que se fez numa entrega</td><td>o PR, pelo modelo, e uma entrada no <code>knowledge/log.md</code></td></tr>
+    <tr><td>A operação do sistema</td><td><code>docs/</code>, quando existir</td></tr>
+  </table>
+
+  <footer>Atualizado em {{DATA}}. Esta página muda na mesma entrega que o processo que ela desenha.</footer>
+</main>
+<script>
+  /* Os diagramas em iframe dizem a altura deles quando ficam prontos (diagramas/*.html); o iframe cresce sem rolagem. */
+  addEventListener('message', e => {
+    if (!e.data || e.data.diagrama !== 'altura') return;
+    for (const f of document.querySelectorAll('iframe.diagrama')) if (f.contentWindow === e.source) f.style.height = (e.data.altura + 2) + 'px';
+  });
+</script>
+</body>
+</html>

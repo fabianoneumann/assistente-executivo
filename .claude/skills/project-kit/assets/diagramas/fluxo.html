@@ -1,0 +1,830 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O fluxo por issue</title>
+<link rel="stylesheet" href="tokens.css">
+<!-- O motor de layout: ELK (layered) 0.12.1, embutido ao lado (sem rede); licença EPL-2.0 em elk-LICENSE.md. -->
+<script src="elk.bundled.js"></script>
+<style>
+  /* Os espaçamentos que o motor lê (o desenho decide aqui, o motor obedece). */
+  :root {
+    --no-largura: 188px;     /* largura mínima do cartão; a altura sai do HTML medido */
+    --no-largura-max: 236px; /* até onde o cartão alarga quando sobra coluna */
+    --no-faixa: 30px;        /* a faixa acima do cartão onde mora o rótulo do grupo */
+    --esp-camada: 36px;      /* entre colunas (camadas) */
+    --esp-no: 44px;          /* entre nós da mesma coluna e entre as linhas quebradas */
+    --esp-aresta: 14px;      /* entre arestas paralelas */
+    --esp-aresta-no: 18px;   /* entre aresta e nó */
+    --esp-rotulo: 4px;       /* entre o rótulo e a sua aresta */
+    --raio-curva: 8px;       /* o arredondado das dobras das setas */
+    --raio-laco: 10px;       /* o arredondado do laço da recusa, um pouco mais aberto que as dobras */
+    --folga-rotulo: 10px;    /* o respiro de cada lado do rótulo de uma seta de avanço */
+    --fundo-laco: 10px;      /* o quanto o laço da recusa desce além do rótulo (a mais no espaço que o motor reserva) */
+    --raio-juncao: 3.5px;    /* o ponto onde um ramo paralelo se divide ou se junta */
+    --porta-y: 26px;         /* a altura (do topo do cartão) onde a seta de avanço sai e entra: a linha do título */
+    --largura-lista: 720px;  /* abaixo desta largura, a figura vira a lista dos passos (o celular) */
+    --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px 16px 48px; box-sizing: border-box; }
+  figure { margin: 0; }
+
+  /* Cabeçalho: título e legenda fora do grafo, em flexbox. */
+  .cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px;
+         padding-bottom: 20px; border-bottom: 1px solid var(--linha); margin-bottom: 8px; }
+  .sobre { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .cab h2 { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; color: var(--tinta); }
+  .legenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--suave); }
+  .legenda li { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .amostra { width: 14px; height: 14px; border-radius: 4px; box-sizing: border-box; flex: none; }
+  .amostra.pessoa { background: var(--destaque-fundo); border: 1.5px solid var(--destaque); }
+  .amostra.maquina { background: var(--alerta-fundo); border: 1.5px solid var(--alerta); }
+  .amostra-fio { width: 32px; height: 12px; flex: none; }
+  .amostra-fio line { stroke-width: 1.75; }
+
+  /* O grafo: o motor posiciona; cartões em HTML por cima das setas em SVG. */
+  .grafo { position: relative; margin: 0 auto; }
+  .grafo > svg { position: absolute; inset: 0; overflow: visible; }
+  .medida { position: absolute; visibility: hidden; left: -9999px; top: 0; }
+
+  .no { position: absolute; box-sizing: border-box; width: var(--no-largura); display: flex; flex-direction: column; gap: 6px;
+        padding: 14px 14px 14px; background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; color: var(--tinta); }
+  .no.pessoa { background: var(--destaque-fundo); border-color: var(--destaque); }
+  .no.maquina { background: var(--alerta-fundo); border-color: var(--alerta); }
+  .no-topo { display: flex; align-items: flex-start; gap: 10px; }
+  .num { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; margin-top: -1px;
+         font-size: 13px; font-weight: 700; line-height: 1; background: var(--papel); border: 1.5px solid var(--linha); color: var(--tinta); box-sizing: border-box; }
+  .no.pessoa .num { border-color: var(--destaque); color: var(--destaque); }
+  .no.maquina .num { border-color: var(--alerta); color: var(--alerta); }
+  .no h3, .no p { text-wrap: pretty; }
+  .no h3 { margin: 0; font-size: 15px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+  .no p { margin: 0; font-size: 13px; line-height: 1.4; color: var(--suave); overflow-wrap: anywhere; }
+  .no .selo { align-self: flex-start; margin-top: auto; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+              line-height: 1; padding: 6px 9px 5px; border-radius: 999px; background: var(--linha); color: var(--tinta); white-space: nowrap; }
+  .no.pessoa .selo { background: var(--destaque); color: var(--papel); }
+  .no.maquina .selo { background: var(--alerta); color: var(--papel); }
+  .no.entrada { border-color: var(--linha); background: transparent; }
+  .no.entrada .num { border: 0; background: none; width: auto; height: auto; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .espaco-selo { margin-top: auto; }
+  code, .mono { font-family: var(--mono); font-size: .95em; }
+
+  .rotulo-aresta { position: absolute; box-sizing: border-box; padding: 2px 6px; font-size: 12px; line-height: 16px; white-space: nowrap;
+                   color: var(--suave); background: var(--fundo); border-radius: 4px; }
+  .rotulo-aresta.recusa { color: var(--alerta); font-weight: 600; }
+  .rotulo-aresta.volta { color: var(--suave); font-style: italic; }
+  .rotulo-aresta.avanco { color: var(--tinta); }
+  .rotulo-aresta.laco { background: none; padding: 0 2px; }
+  .rotulo-grupo { position: absolute; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+                  color: var(--suave); white-space: nowrap; padding-right: 14px; background: var(--fundo); }
+
+  .aresta { fill: none; stroke-width: 1.75; stroke-linejoin: round; }
+  .aresta.avanco { stroke: var(--suave); stroke-width: 2; }
+  .juncao { fill: var(--suave); }
+  .aresta.recusa { stroke: var(--alerta); stroke-dasharray: 5 4; }
+  .aresta.volta { stroke: var(--suave); stroke-dasharray: 5 4; }
+  .ponta.avanco { fill: var(--suave); }
+  .ponta.recusa { fill: var(--alerta); }
+  .ponta.volta { fill: var(--suave); }
+  .chave { fill: none; stroke: var(--linha); stroke-width: 1.5; }
+
+  /* A versão: a linha do main com o corte da tag (fora do grafo). A fileira de baixo é flexbox;
+     a linha de cima se desenha depois, a partir de onde a tag caiu. */
+  .versao { margin-top: 28px; background: var(--papel); border: 1px solid var(--linha); border-radius: 14px; padding: 22px 28px 24px; }
+  .versao-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 24px; }
+  .versao-cab .sobre { margin: 0; }
+  .versao-cab .quando { margin: 0; font-size: 13px; color: var(--suave); }
+  .trilho { position: relative; }
+  .trilho > svg { position: absolute; left: 0; top: 0; overflow: visible; }
+  .faixa-main { height: 64px; position: relative; }
+  .main-nome { position: absolute; left: 0; bottom: 8px; font-family: var(--mono); font-weight: 700; font-size: 14px; line-height: 16px; color: var(--tinta); }
+  .marca-squash { position: absolute; top: 4px; display: flex; align-items: center; gap: 8px; white-space: nowrap; transform: translateX(-50%);
+                  font-size: 13px; line-height: 18px; font-weight: 700; color: var(--tinta); }
+  .marca-squash .num { width: 22px; height: 22px; font-size: 12px; background: var(--alerta-fundo); border-color: var(--alerta); color: var(--alerta); }
+  .marca-seguinte { position: absolute; top: 6px; }
+  .corte { display: flex; flex-wrap: nowrap; align-items: center; gap: 14px 6px; padding-top: 26px; }
+  .portas { flex: 0 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 6px; }
+  .porta { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--tinta); white-space: nowrap;
+           background: var(--alerta-fundo); border: 1.5px solid var(--alerta); border-radius: 999px; padding: 5px 12px 5px 9px; }
+  .porta svg path { stroke: var(--alerta); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .seta-curta { width: 16px; height: 10px; flex: none; }
+  .seta-curta path { stroke: var(--suave); stroke-width: 1.75; fill: none; }
+  .versao-tag { display: flex; align-items: center; gap: 10px; }
+  .tag { font-family: var(--mono); font-weight: 700; font-size: 14px; line-height: 16px; padding: 8px 14px 8px 22px;
+         background: var(--tinta); color: var(--papel); clip-path: polygon(11px 0, 100% 0, 100% 100%, 11px 100%, 0 50%); }
+  .tag.seguinte { background: none; color: var(--suave); clip-path: none; padding: 6px 14px 6px 22px; position: relative; }
+  .tag.seguinte svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .tag.seguinte svg path { fill: none; stroke: var(--suave); stroke-width: 1.5; stroke-dasharray: 0.5 4; stroke-linecap: round; }
+  .nota { font-size: 13px; line-height: 18px; color: var(--suave); white-space: nowrap; }
+  .nota b { color: var(--tinta); font-weight: 700; }
+  .empurra { flex: 0 1 140px; min-width: 40px; }
+  .resto { flex: 1 1 0; }
+  .trilho .linha { stroke: var(--tinta); stroke-width: 3; stroke-linecap: round; }
+  .trilho .ponta-main { fill: var(--tinta); }
+  .trilho .commit { fill: var(--papel); stroke: var(--suave); stroke-width: 2; }
+  .trilho .commit.forte { stroke: var(--tinta); stroke-width: 3; }
+  .trilho .haste { stroke: var(--tinta); stroke-width: 2; }
+  .trilho .haste.seguinte { stroke: var(--suave); stroke-dasharray: 0.5 4; stroke-linecap: round; }
+
+  figcaption { margin-top: 18px; max-width: 78ch; font-size: 14px; color: var(--suave); }
+
+  /* A lista dos passos: lida pelo leitor de tela ao lado da figura, e mostrada no lugar dela na tela estreita. */
+  .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .passos { margin: 0; padding: 0; list-style: none; }
+  .estreita .grafo, .estreita .versao { display: none; }
+  .estreita .passos { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal;
+                      display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .estreita .passos li { background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; padding: 12px 14px; font-size: 14px; color: var(--suave); }
+  .estreita .passos li.pessoa { background: var(--destaque-fundo); border-color: var(--destaque); }
+  .estreita .passos li.maquina { background: var(--alerta-fundo); border-color: var(--alerta); }
+  .estreita .passos li b { display: block; color: var(--tinta); font-size: 15px; }
+  .estreita .passos li.liga { background: none; border: 0; padding: 0 14px; font-size: 13px; }
+  .estreita .passos li.liga.recusa { color: var(--alerta); }
+  /* O erro à vista: o dado que não serve diz qual é a causa, na página e não só no console. */
+  .erro-diagrama { margin-top: 16px; border: 1.5px solid var(--alerta); background: var(--alerta-fundo); color: var(--tinta);
+                   border-radius: 12px; padding: 16px 18px; font-size: 14px; }
+  .erro-diagrama b { display: block; margin-bottom: 6px; }
+  .erro-diagrama ul { margin: 6px 0 0; padding-left: 18px; }
+  .amostra-ponto { width: 14px; height: 14px; flex: none; }
+</style>
+</head>
+<body>
+<main>
+<figure id="figura">
+  <header class="cab">
+    <div><p class="sobre" id="sobretitulo"></p><h2 id="titulo"></h2></div>
+    <ul class="legenda" id="legenda"></ul>
+  </header>
+  <div class="grafo" id="grafo" role="img"></div>
+  <ol class="passos so-leitor" id="passos" aria-label="Os passos, em texto"></ol>
+  <section class="versao" id="versao"></section>
+  <figcaption id="legenda-texto"></figcaption>
+</figure>
+</main>
+
+<!-- Cópia do fluxo.json para abrir o arquivo direto do disco (file:// não deixa ler o .json ao lado).
+     Por http, a página lê o fluxo.json, ou o arquivo de ?dados=. -->
+<script type="application/json" id="dados-embutidos">
+{
+ "titulo": "Da issue à versão instalável",
+ "sobretitulo": "Como trabalhamos",
+ "afirmacao": "Uma entrega vai de uma issue escrita como spec até uma versão instalável por oito passos fixos: a pessoa decide no plano, a máquina confere no commit, no PR e no merge, e toda recusa volta ao passo dela. A versão só se corta no main quando três portas passam, e uma versão não se move: a correção vai na seguinte.",
+ "grupos": [
+  {
+   "id": "antes",
+   "rotulo": "Antes do código"
+  },
+  {
+   "id": "branch",
+   "rotulo": "Na branch"
+  },
+  {
+   "id": "entrega",
+   "rotulo": "Até o main"
+  }
+ ],
+ "nos": [
+  {
+   "id": "issue",
+   "numero": null,
+   "titulo": "Issue como spec",
+   "subtitulo": "Requisitos só com o quê; o “Pronto quando” é o contrato",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "antes",
+   "papel": "entrada"
+  },
+  {
+   "id": "discussao",
+   "numero": 1,
+   "titulo": "Discussão inicial",
+   "subtitulo": "A spec contra o código e a base de hoje",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "antes"
+  },
+  {
+   "id": "plano",
+   "numero": 2,
+   "titulo": "Plano e aceite",
+   "subtitulo": "A pessoa decide, antes de qualquer código",
+   "selo": "Ponto da pessoa",
+   "tipo": "pessoa",
+   "grupo": "antes"
+  },
+  {
+   "id": "branch",
+   "numero": 3,
+   "titulo": "Branch",
+   "subtitulo": "<issue>-<tema>, numa worktree",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "branch"
+  },
+  {
+   "id": "implementar",
+   "numero": 4,
+   "titulo": "Implementar",
+   "subtitulo": "Cada commit passa pelos hooks do git",
+   "selo": "Hook",
+   "tipo": "máquina",
+   "grupo": "branch"
+  },
+  {
+   "id": "review",
+   "numero": 5,
+   "titulo": "/code-review",
+   "subtitulo": "Sobre a branch; as correções num commit só",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "branch"
+  },
+  {
+   "id": "validacao",
+   "numero": 6,
+   "titulo": "Validação",
+   "subtitulo": "O “Pronto quando” como roteiro, com o sistema rodando",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "branch"
+  },
+  {
+   "id": "pr",
+   "numero": 7,
+   "titulo": "Sincronizar e abrir o PR",
+   "subtitulo": "Closes #N e o checklist do modelo",
+   "selo": "Máquina confere",
+   "tipo": "máquina",
+   "grupo": "entrega"
+  },
+  {
+   "id": "squash",
+   "numero": 8,
+   "titulo": "Squash no main",
+   "subtitulo": "Só com o CI verde; um commit por issue",
+   "selo": "Máquina confere",
+   "tipo": "máquina",
+   "grupo": "entrega"
+  }
+ ],
+ "arestas": [
+  {
+   "de": "issue",
+   "para": "discussao",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "discussao",
+   "para": "plano",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "plano",
+   "para": "branch",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "branch",
+   "para": "implementar",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "implementar",
+   "para": "review",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "review",
+   "para": "validacao",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "validacao",
+   "para": "pr",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "pr",
+   "para": "squash",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "implementar",
+   "para": "implementar",
+   "rotulo": "recusa",
+   "tipo": "recusa"
+  },
+  {
+   "de": "pr",
+   "para": "pr",
+   "rotulo": "recusa",
+   "tipo": "recusa"
+  },
+  {
+   "de": "squash",
+   "para": "squash",
+   "rotulo": "recusa",
+   "tipo": "recusa"
+  },
+  {
+   "de": "validacao",
+   "para": "implementar",
+   "rotulo": "ajuste na mesma branch",
+   "tipo": "volta"
+  }
+ ],
+ "versao": {
+  "origem": "squash",
+  "rotulo": "O main e a versão",
+  "quando": "Quando vai ser instalada, o agente corta a tag e roda gh release create",
+  "portas": [
+   "CI verde no commit",
+   "a bateria inteira, até 10 min",
+   "notas conferidas na prévia"
+  ],
+  "tag": "v1.2.0",
+  "tag_nota": "anotada",
+  "seguinte": "v1.2.1",
+  "seguinte_nota": "a correção vai na seguinte",
+  "imovel": "não se move"
+ },
+ "legenda": {
+  "pessoa": "a pessoa decide",
+  "máquina": "a máquina confere",
+  "recusa": "a trava recusa e diz o que falta",
+  "volta": "volta ao passo"
+ }
+}
+</script>
+
+<script>
+(async function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const classeTipo = t => ({ 'pessoa': 'pessoa', 'máquina': 'maquina', 'neutro': 'neutro' })[t] || 'neutro';
+  const classeAresta = t => ({ 'avanço': 'avanco', 'recusa': 'recusa', 'volta': 'volta' })[t] || 'avanco';
+
+  // 1. O conteúdo como dado.
+  const fonte = new URLSearchParams(location.search).get('dados') || 'fluxo.json';
+  let D;
+  try { const r = await fetch(fonte, { cache: 'no-store' }); if (!r.ok) throw 0; D = await r.json(); }
+  catch (e) { D = JSON.parse($('#dados-embutidos').textContent); }
+  // 1b. O dado se confere antes do layout: o erro diz a causa (o id que não existe, o campo que falta), e não a
+  //     consequência que o motor daria ("nenhuma quebra cabe"). A lista de erros vai à página (passo 8).
+  const TIPOS_NO = ['pessoa', 'máquina', 'neutro'], TIPOS_ARESTA = ['avanço', 'recusa', 'volta'];
+  const erros = [];
+  const texto = (v, onde) => { if (typeof v !== 'string' || !v.trim()) erros.push(`${onde}: falta o texto`); };
+  if (!D || typeof D !== 'object') throw Object.assign(new Error('o dado não é um objeto JSON'), { dados: ['o dado não é um objeto JSON'] });
+  texto(D.titulo, 'titulo'); texto(D.afirmacao, 'afirmacao');
+  for (const k of ['nos', 'arestas', 'grupos']) if (!Array.isArray(D[k])) erros.push(`${k}: falta a lista`);
+  if (!D.legenda || typeof D.legenda !== 'object') erros.push('legenda: falta o objeto (pessoa, máquina, recusa, volta)');
+  else if (Array.isArray(D.nos) && Array.isArray(D.arestas)) {
+    const usados = new Set([...D.nos.map(n => n && n.tipo), ...D.arestas.map(a => a && a.tipo)]);
+    for (const k of ['pessoa', 'máquina', 'recusa', 'volta']) if (usados.has(k)) texto(D.legenda[k], `legenda.${k}`);
+  }
+  if (!erros.some(x => /^(nos|arestas|grupos):/.test(x))) {
+    if (!D.nos.length) erros.push('nos: a lista está vazia');
+    const gids = new Set(D.grupos.map(g => g.id)), ids = new Set();
+    D.grupos.forEach((g, k) => { texto(g.id, `grupos[${k}].id`); texto(g.rotulo, `grupos[${k}].rotulo`); });
+    D.nos.forEach((n, k) => { const onde = `nos[${k}]` + (n && n.id ? ` (${n.id})` : '');
+      texto(n.id, onde + '.id'); if (ids.has(n.id)) erros.push(`${onde}: o id "${n.id}" se repete`); ids.add(n.id);
+      texto(n.titulo, onde + '.titulo');
+      if (!TIPOS_NO.includes(n.tipo)) erros.push(`${onde}.tipo: "${n.tipo}" não é ${TIPOS_NO.join(', ')}`);
+      if (!gids.has(n.grupo)) erros.push(`${onde}.grupo: o grupo "${n.grupo}" não existe em grupos`); });
+    D.arestas.forEach((a, k) => { const onde = `arestas[${k}] (${a.de} → ${a.para})`;
+      for (const lado of ['de', 'para']) if (!ids.has(a[lado])) erros.push(`${onde}: o passo "${a[lado]}" (em ${lado}) não existe em nos`);
+      if (!TIPOS_ARESTA.includes(a.tipo)) erros.push(`${onde}.tipo: "${a.tipo}" não é ${TIPOS_ARESTA.join(', ')}`);
+      if (a.tipo === 'avanço' && a.de === a.para) erros.push(`${onde}: o avanço não volta ao próprio passo (o laço é "recusa")`); });
+    if (D.versao) { if (!ids.has(D.versao.origem)) erros.push(`versao.origem: o passo "${D.versao.origem}" não existe em nos`);
+      if (!Array.isArray(D.versao.portas)) erros.push('versao.portas: falta a lista'); }
+  }
+  if (erros.length) throw Object.assign(new Error('o dado do diagrama não serve: ' + erros.join('; ')), { dados: erros });
+  const nos = D.nos, porId = Object.fromEntries(nos.map(n => [n.id, n]));
+
+  // 1c. A lista dos passos em texto: o leitor de tela a lê ao lado da figura (que, como imagem, só dá a frase-resumo),
+  //     e na tela estreita ela é a figura (abaixo de --largura-lista, sem motor e sem a faixa da versão).
+  //     O padrão do NHS Scotland (testado com quem usa leitor de tela): cada passo é uma âncora, e a volta diz
+  //     "volta ao passo X" com o link para ele, em vez de pedir que a pessoa reconstrua a seta de cabeça.
+  const passos = $('#passos'), nomeDe = id => porId[id].numero != null ? `${porId[id].numero}, ${porId[id].titulo}` : porId[id].titulo;
+  const ancora = id => 'passo-' + String(id).replace(/[^\w-]/g, '_');
+  const linkPara = id => { const a = el('a', null, 'passo ' + nomeDe(id)); a.href = '#' + ancora(id); return a; };
+  for (const n of nos) {
+    const li = el('li', ({ 'pessoa': 'pessoa', 'máquina': 'maquina' })[n.tipo] || ''); li.id = ancora(n.id);
+    li.append(el('b', null, (n.numero != null ? n.numero + '. ' : (n.papel === 'entrada' ? 'Entrada: ' : '')) + n.titulo));
+    li.append(document.createTextNode([n.subtitulo, n.selo].filter(Boolean).join('. ')));
+    passos.append(li);
+    for (const a of D.arestas.filter(a => a.de === n.id && a.tipo !== 'avanço')) {
+      const v = el('li', 'liga ' + (a.tipo === 'recusa' ? 'recusa' : 'volta'));
+      if (a.de === a.para) v.append(document.createTextNode(`↺ ${a.rotulo || D.legenda.recusa}: o fluxo volta ao próprio passo`));
+      else { v.append(document.createTextNode(`↺ ${a.rotulo || D.legenda.volta}: o fluxo volta ao `)); v.append(linkPara(a.para)); }
+      passos.append(v);
+    }
+    const sai = D.arestas.filter(a => a.de === n.id && a.tipo === 'avanço');
+    if (sai.length > 1 || sai.some(a => a.rotulo)) {
+      const v = el('li', 'liga'); v.append(document.createTextNode('→ segue para '));
+      sai.forEach((a, k) => { if (k) v.append(document.createTextNode(' e ')); if (a.rotulo) v.append(document.createTextNode(a.rotulo + ': ')); v.append(linkPara(a.para)); });
+      passos.append(v);
+    }
+  }
+  const estreita = window.matchMedia(`(max-width: ${parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--largura-lista'))}px)`).matches;
+
+  $('#sobretitulo').textContent = D.sobretitulo;
+  $('#titulo').textContent = D.titulo;
+  document.title = D.titulo;
+  $('#legenda-texto').textContent = D.afirmacao;
+  $('#grafo').setAttribute('aria-label', D.afirmacao);
+
+  // Legenda (cabeçalho, flexbox).
+  const leg = $('#legenda');
+  const itemFio = (cls, txt) => { const li = el('li'); const s = sv('svg', { class: 'amostra-fio', viewBox: '0 0 32 12' });
+    s.append(sv('line', { x1: 1, y1: 6, x2: 24, y2: 6, class: 'aresta ' + cls }), sv('path', { d: 'M22,1.5 L31,6 L22,10.5 z', class: 'ponta ' + cls }));
+    li.append(s, el('span', null, txt)); return li; };
+  const itemCor = (cls, txt) => { const li = el('li'); li.append(el('span', 'amostra ' + cls), el('span', null, txt)); return li; };
+  // cada item da legenda só entra quando o diagrama usa aquele tipo (rodada 2: a arquitetura e a árvore de decisão)
+  const usa = t => nos.some(n => n.tipo === t) || D.arestas.some(a => a.tipo === t);
+  if (usa('pessoa')) leg.append(itemCor('pessoa', D.legenda['pessoa']));
+  if (usa('máquina')) leg.append(itemCor('maquina', D.legenda['máquina']));
+  if (usa('recusa')) leg.append(itemFio('recusa', D.legenda.recusa));
+  if (usa('volta')) leg.append(itemFio('volta', D.legenda.volta));
+  // o ponto do ramo só entra na legenda quando o fluxo tem ramo paralelo
+  const contaAv = (lado, id) => D.arestas.filter(a => a.tipo === 'avanço' && a[lado] === id).length;
+  if (nos.some(n => contaAv('de', n.id) > 1 || contaAv('para', n.id) > 1)) {
+    const li = el('li'); const s = sv('svg', { class: 'amostra-ponto', viewBox: '0 0 14 14' });
+    s.append(sv('line', { x1: 0, y1: 7, x2: 14, y2: 7, class: 'aresta avanco' }), sv('circle', { cx: 7, cy: 7, r: 3.5, class: 'juncao' }));
+    li.append(s, el('span', null, D.legenda.ramo || 'o fluxo se divide ou se junta')); leg.append(li);
+  }
+  if (estreita) { document.documentElement.classList.add('estreita'); document.body.dataset.layout = 'lista'; document.body.dataset.pronto = '1'; return; }
+
+  // 2. Os tokens de espaço, lidos do CSS.
+  const css = getComputedStyle(document.documentElement);
+  const tok = n => parseFloat(css.getPropertyValue(n));
+  let W = tok('--no-largura'); const FAIXA = tok('--no-faixa'), RAIO = tok('--raio-curva');
+
+  // 3. Os cartões em HTML, medidos antes do layout.
+  const grafo = $('#grafo');
+  const medida = el('div', 'medida'); grafo.append(medida);
+  const cartao = n => {
+    const c = el('div', 'no ' + classeTipo(n.tipo) + (n.papel === 'entrada' ? ' entrada' : ''));
+    c.dataset.id = n.id;
+    const topo = el('div', 'no-topo');
+    const entrada = n.papel === 'entrada';
+    if (n.numero != null || entrada) topo.append(el('span', 'num', n.numero != null ? String(n.numero) : 'Entrada'));
+    if (!entrada) topo.append(el('h3', null, n.titulo));
+    c.append(topo);
+    if (entrada) c.append(el('h3', null, n.titulo));
+    if (n.subtitulo) {
+      const p = el('p');
+      // trechos entre <...> e a partir de "/" no começo saem em monoespaçada
+      p.textContent = n.subtitulo;
+      c.append(p);
+    }
+    if (n.selo) c.append(el('span', 'selo', n.selo));
+    return c;
+  };
+  const cartoes = {};
+  for (const n of nos) { const c = cartao(n); medida.append(c); cartoes[n.id] = c; }
+  await document.fonts.ready;
+  // A altura de cada cartão é a dele (rodada 2): o cartão sem selo não reserva o espaço do selo. O ritmo da fileira
+  // vem do topo alinhado e das setas de avanço na linha do título (--porta-y), não de uma altura comum.
+  let H = 0; const ALT = {}; const PORTA_Y = tok('--porta-y');
+  const medir = largo => {
+    for (const c of Object.values(cartoes)) { c.style.width = largo + 'px'; c.style.height = ''; }
+    for (const [id, c] of Object.entries(cartoes)) { ALT[id] = Math.ceil(c.getBoundingClientRect().height); c.style.height = ALT[id] + 'px'; }
+    return Math.max(...Object.values(ALT));
+  };
+
+  const rotulos = D.arestas.map((a, i) => {
+    if (!a.rotulo) return null;
+    const r = el('div', 'rotulo-aresta ' + classeAresta(a.tipo), a.rotulo); medida.append(r);
+    const b = r.getBoundingClientRect(); return { el: r, w: Math.ceil(b.width), h: Math.ceil(b.height) };
+  });
+
+  // 4. As portas: avanço sai pelo leste e entra pelo oeste, na altura do meio do cartão;
+  //    recusa e volta saem e entram por baixo. Ordem no lado de baixo, da esquerda para a direita: as voltas que
+  //    saem (vão para trás), o laço da recusa no próprio passo (entra, sai), as voltas que chegam (de mais longe
+  //    para mais perto). Assim os laços se aninham sem se cruzar.
+  // Os rótulos das setas de avanço não vão ao motor (com a quebra, ele reserva uma coluna inteira para eles e abre
+  // buracos): a página os põe sobre o trecho horizontal mais longo da seta. Quando a seta rotulada vira a volta de uma
+  // fileira para a outra, o trecho longo sobra; quando fica entre duas colunas, o espaço entre camadas tem de crescer
+  // até o rótulo mais largo, com a folga dos dois lados e a ponta. A página tenta os dois espaços (passo 5).
+  const FOLGA = tok('--folga-rotulo');
+  const larguraAvanco = Math.max(0, ...D.arestas.map((a, i) => a.tipo === 'avanço' && rotulos[i] ? rotulos[i].w : 0));
+  const ESPACOS = [...new Set([tok('--esp-camada'), Math.max(tok('--esp-camada'), larguraAvanco ? larguraAvanco + 2 * FOLGA + 10 : 0)])];
+  const ordem = Object.fromEntries(nos.map((n, k) => [n.id, k]));
+  const sul = {}; nos.forEach(n => sul[n.id] = []);
+  D.arestas.forEach((a, i) => { if (a.tipo === 'avanço') return;
+    const dist = Math.abs(ordem[a.de] - ordem[a.para]);
+    if (a.de === a.para) { sul[a.de].push({ i, papel: 'in', chave: [1, 0, i] }, { i, papel: 'out', chave: [1, 1, i] }); return; }
+    sul[a.de].push({ i, papel: 'out', chave: [0, dist, i] });
+    sul[a.para].push({ i, papel: 'in', chave: [2, -dist, i] }); });
+  const cmp = (a, b) => { for (let k = 0; k < 3; k++) if (a.chave[k] !== b.chave[k]) return a.chave[k] - b.chave[k]; return 0; };
+  const portasDe = (n, w, h) => {
+    h = ALT[n.id] || h;
+    const alto = FAIXA + h, meio = FAIXA + PORTA_Y;
+    const ps = [{ id: n.id + '.w', x: 0, y: meio, lado: 'WEST' }, { id: n.id + '.e', x: w, y: meio, lado: 'EAST' }];
+    const lista = sul[n.id].slice().sort(cmp);
+    // os vãos: o laço da recusa abre o bastante para o rótulo caber entre as suas duas pontas;
+    // os outros vãos são o espaço entre arestas. O conjunto se centra no cartão (e se comprime se não couber).
+    const vaos = lista.slice(1).map((p, k) => { const ant = lista[k];
+      return (ant.chave[0] === 1 && p.chave[0] === 1) ? (rotulos[p.i] ? rotulos[p.i].w : 0) + 2 * tok('--esp-aresta') : 2 * tok('--esp-aresta'); });
+    const soma = vaos.reduce((a, b) => a + b, 0), f = Math.min(1, (w * 0.8) / (soma || 1));
+    let x = w / 2 - soma * f / 2;
+    lista.forEach((p, k) => { if (k) x += vaos[k - 1] * f;
+      ps.push({ id: `${n.id}.s${p.papel}${p.i}`, x: Math.round(x), y: alto, lado: 'SOUTH' }); });
+    return ps;
+  };
+
+  const opcoes = (aspecto, quebra, corte, esp) => ({
+    'elk.algorithm': 'layered',
+    'elk.direction': 'RIGHT',
+    'elk.edgeRouting': 'ORTHOGONAL',
+    'elk.layered.wrapping.strategy': quebra,
+    'elk.layered.wrapping.cutting.strategy': corte,
+    'elk.aspectRatio': String(aspecto),
+    'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES',
+    'elk.layered.cycleBreaking.strategy': 'MODEL_ORDER',
+    'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX',
+    'elk.layered.spacing.nodeNodeBetweenLayers': String(esp),
+    'elk.spacing.nodeNode': String(tok('--esp-no')),
+    'elk.spacing.edgeEdge': String(tok('--esp-aresta')),
+    'elk.layered.spacing.edgeEdgeBetweenLayers': String(tok('--esp-aresta')),
+    'elk.spacing.edgeNode': String(tok('--esp-aresta-no')),
+    'elk.layered.spacing.edgeNodeBetweenLayers': String(tok('--esp-aresta-no')),
+    'elk.spacing.edgeLabel': String(tok('--esp-rotulo')),
+    'elk.spacing.labelNode': String(tok('--esp-rotulo')),
+    'elk.edgeLabels.placement': 'CENTER',
+    'elk.layered.wrapping.additionalEdgeSpacing': String(tok('--esp-aresta')),
+    'elk.padding': '[top=8,left=4,bottom=4,right=4]',
+  });
+  const grafoElk = (aspecto, quebra, corte, esp, w, h) => ({
+    id: 'raiz', layoutOptions: opcoes(aspecto, quebra, corte, esp),
+    children: nos.map(n => ({ id: n.id, width: w, height: FAIXA + (ALT[n.id] || h),
+      layoutOptions: { 'elk.portConstraints': 'FIXED_POS' },
+      ports: portasDe(n, w, h).map(p => ({ id: p.id, x: p.x, y: p.y, width: 0, height: 0, layoutOptions: { 'elk.port.side': p.lado } })) })),
+    edges: D.arestas.map((a, i) => ({ id: 'a' + i,
+      sources: [a.tipo === 'avanço' ? a.de + '.e' : `${a.de}.sout${i}`],
+      targets: [a.tipo === 'avanço' ? a.para + '.w' : `${a.para}.sin${i}`],
+      labels: rotulos[i] && a.tipo !== 'avanço' ? [{ id: 'r' + i, text: a.rotulo, width: rotulos[i].w,
+        height: rotulos[i].h + (a.de === a.para ? tok('--fundo-laco') : 0) }] : [] })),
+  });
+
+  // 5. O motor decide as quebras de linha; a página só escolhe, entre as que ele oferece (as proporções e as duas
+  //    estratégias de corte), a melhor que cabe na coluna e roteou todas as arestas. A régua da escolha, nesta ordem:
+  //    (1) a quebra que só corta onde passa uma aresta (SINGLE_EDGE: as voltas e as recusas ficam dentro da fileira);
+  //    (2) nenhum rótulo de avanço sem lugar (o trecho horizontal mais longo da seta tem de caber o rótulo);
+  //    (3) o menor número de grupos partidos entre fileiras (a fileira acompanha o grupo, quando dá);
+  //    (4) as fileiras mais iguais (a diferença entre a mais cheia e a mais vazia, em colunas);
+  //    (5) menos fileiras; (6) o espaço normal entre camadas; (7) a mais larga. A MULTI_EDGE é o recurso quando nada da SINGLE_EDGE cabe sem rótulo
+  //    perdido; e o espaço entre camadas só cresce quando o espaço normal não dá lugar aos rótulos.
+  const elk = new ELK();
+  const largura = grafo.parentElement.clientWidth;
+  const roteou = R => R.edges.every(e => e.sections && e.sections.length);
+  // As fileiras: a camada de cada passo é o caminho mais longo até ele pelas setas de avanço (os ramos paralelos
+  // dividem a camada); as camadas seguem em ordem, e a fileira muda quando uma camada começa à esquerda da anterior.
+  // Todos os passos de uma camada são da mesma fileira, mesmo empilhados.
+  const camada = {};
+  const avancos = D.arestas.filter(a => a.tipo === 'avanço' && a.de !== a.para);
+  nos.forEach(n => camada[n.id] = 0);
+  for (let k = 0; k < nos.length; k++) avancos.forEach(a => { camada[a.para] = Math.max(camada[a.para], camada[a.de] + 1); });
+  const fileirasDe = R => {
+    const x = Object.fromEntries(R.children.map(c => [c.id, c.x])), porCamada = {};
+    nos.forEach(n => (porCamada[camada[n.id]] = porCamada[camada[n.id]] || []).push(n.id));
+    const fs = []; let xAnt = -Infinity;
+    Object.keys(porCamada).map(Number).sort((a, b) => a - b).forEach(c => {
+      const ids = porCamada[c], x0 = Math.min(...ids.map(id => x[id]));
+      if (!fs.length || x0 < xAnt + 1) fs.push({ ids: [], cols: new Set() });
+      const f = fs[fs.length - 1]; f.ids.push(...ids); f.cols.add(c); xAnt = x0;
+    });
+    return fs;
+  };
+  const notaDe = (R, esp) => {
+    const fs = fileirasDe(R), fil = {}; fs.forEach((f, k) => f.ids.forEach(id => fil[id] = k));
+    const partidos = D.grupos.reduce((s, g) => s + new Set(nos.filter(n => n.grupo === g.id).map(n => fil[n.id])).size - 1, 0);
+    const cols = fs.map(f => f.cols.size);
+    return [naoCabem(R), partidos, Math.max(...cols) - Math.min(...cols), fs.length, esp, -R.width];
+  };
+  const trechoLongo = pts => { let m = null; for (let k = 1; k < pts.length; k++) { const p = pts[k - 1], q = pts[k];
+      if (Math.abs(p.y - q.y) < 0.5 && (!m || Math.abs(q.x - p.x) > m.l)) m = { l: Math.abs(q.x - p.x), x: (p.x + q.x) / 2, y: p.y, p, q }; }
+    return m; };
+  const pontosDe = e => (e.sections || []).flatMap(s => [s.startPoint, ...(s.bendPoints || []), s.endPoint]);
+  const naoCabem = R => R.edges.filter(e => { const i = +e.id.slice(1), a = D.arestas[i];
+    if (a.tipo !== 'avanço' || !rotulos[i]) return false; const m = trechoLongo(pontosDe(e));
+    return !m || m.l < rotulos[i].w + 2 * FOLGA + 10; }).length;
+  const menor = (a, b) => { for (let k = 0; k < a.length; k++) if (a[k] !== b[k]) return a[k] < b[k]; return false; };
+  let L = null, escolha = null; const falhas = [];
+  H = medir(W);
+  busca: for (const quebra of ['SINGLE_EDGE', 'MULTI_EDGE']) for (const esp of ESPACOS) {
+    const vistos = new Set();
+    for (const corte of ['MSD', 'ARD']) for (let asp = 5; asp >= 0.6; asp = +(asp * 0.9).toFixed(3)) {
+      let R; try { R = await elk.layout(grafoElk(asp, quebra, corte, esp, W, H)); } catch (e) { falhas.push(`${quebra} ${corte} ${asp}: ${e.message || e}`); continue; }
+      if (R.width > largura || !roteou(R)) continue;
+      const chave = fileirasDe(R).map(f => f.ids.join(',')).join('|'); if (vistos.has(chave)) continue; vistos.add(chave);
+      const n = notaDe(R, esp);
+      if (!L || menor(n, escolha.nota)) { L = R; escolha = { quebra, corte, asp, esp, nota: n }; }
+    }
+    if (L && escolha.nota[0] === 0) break busca;
+  }
+  if (!L) throw new Error('nenhuma quebra de linha do motor cabe em ' + largura + ' px com todas as arestas roteadas; ' + falhas.slice(0, 3).join(' | '));
+  // Sobra largura? Os cartões alargam (até --no-largura-max) e o motor refaz com a mesma quebra:
+  // o desenho ocupa a coluna em vez de ficar uma ilha no meio. Se não couber, fica o anterior.
+  const colunas = Math.max(...fileirasDe(L).map(f => f.cols.size));
+  const WMAX = tok('--no-largura-max');
+  if (colunas > 1 && L.width < largura - 24) {
+    const w2 = Math.min(WMAX, Math.floor(W + (largura - 8 - L.width) / colunas));
+    if (w2 > W) {
+      const h2 = medir(w2);
+      let R = null; try { R = await elk.layout(grafoElk(escolha.asp, escolha.quebra, escolha.corte, escolha.esp, w2, h2)); } catch (e) { R = null; }
+      const grade = X => fileirasDe(X).map(f => f.ids.join(',')).join('|');
+      const mesmaGrade = R && grade(R) === grade(L);
+      if (mesmaGrade && R.width <= largura && roteou(R) && naoCabem(R) <= escolha.nota[0]) { L = R; W = w2; H = h2; escolha.largo = w2; }
+      else H = medir(W);
+    }
+  }
+  document.body.dataset.layout = JSON.stringify({ ...escolha, fileiras: fileirasDe(L).map(f => f.cols.size).join('/') });
+  document.body.dataset.falhas = String(falhas.length); window.__falhas = falhas;
+  const dx = Math.max(0, Math.round((largura - L.width) / 2));
+  grafo.style.width = largura + 'px';
+  grafo.style.height = Math.ceil(L.height) + 'px';
+
+  // 6. O desenho: setas, cartões, rótulos, grupos.
+  const svg = sv('svg', { width: largura, height: Math.ceil(L.height), 'aria-hidden': 'true' });
+  const defs = sv('defs');
+  for (const t of ['avanco', 'recusa', 'volta']) {
+    const m = sv('marker', { id: 'ponta-' + t, viewBox: '0 0 10 10', refX: 10, refY: 5, markerWidth: 9, markerHeight: 9, markerUnits: 'userSpaceOnUse', orient: 'auto' });
+    m.append(sv('path', { d: 'M0,1 L10,5 L0,9 z', class: 'ponta ' + t })); defs.append(m);
+  }
+  svg.append(defs);
+  const gChaves = sv('g'), gArestas = sv('g'); svg.append(gChaves, gArestas);
+  grafo.prepend(svg);
+
+  const caminho = pts => { // ortogonal com as dobras arredondadas
+    let d = `M${pts[0].x},${pts[0].y}`;
+    for (let k = 1; k < pts.length - 1; k++) {
+      const a = pts[k - 1], b = pts[k], c = pts[k + 1];
+      const l1 = Math.hypot(b.x - a.x, b.y - a.y), l2 = Math.hypot(c.x - b.x, c.y - b.y);
+      const r = Math.min(RAIO, l1 / 2, l2 / 2);
+      const p1 = { x: b.x - (b.x - a.x) / l1 * r, y: b.y - (b.y - a.y) / l1 * r };
+      const p2 = { x: b.x + (c.x - b.x) / l2 * r, y: b.y + (c.y - b.y) / l2 * r };
+      d += ` L${p1.x},${p1.y} Q${b.x},${b.y} ${p2.x},${p2.y}`;
+    }
+    const z = pts[pts.length - 1]; return d + ` L${z.x},${z.y}`;
+  };
+  const off = (p) => ({ x: p.x + dx, y: p.y });
+  const lacoCaminho = (xo, xi, yb, yl) => { // o laço da recusa: sai pela base, desce, volta e entra pela base
+    const r = Math.min(tok('--raio-laco'), (yl - yb) / 2, Math.abs(xo - xi) / 2);
+    return `M${xo},${yb} V${yl - r} Q${xo},${yl} ${xo - r},${yl} H${xi + r} Q${xi},${yl} ${xi},${yl - r} V${yb}`;
+  };
+  const rotas = {};
+  for (const e of L.edges) {
+    const i = +e.id.slice(1), a = D.arestas[i], t = classeAresta(a.tipo);
+    let pts = [];
+    for (const s of e.sections || []) {
+      const seq = [s.startPoint, ...(s.bendPoints || []), s.endPoint].map(off);
+      if (pts.length && Math.hypot(pts[pts.length - 1].x - seq[0].x, pts[pts.length - 1].y - seq[0].y) < 0.5) seq.shift();
+      pts.push(...seq);
+    }
+    // tira pontos repetidos e colineares
+    pts = pts.filter((p, k) => k === 0 || Math.hypot(p.x - pts[k - 1].x, p.y - pts[k - 1].y) > 0.5);
+    pts = pts.filter((p, k) => { if (k === 0 || k === pts.length - 1) return true; const a1 = pts[k - 1], c1 = pts[k + 1];
+      return Math.abs((p.x - a1.x) * (c1.y - p.y) - (p.y - a1.y) * (c1.x - p.x)) > 0.01; });
+    const lb = (e.labels || [])[0];
+    let d, rot = null;
+    if (a.de === a.para) {
+      // O laço se desenha aqui, não pela rota do motor: as duas pernas nas portas que o motor respeitou, o fundo no
+      // pé do espaço que ele reservou para o rótulo, e o rótulo dentro do laço, entre as pernas.
+      const yb = pts[0].y, xo = pts[0].x, xi = pts[pts.length - 1].x;
+      const yl = Math.max(...pts.map(p => p.y), lb ? lb.y + lb.height : 0);
+      d = lacoCaminho(xo, xi, yb, yl);
+      if (rotulos[i]) { rot = rotulos[i]; rot.el.classList.add('laco');
+        rot.el.style.left = ((xo + xi) / 2 - rot.w / 2) + 'px'; rot.el.style.top = (yb + (yl - yb - rot.h) / 2) + 'px'; }
+    } else {
+      d = caminho(pts);
+      if (rotulos[i] && lb) { rot = rotulos[i]; rot.el.style.left = (lb.x + dx) + 'px'; rot.el.style.top = lb.y + 'px'; }
+      else if (rotulos[i]) { // o rótulo do avanço, sobre o trecho horizontal mais longo, centrado nele
+        const m = trechoLongo(pts);
+        // no trecho longo (a volta de uma fileira para a outra), o rótulo fica perto de onde a seta sai, para se ler
+        // com o passo que a manda (rodada 2: no canto da chegada, ele ficava solto); entre duas colunas, centrado
+        if (m) { rot = rotulos[i];
+          const perto = m.l >= rot.w + 2 * FOLGA + 48, lado = Math.sign(m.p.x - m.q.x) || 1;
+          const cx = perto ? m.p.x - lado * (FOLGA + 24 + rot.w / 2) : m.x;
+          rot.el.style.left = (cx - rot.w / 2) + 'px'; rot.el.style.top = (m.y - rot.h - 3) + 'px'; }
+      }
+    }
+    const path = sv('path', { d, class: 'aresta ' + t, 'marker-end': `url(#ponta-${t})` });
+    path.dataset.de = a.de; path.dataset.para = a.para; path.dataset.tipo = a.tipo; path.dataset.indice = String(i);
+    if (a.de === a.para) path.dataset.laco = '1';
+    gArestas.append(path); rotas[i] = pts;
+    if (rot) { rot.el.dataset.aresta = String(i); grafo.append(rot.el); }
+  }
+  const pos = {};
+  for (const c of L.children) {
+    pos[c.id] = { x: c.x + dx, y: c.y };
+    const k = cartoes[c.id]; k.style.left = (c.x + dx) + 'px'; k.style.top = (c.y + FAIXA) + 'px'; grafo.append(k);
+  }
+  // Grupos: uma chave sobre os cartões do grupo, por fileira (se a quebra partir o grupo, cada parte ganha a sua).
+  // A fileira é a do layout (os ramos paralelos empilhados contam como uma), e a chave fica sobre o mais alto.
+  const filDe = {}; fileirasDe(L).forEach((f, k) => f.ids.forEach(id => filDe[id] = k));
+  for (const g of D.grupos) {
+    const fileiras = {};
+    nos.filter(n => n.grupo === g.id).forEach(n => (fileiras[filDe[n.id]] = fileiras[filDe[n.id]] || []).push(pos[n.id]));
+    Object.keys(fileiras).map(Number).sort((a, b) => a - b).forEach((kf, k) => { const f = fileiras[kf];
+      const x0 = Math.min(...f.map(p => p.x)), x1 = Math.max(...f.map(p => p.x)) + W, y = Math.min(...f.map(p => p.y));
+      const rot = el('div', 'rotulo-grupo', g.rotulo + (k > 0 ? ' (cont.)' : ''));
+      rot.style.left = x0 + 'px'; rot.style.top = (y + FAIXA - 24) + 'px'; grafo.append(rot);
+      const yl = y + FAIXA - 16;
+      gChaves.append(sv('path', { class: 'chave', d: `M${x0 + 1},${yl + 6} V${yl} H${x1 - 1} V${yl + 6}` }));
+    });
+  }
+  // O ramo paralelo: um ponto onde as setas de avanço de um passo se dividem e outro onde as de outro se juntam.
+  // O ponto fica na primeira dobra (na divisão) ou na última (na junção), na altura da porta.
+  const gJuncoes = sv('g'); svg.append(gJuncoes);
+  const avancoIdx = D.arestas.map((a, i) => i).filter(i => D.arestas[i].tipo === 'avanço' && D.arestas[i].de !== D.arestas[i].para && rotas[i]);
+  const ponto = (x, y, id) => { const c = sv('circle', { class: 'juncao', cx: x, cy: y, r: tok('--raio-juncao') }); c.dataset.juncao = id; gJuncoes.append(c); };
+  for (const n of nos) {
+    const sai = avancoIdx.filter(i => D.arestas[i].de === n.id), chega = avancoIdx.filter(i => D.arestas[i].para === n.id);
+    if (sai.length > 1) { const p0 = rotas[sai[0]][0];
+      const dobras = sai.map(i => rotas[i]).filter(r => r.length > 2 && Math.abs(r[1].y - r[0].y) < 0.5).map(r => r[1].x);
+      ponto(dobras.length ? Math.min(...dobras) : p0.x, p0.y, n.id + '.divide'); }
+    if (chega.length > 1) { const r0 = rotas[chega[0]], pf = r0[r0.length - 1];
+      const dobras = chega.map(i => rotas[i]).filter(r => r.length > 2 && Math.abs(r[r.length - 2].y - r[r.length - 1].y) < 0.5).map(r => r[r.length - 2].x);
+      ponto(dobras.length ? Math.max(...dobras) : pf.x, pf.y, n.id + '.junta'); }
+  }
+  medida.remove();
+
+  // 7. A versão: a fileira do corte em flexbox; a linha do main desenhada depois, alinhada às tags.
+  const V = D.versao, ver = $('#versao');
+  if (!V) { ver.remove(); document.body.dataset.pronto = '1'; return; }
+  const origem = porId[V.origem];
+  const cab = el('div', 'versao-cab'); cab.append(el('p', 'sobre', V.rotulo), el('p', 'quando', V.quando)); ver.append(cab);
+  const tr = el('div', 'trilho'); ver.append(tr);
+  const faixa = el('div', 'faixa-main'); faixa.append(el('span', 'main-nome', 'main')); tr.append(faixa);
+  const marca = el('div', 'marca-squash'); marca.append(el('span', 'num', String(origem.numero)), el('span', null, 'o squash da issue')); faixa.append(marca);
+  const corte = el('div', 'corte'); tr.append(corte);
+  const check = () => { const s = sv('svg', { width: 12, height: 12, viewBox: '0 0 12 12' }); s.append(sv('path', { d: 'M2,6.5 L5,9.2 L10,3' })); return s; };
+  const setinha = () => { const s = sv('svg', { class: 'seta-curta', viewBox: '0 0 16 10' }); s.append(sv('path', { d: 'M1,5 H14 M10.5,1.5 L14,5 L10.5,8.5' })); return s; };
+  const ps = el('div', 'portas');
+  V.portas.forEach(t => { const p = el('span', 'porta'); p.append(check(), el('span', null, t)); ps.append(p, setinha()); });
+  const vt = el('div', 'versao-tag'); const tag = el('span', 'tag', V.tag);
+  const nota = el('span', 'nota'); nota.append(el('b', null, V.imovel), document.createTextNode(' · ' + V.tag_nota));
+  vt.append(tag, nota);
+  const vs = el('div', 'versao-tag'); const tag2 = el('span', 'tag seguinte', V.seguinte);
+  const contorno = sv('svg', { preserveAspectRatio: 'none' }); tag2.prepend(contorno);
+  vs.append(tag2);
+  const marca2 = el('div', 'marca-seguinte nota', V.seguinte_nota); faixa.append(marca2);
+  corte.append(ps, vt, el('span', 'empurra'), vs, el('span', 'resto'));
+
+  const desenhaMain = () => {
+    tr.querySelectorAll(':scope > svg').forEach(x => x.remove());
+    const R = tr.getBoundingClientRect(), rr = e => { const b = e.getBoundingClientRect(); return { x: b.left - R.left, y: b.top - R.top, w: b.width, h: b.height }; };
+    const t1 = rr(tag), t2 = rr(tag2), nm = rr(tr.querySelector('.main-nome'));
+    const yl = nm.y + nm.h / 2, x0 = nm.x + nm.w + 12, xf = R.width;
+    const s = sv('svg', { width: R.width, height: R.height, 'aria-hidden': 'true' });
+    s.append(sv('line', { class: 'linha', x1: x0, y1: yl, x2: xf - 8, y2: yl }), sv('path', { class: 'ponta-main', d: `M${xf - 10},${yl - 6} L${xf},${yl} L${xf - 10},${yl + 6} z` }));
+    const xs = t1.x + 11 + (t1.w - 11) / 2, xn = t2.x + 11 + (t2.w - 11) / 2; // o meio do corpo da tag (sem o bico)
+    s.append(sv('line', { class: 'haste', x1: xs, y1: yl, x2: xs, y2: t1.y }), sv('line', { class: 'haste seguinte', x1: xn, y1: yl, x2: xn, y2: t2.y }));
+    const n = 4; for (let k = 1; k <= n; k++) { const x = x0 + (xs - x0) * k / (n + 1); s.append(sv('circle', { class: 'commit', cx: x, cy: yl, r: 5 })); }
+    s.append(sv('circle', { class: 'commit', cx: (xs + xn) / 2, cy: yl, r: 5 }));
+    s.append(sv('circle', { class: 'commit forte', cx: xs, cy: yl, r: 9 }), sv('circle', { class: 'commit', cx: xn, cy: yl, r: 6 }));
+    tr.prepend(s);
+    marca.style.left = xs + 'px';
+    const w2 = marca2.offsetWidth; marca2.style.left = Math.min(xn - w2 / 2, R.width - w2) + 'px';
+    const w = tag2.offsetWidth, h = tag2.offsetHeight;
+    contorno.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    contorno.innerHTML = `<path d="M11,0.75 H${w - 4.75} Q${w - 0.75},0.75 ${w - 0.75},4.75 V${h - 4.75} Q${w - 0.75},${h - 0.75} ${w - 4.75},${h - 0.75} H11 L0.75,${h / 2} Z"/>`;
+  };
+  desenhaMain();
+
+  document.body.dataset.pronto = '1';
+})().catch(err => {
+  document.body.dataset.pronto = 'erro'; document.body.dataset.erro = String(err && err.stack || err); console.error(err);
+  // 8. O erro à vista: a caixa no lugar da figura, com a causa (a lista do dado, quando o erro é de dado).
+  const fig = document.querySelector('#figura'), box = document.createElement('div'); box.className = 'erro-diagrama'; box.setAttribute('role', 'alert');
+  const b = document.createElement('b'); b.textContent = 'O diagrama não saiu.'; box.append(b);
+  const itens = err && err.dados ? err.dados : [String(err && err.message || err)];
+  const ul = document.createElement('ul'); for (const t of itens) { const li = document.createElement('li'); li.textContent = t; ul.append(li); } box.append(ul);
+  fig.querySelectorAll('.grafo, .versao').forEach(e => e.remove()); fig.append(box);
+});
+</script>
+<script>
+/* Dentro de um iframe (o onboarding do projeto embute os diagramas), a página diz a altura dela ao pai quando fica pronta
+   e quando muda de largura, para o iframe crescer sem barra de rolagem. Por postMessage, que vale também em file://. */
+(function () {
+  if (window.parent === window) return;
+  const avisar = () => parent.postMessage({ diagrama: 'altura', altura: document.documentElement.scrollHeight }, '*');
+  new MutationObserver(() => { if (document.body.dataset.pronto) avisar(); })
+    .observe(document.body, { attributes: true, attributeFilter: ['data-pronto'] });
+  window.addEventListener('resize', () => { if (document.body.dataset.pronto) avisar(); });
+})();
+</script>
+</body>
+</html>

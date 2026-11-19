@@ -1,0 +1,7 @@
+{
+  "base": {{BASE_JSON}},
+  "log": "knowledge/log.md",
+  "formatador": {{FORMATADOR_JSON}},
+  "extensoes": {{EXTENSOES_JSON}},
+  "comando_formatar": {{CMD_FORMATAR_JSON}}
+}

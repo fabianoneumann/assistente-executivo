@@ -1,0 +1,74 @@
+/* A identidade de partida da série de exemplo: neutra e genérica, para trocar pela da série.
+   Todo valor de cor, letra e tamanho da série mora aqui (os tokens em :root); o CSS da peça só posiciona.
+   As conferências da visual-form leem as classes daqui (o papel em tipo-a e tipo-b, .coluna, .bloco, os papéis do texto,
+   a moldura) e a tabela de papéis em papeis.json, ao lado. Quem muda um tamanho aqui muda o papeis.json e a tabela
+   "Letra" do design-system.md (o teste_papeis.py da visual-form confere os dois últimos).
+   As letras são de sistema (local()), para a conferência rodar sem rede: fonte da web pede rede na hora de conferir
+   e de exportar, e a que não carrega é ERRO. */
+
+@font-face { font-family: "Exemplo Texto"; font-weight: 400; src: local("Arial"), local("Liberation Sans"), local("DejaVu Sans"); }
+@font-face { font-family: "Exemplo Texto"; font-weight: 700; src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("DejaVu Sans Bold"); }
+@font-face { font-family: "Exemplo Titulo"; font-weight: 700; src: local("Georgia Bold"), local("Georgia-Bold"), local("Liberation Serif Bold"), local("DejaVu Serif Bold"); }
+
+:root {
+  /* tintas */
+  --tinta: #1F2933;      /* o texto de conteúdo e o desenho */
+  --acento: #0B6B58;     /* a nota, a marca, a peça acesa do desenho: em pouca área */
+  --apoio: #5B6470;      /* a moldura, a fonte, o que fica em segundo plano */
+  --marca-texto: #FFE58A;
+  /* papéis */
+  --papel-a: #F4F2EC;    /* tipo A: papel liso, com a grade de pontos */
+  --papel-b: #FFFFFF;    /* tipo B: papel com pauta fina */
+  --pauta: #E3E6EA;
+  /* letra */
+  --letra-texto: "Exemplo Texto", sans-serif;
+  --letra-titulo: "Exemplo Titulo", serif;
+  /* grade */
+  --margem-esq: 104px;
+  --margem-dir: 104px;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: #D9DBDF; }
+#stage { position: relative; width: 1080px; height: 1350px; }
+.slide { display: none; position: absolute; inset: 0; overflow: hidden; color: var(--tinta); font-family: var(--letra-texto); }
+.slide.active { display: block; }
+
+/* o papel: a tela declara o passo (--passo), que o caderno.js usa para assentar o texto */
+.slide.tipo-a { --passo: 24px; --linha: 24px; background-color: var(--papel-a);
+  background-image: radial-gradient(circle, #D8D4C8 1.2px, transparent 1.6px); background-size: 24px 24px; }
+.slide.tipo-b { --passo: 24px; --linha: 48px; background-color: var(--papel-b);
+  background-image: linear-gradient(to bottom, transparent 47px, var(--pauta) 47px, var(--pauta) 48px); background-size: 100% 48px; }
+
+/* a coluna: o texto e o desenho que se seguem; o caderno.js reparte o espaço livre entre os .respiro (peso em --w) */
+.coluna { position: absolute; left: var(--margem-esq); right: var(--margem-dir); display: flex; flex-direction: column; }
+.coluna > .respiro { flex: 0 0 24px; }
+.bloco { margin: 0; }
+
+/* os papéis do texto (a tabela "Letra" do design-system.md e o papeis.json) */
+.titulo   { font-family: var(--letra-titulo); font-size: 64px; line-height: 72px; font-weight: 700; text-wrap: balance; }
+.destaque { font-family: var(--letra-titulo); font-size: 44px; line-height: 48px; font-weight: 700; text-wrap: balance; }
+.citacao  { font-family: var(--letra-titulo); font-size: 52px; line-height: 72px; font-weight: 700; text-wrap: balance; }
+.corpo    { font-size: 32px; line-height: 48px; font-weight: 400; text-wrap: pretty; }
+.corpo b, .corpo strong { font-weight: 700; }
+.apoio    { font-size: 30px; line-height: 48px; font-weight: 400; color: var(--apoio); text-wrap: pretty; }
+.nota, .margem { font-size: 32px; line-height: 48px; font-weight: 400; color: var(--acento); text-wrap: pretty; }
+.nota.chamada, .chamada { font-size: 44px; line-height: 72px; font-weight: 400; color: var(--acento); }
+.fila     { font-size: 30px; line-height: 48px; font-weight: 400; color: var(--apoio); }
+.link     { font-size: 30px; line-height: 48px; font-weight: 700; }
+.fonte    { font-size: 24px; line-height: 48px; font-weight: 400; color: var(--apoio); }
+.marca    { background: linear-gradient(transparent 55%, var(--marca-texto) 55%); }
+
+/* a moldura no pé, igual em todas as telas */
+.moldura { position: absolute; left: var(--margem-esq); right: var(--margem-dir); bottom: 56px; display: flex; justify-content: space-between;
+  font-size: 24px; line-height: 48px; font-weight: 400; color: var(--apoio); }
+
+/* o desenho: traço em SVG, nas tintas da série */
+svg.traco { overflow: visible; }
+svg.traco .c { fill: none; stroke: var(--tinta); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+svg.traco .f { fill: none; stroke: var(--tinta); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+svg.traco .l { fill: none; stroke: var(--acento); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+svg.traco .seta-livre { fill: none; stroke: var(--tinta); stroke-width: 4; stroke-linecap: round; }
+svg.traco .seta-livre.l { stroke: var(--acento); }
+svg.traco .ponta-seta { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+svg.marcas path { fill: none; stroke: var(--acento); stroke-width: 4; stroke-linecap: round; }

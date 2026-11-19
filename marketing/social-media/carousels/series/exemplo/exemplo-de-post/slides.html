@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Série de exemplo: post de exemplo (duas telas)</title>
+<link rel="stylesheet" href="../design/caderno.css">
+<script src="../design/caderno.js"></script>
+<style>
+  /* O CSS da peça só posiciona: cor, letra e tamanho vêm do caderno.css da série. */
+  .s1 .coluna { top: 336px; bottom: 216px; }
+  .s2 .coluna { top: 144px; bottom: 648px; }
+  .s2 .desenho { position: absolute; left: 480px; top: 740px; }
+  .s2 .rotulo { position: absolute; left: 104px; top: 1126px; width: 420px; }
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1. capa (papel A): o título, o destaque e o apoio numa coluna; os respiros repartem o espaço que sobra -->
+<section class="slide tipo-a s1 active">
+  <div class="coluna">
+    <h1 class="bloco titulo">Uma série começa por uma <span class="sublinha">pergunta clara</span></h1>
+    <span class="respiro" style="--w:2"></span>
+    <p class="bloco destaque">Este é o post de exemplo da série em branco.</p>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco apoio">Troque o texto, o desenho e a identidade pelos da sua série.</p>
+  </div>
+  <div class="moldura"><span>Série de exemplo, n.º 1</span><span class="pagina">1/2</span></div>
+</section>
+
+<!-- 2. tela de conteúdo (papel B): o título e o corpo na coluna; o desenho e a nota em posição fixa, com a seta que entra no alvo -->
+<section class="slide tipo-b s2">
+  <div class="coluna">
+    <h2 class="bloco titulo">Uma ideia por tela</h2>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco corpo"><b>A palavra-chave</b> em negrito para quem passa os olhos, e a explicação curta para quem lê.</p>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco corpo">O desenho diz o mesmo que o texto, e a seta entra no alvo.</p>
+  </div>
+  <svg class="traco desenho" width="440" height="440" viewBox="0 0 440 440" aria-label="desenho: uma caixa, o alvo da seta">
+    <rect class="c" x="80" y="40" width="300" height="260" rx="12"/>
+    <path class="f" d="M 130 120 L 330 120 M 130 170 L 300 170 M 130 220 L 260 220"/>
+    <path class="seta-livre l" d="M 60 410 C 120 410 180 370 220 270"/>
+  </svg>
+  <p class="nota rotulo">a nota aponta o desenho</p>
+  <div class="moldura"><span>Série de exemplo, n.º 1</span><span class="pagina">2/2</span></div>
+</section>
+
+</div>
+</body>
+</html>

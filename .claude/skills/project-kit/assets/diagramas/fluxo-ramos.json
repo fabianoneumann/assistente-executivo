@@ -1,0 +1,51 @@
+{
+  "titulo": "Do pedido ao deploy, com dois ramos em paralelo",
+  "sobretitulo": "Teste do padrão",
+  "afirmacao": "Um fluxo de teste com dois passos em paralelo depois da implementação, rótulos nas setas de avanço, recusas que voltam ao próprio passo e uma volta da revisão para a implementação. Serve para conferir que o padrão aguenta ramo, laço e rótulo sem mudar o código.",
+  "grupos": [
+    {"id": "antes", "rotulo": "Antes do código"},
+    {"id": "branch", "rotulo": "Na branch"},
+    {"id": "entrega", "rotulo": "Até o main"}
+  ],
+  "nos": [
+    {"id": "pedido", "numero": null, "titulo": "Pedido", "subtitulo": "O que a pessoa precisa, em uma frase", "selo": null, "tipo": "neutro", "grupo": "antes", "papel": "entrada"},
+    {"id": "plano", "numero": 1, "titulo": "Plano", "subtitulo": "O escopo e o critério de pronto", "selo": "Ponto da pessoa", "tipo": "pessoa", "grupo": "antes"},
+    {"id": "implementar", "numero": 2, "titulo": "Implementar", "subtitulo": "Cada commit passa pelos hooks", "selo": "Hook", "tipo": "máquina", "grupo": "branch"},
+    {"id": "testes", "numero": "3a", "titulo": "Testes", "subtitulo": "A bateria inteira, no CI", "selo": "Máquina confere", "tipo": "máquina", "grupo": "branch"},
+    {"id": "docs", "numero": "3b", "titulo": "Documentação", "subtitulo": "O que mudou para quem usa", "selo": null, "tipo": "neutro", "grupo": "branch"},
+    {"id": "revisao", "numero": 4, "titulo": "Revisão", "subtitulo": "Os dois ramos prontos, lidos juntos", "selo": null, "tipo": "neutro", "grupo": "branch"},
+    {"id": "pr", "numero": 5, "titulo": "PR e merge", "subtitulo": "Só com o CI verde", "selo": "Máquina confere", "tipo": "máquina", "grupo": "entrega"},
+    {"id": "deploy", "numero": 6, "titulo": "Deploy", "subtitulo": "A versão instalada", "selo": null, "tipo": "neutro", "grupo": "entrega"}
+  ],
+  "arestas": [
+    {"de": "pedido", "para": "plano", "rotulo": null, "tipo": "avanço"},
+    {"de": "plano", "para": "implementar", "rotulo": "aceite", "tipo": "avanço"},
+    {"de": "implementar", "para": "testes", "rotulo": null, "tipo": "avanço"},
+    {"de": "implementar", "para": "docs", "rotulo": null, "tipo": "avanço"},
+    {"de": "testes", "para": "revisao", "rotulo": null, "tipo": "avanço"},
+    {"de": "docs", "para": "revisao", "rotulo": null, "tipo": "avanço"},
+    {"de": "revisao", "para": "pr", "rotulo": "aprovada", "tipo": "avanço"},
+    {"de": "pr", "para": "deploy", "rotulo": null, "tipo": "avanço"},
+    {"de": "implementar", "para": "implementar", "rotulo": "recusa", "tipo": "recusa"},
+    {"de": "testes", "para": "testes", "rotulo": "recusa", "tipo": "recusa"},
+    {"de": "pr", "para": "pr", "rotulo": "recusa", "tipo": "recusa"},
+    {"de": "revisao", "para": "implementar", "rotulo": "ajuste", "tipo": "volta"}
+  ],
+  "versao": {
+    "origem": "pr",
+    "rotulo": "O main e a versão",
+    "quando": "Quando vai ser instalada, o agente corta a tag",
+    "portas": ["CI verde no commit", "notas conferidas"],
+    "tag": "v0.3.0",
+    "tag_nota": "anotada",
+    "seguinte": "v0.3.1",
+    "seguinte_nota": "a correção vai na seguinte",
+    "imovel": "não se move"
+  },
+  "legenda": {
+    "pessoa": "a pessoa decide",
+    "máquina": "a máquina confere",
+    "recusa": "a trava recusa e diz o que falta",
+    "volta": "volta ao passo"
+  }
+}

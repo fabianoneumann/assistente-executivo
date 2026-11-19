@@ -1,0 +1,25 @@
+# Credencial: só o .env.example vai ao git, sem valor real.
+.env
+.env.*
+!.env.example
+
+# As configurações pessoais do Claude Code ficam na máquina de cada um.
+.claude/settings.local.json
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# [kit:stack=python-fastapi]
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+# [kit:fim]
+# [kit:stack=node-ts]
+node_modules/
+dist/
+# [kit:fim]

@@ -1,0 +1,38 @@
+{
+ "titulo": "Onde cada trava age",
+ "sobretitulo": "As travas em camadas",
+ "afirmacao": "Do comando do agente à tag, cada camada pega o que a de cima deixou passar: as permissões e o hook do agente valem para o agente no Claude Code; os hooks do git, para pessoas e agentes, uma vez por clone; o CI e as regras do GitHub, para todos. Toda trava recusa e diz o que falta, e nenhuma pergunta.",
+ "grupos": [
+  {"id": "agente", "rotulo": "O agente no Claude Code"},
+  {"id": "git", "rotulo": "Os hooks do git"},
+  {"id": "github", "rotulo": "O GitHub, para todos"}
+ ],
+ "nos": [
+  {"id": "comando", "numero": null, "titulo": "O agente roda um comando", "subtitulo": "Ler, editar, commitar, abrir o PR, mergear", "selo": null, "tipo": "neutro", "grupo": "agente", "papel": "entrada"},
+  {"id": "deny", "numero": 1, "titulo": "O deny das permissões", "subtitulo": "Nega ler o .env e pular os hooks (--no-verify)", "selo": "Recusa", "tipo": "máquina", "grupo": "agente"},
+  {"id": "hook", "numero": 2, "titulo": "O hook do fluxo", "subtitulo": "O PR sem o modelo, a branch atrás, a linha encadeada", "selo": "Recusa", "tipo": "máquina", "grupo": "agente"},
+  {"id": "precommit", "numero": 3, "titulo": "pre-commit", "subtitulo": "O formato e o log em ordem, na versão do índice", "selo": "Recusa", "tipo": "máquina", "grupo": "git"},
+  {"id": "prepush", "numero": 4, "titulo": "pre-push", "subtitulo": "Avisa quando a branch está atrás da base; o push segue", "selo": "Avisa", "tipo": "neutro", "grupo": "git"},
+  {"id": "ci", "numero": 5, "titulo": "O CI", "subtitulo": "Da falha mais barata à mais cara, até 3 min", "selo": "Recusa", "tipo": "máquina", "grupo": "github"},
+  {"id": "merge", "numero": 6, "titulo": "O squash no main", "subtitulo": "Só com o CI verde, lido do gh pr checks", "selo": "Recusa", "tipo": "máquina", "grupo": "github"},
+  {"id": "tag", "numero": 7, "titulo": "A regra da tag", "subtitulo": "A versão não se move nem se apaga", "selo": "Recusa", "tipo": "máquina", "grupo": "github"}
+ ],
+ "arestas": [
+  {"de": "comando", "para": "deny", "rotulo": null, "tipo": "avanço"},
+  {"de": "deny", "para": "hook", "rotulo": null, "tipo": "avanço"},
+  {"de": "hook", "para": "precommit", "rotulo": "git commit", "tipo": "avanço"},
+  {"de": "precommit", "para": "prepush", "rotulo": "git push", "tipo": "avanço"},
+  {"de": "prepush", "para": "ci", "rotulo": "gh pr create", "tipo": "avanço"},
+  {"de": "ci", "para": "merge", "rotulo": "gh pr merge", "tipo": "avanço"},
+  {"de": "merge", "para": "tag", "rotulo": "a tag", "tipo": "avanço"},
+  {"de": "deny", "para": "deny", "rotulo": "nega", "tipo": "recusa"},
+  {"de": "hook", "para": "hook", "rotulo": "recusa", "tipo": "recusa"},
+  {"de": "precommit", "para": "precommit", "rotulo": "recusa", "tipo": "recusa"},
+  {"de": "ci", "para": "ci", "rotulo": "vermelho", "tipo": "recusa"},
+  {"de": "merge", "para": "merge", "rotulo": "recusa", "tipo": "recusa"}
+ ],
+ "legenda": {
+  "máquina": "a trava recusa",
+  "recusa": "volta ao passo com o que falta"
+ }
+}

@@ -1,0 +1,14 @@
+# As notas geradas de cada versão: o GitHub lê este arquivo no "gh release create --generate-notes"
+# (knowledge/versao-e-dependencias.md). As atualizações de dependência vão numa seção própria, depois das mudanças:
+# importam a quem instala, mas não podem soterrar o que mudou. Cada PR cai na primeira seção que o aceita.
+changelog:
+  categories:
+    - title: Mudanças
+      labels:
+        - '*'
+      exclude:
+        labels:
+          - dependencies
+    - title: Dependências
+      labels:
+        - dependencies

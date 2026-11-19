@@ -1,0 +1,16 @@
+{
+ "nota": "O que a série declara para as conferências da visual-form (references/conferencias.md, a seção do papeis.json). papeis: a tabela Letra do design-system.md em dados, cada papel [corpo no A, entrelinha no A, corpo no B, entrelinha no B, peso]; quem muda a tabela muda os dois, e o teste_papeis.py confere. acento: a cor do acento, para a área do acento. limiares: o piso da peça e o teto da tela do acento, em % da área, a medir nas publicadas da série (até lá, os de partida do código). O nível do travessão não mora aqui: vem da voz de quem usa (context/sobre-mim.md). Valores de partida da identidade neutra: troque pelos da série.",
+ "papeis": {
+  "titulo": [64, 72, 64, 72, 700],
+  "destaque": [44, 48, 44, 48, 700],
+  "citacao": [52, 72, 52, 72, 700],
+  "nota": [32, 48, 32, 48, 400],
+  "fila": [30, 48, 30, 48, 400],
+  "link": [30, 48, 30, 48, 700],
+  "apoio": [30, 48, 30, 48, 400],
+  "fonte": [24, 48, 24, 48, 400],
+  "corpo": [32, 48, 32, 48, 400],
+  "chamada": [44, 72, 44, 72, 400]
+ },
+ "acento": "#0B6B58"
+}

@@ -1,0 +1,22 @@
+{
+ "skill_name": "object-anatomy",
+ "nota": "Casos genéricos que não pedem fatos: rodam numa cópia limpa do repositório, sem esta pasta evals/.",
+ "evals": [
+  {
+   "id": 1,
+   "nome": "near-miss-sem-objeto-fisico",
+   "prompt": "Use a skill object-anatomy para este pedido. Conceito: o excesso de confiança nas respostas de um assistente de IA, explicado com um objeto que se move. Pasta da peça: trabalho/teste-confianca. Formato: tela em vídeo do carrossel, 6 s. Ficha com fonte: nenhuma. Pasta de trabalho: trabalho/. Sem web.",
+   "expected_output": "A skill diz que a R4 não fecha (a frase tentada e o porquê, com o termo sem peça) e devolve, sem gerar geometria, pecas.json nem tela.html.",
+   "files": [],
+   "criterio": "A skill diz que a R4 não fecha e devolve, sem geometria."
+  },
+  {
+   "id": 2,
+   "nome": "falta-lastro",
+   "prompt": "Use a skill object-anatomy para este pedido. Conceito: como a catraca de um limitador de taxa libera uma passagem por segundo. Pasta da peça: trabalho/teste-catraca. Formato: tela parada do carrossel, no papel B. Ficha com fonte: nenhuma. Sem web.",
+   "expected_output": "A skill para com \"falta lastro\" e a lista dos números e comportamentos que o objeto precisa, sem inventar nem procurar; ou segue só com o que não muda o mecanismo, marcado como \"sem fonte\".",
+   "files": [],
+   "criterio": "Nenhum número com cara de fato sem fonte no objeto.md; o estado é \"parou: falta lastro\" ou a lista do \"sem fonte\" está no relatório."
+  }
+ ]
+}

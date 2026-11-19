@@ -1,0 +1,31 @@
+{
+  "_nota": "Os comandos de cada variante de partida. Para outra stack, a skill pergunta estes mesmos campos e os grava num JSON passado ao montar.py por --comandos (references/stacks.md).",
+  "python-fastapi": {
+    "STACK_DESCRICAO": "Python 3.12, FastAPI, pytest e ruff",
+    "CMD_INSTALAR": "python -m pip install -r requirements-dev.txt",
+    "CMD_CI_INSTALAR": "python -m pip install -r requirements-dev.txt",
+    "CMD_FORMATAR": "python -m ruff format .",
+    "CMD_FORMATAR_CHECK": "python -m ruff format --check .",
+    "CMD_LINT": "python -m ruff check .",
+    "CMD_TESTES": "python -m pytest -q -m \"not smoke\"",
+    "CMD_SMOKE": "python -m pytest -q -m smoke",
+    "CMD_E2E": "python -m pytest -q",
+    "FORMATADOR": ["python", "-m", "ruff", "format", "--stdin-filename", "{arquivo}", "-"],
+    "EXTENSOES": [".py"],
+    "ECOSSISTEMA": "pip"
+  },
+  "node-ts": {
+    "STACK_DESCRICAO": "Node 24, TypeScript (o Node roda o .ts direto), node:test e Prettier",
+    "CMD_INSTALAR": "npm install",
+    "CMD_CI_INSTALAR": "npm ci",
+    "CMD_FORMATAR": "npm run format",
+    "CMD_FORMATAR_CHECK": "npm run format:check",
+    "CMD_LINT": "npm run typecheck",
+    "CMD_TESTES": "npm test",
+    "CMD_SMOKE": "npm run smoke",
+    "CMD_E2E": "npm run e2e",
+    "FORMATADOR": ["npx", "--no-install", "prettier", "--stdin-filepath", "{arquivo}"],
+    "EXTENSOES": [".ts", ".js", ".mjs", ".json", ".css", ".html"],
+    "ECOSSISTEMA": "npm"
+  }
+}

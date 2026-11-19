@@ -1,0 +1,32 @@
+/* Os adesivos do app simulados por cima do Story, só na prévia (o export com --previa, que põe a classe 'previa' no
+   body). Servem para quem valida ver onde cada adesivo cai e para a conferência pela imagem avaliar a tela como vai ao
+   ar. A imagem que vai para o celular sai sem isso. Medidas na tela de 1080x1920, na posição padrão do app, sem
+   arrastar (references/guias-do-editor.md): a enquete de duas opções, centrada, de 783 a 1137; a caixinha, com a foto,
+   de 744 a 1176. O texto fica abaixo da linha branca que o app mostra no topo, a uns 140 px.
+   Quando o adesivo vai para outra posição (arrastado no app), a tela declara --adesivo-top no style da section.
+   A reação (o adesivo redondo de emoji, que o seguidor toca para reagir): um círculo de ~290 px centrado em
+   (540, 1036), com a ponta do balão embaixo à direita (caixa toda de 386 a 693 por 884 a 1190). A barra de emoji: 727
+   de largura (176 a 903), centrada em y 654, com 223 de altura sem texto, 338 com uma linha de pergunta, 401 com duas
+   e 463 com três (cada linha a mais cresce ~62, para cima e para baixo; o centro não muda).
+   As medidas são de um aparelho e de uma versão do app: confira com um print quando o app mudar. */
+body.previa .slide[data-adesivo]::before,body.previa .slide[data-adesivo]::after{content:"";position:absolute;z-index:50;pointer-events:none}
+/* a linha branca do topo, de referência */
+body.previa .slide::before{left:0;right:0;top:140px;height:3px;background:rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
+/* enquete: cartão branco com as duas opções em cinza */
+body.previa .slide[data-adesivo="enquete"]::after{left:195px;top:var(--adesivo-top,783px);width:690px;height:354px;border-radius:44px;
+  background:linear-gradient(#ededed,#ededed) 36px 40px/618px 126px no-repeat,linear-gradient(#ededed,#ededed) 36px 188px/618px 126px no-repeat,#fff;
+  box-shadow:0 6px 24px rgba(0,0,0,.18)}
+/* caixinha: a foto redonda no alto e o cartão com a pergunta e o campo de resposta */
+body.previa .slide[data-adesivo="caixinha"]::after{left:174px;top:var(--adesivo-top,744px);width:732px;height:432px;
+  background:radial-gradient(circle at 366px 56px,#9aa 0 50px,#fff 50px 56px,transparent 57px),
+             linear-gradient(#e6e6e6,#e6e6e6) 42px 250px/648px 126px no-repeat,
+             linear-gradient(#fff,#fff) 0 60px/732px 372px no-repeat;border-radius:40px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.18))}
+/* reação: o círculo branco com o emoji e a ponta do balão */
+body.previa .slide[data-adesivo~="reacao"]::after{left:var(--adesivo-left,395px);top:calc(var(--adesivo-top,891px));width:290px;height:290px;border-radius:50%;
+  background:radial-gradient(circle,#f4c542 0 62px,transparent 63px),#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}
+/* barra de emoji: cartão branco com a barra cinza e o emoji na ponta esquerda; a altura cresce com as linhas de pergunta
+   (--barra-linhas: 0 a 3), sempre centrada em y 654 */
+body.previa .slide[data-adesivo~="barra"]::after{--h:calc(223px + min(var(--barra-linhas,0),1) * 115px + max(var(--barra-linhas,0) - 1,0) * 62px);
+  left:176px;width:727px;height:var(--h);top:var(--adesivo-top,calc(654px - var(--h) / 2));border-radius:40px;
+  background:radial-gradient(circle at 105px calc(100% - 112px),#f4c542 0 44px,transparent 45px),
+             linear-gradient(#e2e2e2,#e2e2e2) 105px calc(100% - 122px)/530px 20px no-repeat,#fff;box-shadow:0 6px 24px rgba(0,0,0,.18)}

@@ -1,0 +1,234 @@
+{
+  "titulo": "Da issue à versão instalável",
+  "sobretitulo": "Como trabalhamos",
+  "afirmacao": "Uma entrega vai de uma issue escrita como spec até uma versão instalável por dez passos fixos: a pessoa decide no plano, a máquina confere no commit, na varredura, no PR e no merge, e toda recusa volta ao passo dela. A versão só se corta no main quando três portas passam, e uma versão não se move: a correção vai na seguinte.",
+  "grupos": [
+    {
+      "id": "antes",
+      "rotulo": "Antes do código"
+    },
+    {
+      "id": "branch",
+      "rotulo": "Na branch"
+    },
+    {
+      "id": "entrega",
+      "rotulo": "Até o main"
+    }
+  ],
+  "nos": [
+    {
+      "id": "issue",
+      "numero": null,
+      "titulo": "Issue como spec",
+      "subtitulo": "Requisitos só com o quê; o “Pronto quando” é o contrato",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "antes",
+      "papel": "entrada"
+    },
+    {
+      "id": "discussao",
+      "numero": 1,
+      "titulo": "Discussão inicial",
+      "subtitulo": "A spec contra o código e a base de hoje",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "antes"
+    },
+    {
+      "id": "plano",
+      "numero": 2,
+      "titulo": "Plano e aceite",
+      "subtitulo": "A pessoa decide, antes de qualquer código",
+      "selo": "Ponto da pessoa",
+      "tipo": "pessoa",
+      "grupo": "antes"
+    },
+    {
+      "id": "branch",
+      "numero": 3,
+      "titulo": "Branch",
+      "subtitulo": "<issue>-<tema>, numa worktree",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "branch"
+    },
+    {
+      "id": "implementar",
+      "numero": 4,
+      "titulo": "Implementar",
+      "subtitulo": "Cada commit passa pelos hooks do git",
+      "selo": "Hook",
+      "tipo": "máquina",
+      "grupo": "branch"
+    },
+    {
+      "id": "review",
+      "numero": 5,
+      "titulo": "/code-review",
+      "subtitulo": "Sobre a branch; as correções num commit só",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "branch"
+    },
+    {
+      "id": "seguranca",
+      "numero": 6,
+      "titulo": "Varredura de segurança",
+      "subtitulo": "Dependências e segredos, a cada push",
+      "selo": "Máquina confere",
+      "tipo": "máquina",
+      "grupo": "branch"
+    },
+    {
+      "id": "previa",
+      "numero": 7,
+      "titulo": "Prévia no ar",
+      "subtitulo": "A branch num endereço próprio, para a validação",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "branch"
+    },
+    {
+      "id": "validacao",
+      "numero": 8,
+      "titulo": "Validação",
+      "subtitulo": "O “Pronto quando” como roteiro, com o sistema rodando",
+      "selo": null,
+      "tipo": "neutro",
+      "grupo": "branch"
+    },
+    {
+      "id": "pr",
+      "numero": 9,
+      "titulo": "Sincronizar e abrir o PR",
+      "subtitulo": "Closes #N e o checklist do modelo",
+      "selo": "Máquina confere",
+      "tipo": "máquina",
+      "grupo": "entrega"
+    },
+    {
+      "id": "squash",
+      "numero": 10,
+      "titulo": "Squash no main",
+      "subtitulo": "Só com o CI verde; um commit por issue",
+      "selo": "Máquina confere",
+      "tipo": "máquina",
+      "grupo": "entrega"
+    }
+  ],
+  "arestas": [
+    {
+      "de": "issue",
+      "para": "discussao",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "discussao",
+      "para": "plano",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "plano",
+      "para": "branch",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "branch",
+      "para": "implementar",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "implementar",
+      "para": "review",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "validacao",
+      "para": "pr",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "pr",
+      "para": "squash",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "review",
+      "para": "seguranca",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "seguranca",
+      "para": "previa",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "previa",
+      "para": "validacao",
+      "rotulo": null,
+      "tipo": "avanço"
+    },
+    {
+      "de": "implementar",
+      "para": "implementar",
+      "rotulo": "recusa",
+      "tipo": "recusa"
+    },
+    {
+      "de": "pr",
+      "para": "pr",
+      "rotulo": "recusa",
+      "tipo": "recusa"
+    },
+    {
+      "de": "squash",
+      "para": "squash",
+      "rotulo": "recusa",
+      "tipo": "recusa"
+    },
+    {
+      "de": "validacao",
+      "para": "implementar",
+      "rotulo": "ajuste na mesma branch",
+      "tipo": "volta"
+    },
+    {
+      "de": "seguranca",
+      "para": "implementar",
+      "rotulo": "recusa: corrige no código",
+      "tipo": "recusa"
+    }
+  ],
+  "versao": {
+    "origem": "squash",
+    "rotulo": "O main e a versão",
+    "quando": "Quando vai ser instalada, o agente corta a tag e roda gh release create",
+    "portas": [
+      "CI verde no commit",
+      "a bateria inteira, até 10 min",
+      "notas conferidas na prévia"
+    ],
+    "tag": "v1.2.0",
+    "tag_nota": "anotada",
+    "seguinte": "v1.2.1",
+    "seguinte_nota": "a correção vai na seguinte",
+    "imovel": "não se move"
+  },
+  "legenda": {
+    "pessoa": "a pessoa decide",
+    "máquina": "a máquina confere",
+    "recusa": "a trava recusa e diz o que falta",
+    "volta": "volta ao passo"
+  }
+}

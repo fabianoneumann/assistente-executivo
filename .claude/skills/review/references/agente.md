@@ -1,0 +1,7 @@
+# Quando a revisão roda dentro de um agente
+
+Os caminhos `scripts/...` e `references/...` partem da pasta da skill; os links com `./` ou `../`, do próprio arquivo; os demais caminhos, da raiz do projeto.
+
+Um subagente dispara outros: pela documentação do Claude Code, até três camadas abaixo da conversa principal; no limite, a ferramenta `Agent` sai da lista, e o do limite trabalha sozinho (o limite muda com `CLAUDE_CODE_MAX_SUBAGENT_SPAWN_DEPTH`). O exemplo da documentação é justamente o revisor que despacha um verificador por achado, e isso foi conferido no Claude Code de terminal, com um subagente de primeira camada disparando um `general-purpose` filho.
+
+Por isso, se a revisão for pedida dentro de um subagente que tem a ferramenta `Agent`, siga as etapas como na conversa principal, com o achador e o conferente como agentes filhos, e a conferência é independente. Só quando a ferramenta não está na lista, ou está e devolve erro (o subagente no limite, e o fork no limite, que a mantém listada; o app desktop e outros ambientes, não conferidos), faça as etapas em sequência no próprio agente, com uma passada separada para cada uma (achar; depois conferir relendo a fonte, sem reler o próprio raciocínio da busca), e diga na entrega que a conferência não foi independente. Por quê: a regra de que "um agente disparado não dispara outros" era falsa e deixava revisões sem conferência independente.

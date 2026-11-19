@@ -1,0 +1,3 @@
+# SDK S3 usado para falar com o R2 da Cloudflare.
+# Instalar, da raiz do projeto: python -m pip install -r .claude/skills/r2-storage/requirements.txt
+boto3>=1.43

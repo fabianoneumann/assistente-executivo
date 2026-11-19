@@ -1,0 +1,22 @@
+[project]
+name = {{NOME_JSON}}
+version = "0.1.0"
+description = {{DESCRICAO_JSON}}
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# As travas do fluxo (.claude/, .githooks/) e o onboarding (onboarding/, com o esquema dos diagramas) vêm do kit, com as
+# conferências deles; o ruff cuida do código do sistema.
+extend-exclude = [".claude", ".githooks", "onboarding"]
+force-exclude = true
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+# O smoke roda em todo PR (pytest -m smoke); a bateria inteira, antes de cada versão (knowledge/versao-e-dependencias.md).
+markers = ["smoke: o caminho mínimo de ponta a ponta, que roda em todo PR"]
+testpaths = ["tests"]
+pythonpath = ["."]

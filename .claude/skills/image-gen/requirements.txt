@@ -1,0 +1,5 @@
+# SDK e bibliotecas da skill de geração de imagem.
+# Instalar, da raiz do projeto: python -m pip install -r .claude/skills/image-gen/requirements.txt
+google-genai>=2.12.1
+Pillow>=10  # conversão de formato quando o provider é o AI Studio (que não aceita output_mime_type)
+numpy>=1.26  # o centro visual (confere_imagem.py) e o so_traco.py

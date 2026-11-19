@@ -1,0 +1,9 @@
+# As dependências das conferências e das medidas da visual-form.
+#   pip install -r .claude/skills/visual-form/requirements.txt
+#   python -m playwright install chromium
+# O segundo passo baixa o navegador que as conferências usam; sem ele, conferir_telas.py, medir_blocos.py e mede_forma.py
+# (no modo navegador) não rodam. O medir_blocos.py chama o shot-scraper pela linha de comando.
+playwright>=1.40
+shot-scraper>=1.4
+Pillow>=10.0
+numpy>=1.24

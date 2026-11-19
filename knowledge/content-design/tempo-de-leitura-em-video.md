@@ -1,0 +1,46 @@
+# Tempo de leitura de texto em vídeo
+
+Quanto tempo uma frase precisa ficar na tela de um vídeo curto, e se as palavras devem entrar uma a uma. A pergunta é comum no primeiro vídeo com texto animado: as palavras entram num ritmo escolhido de olho e a frase fica até o fim da cena, sem lastro para nenhum dos dois números. Pesquisa rasa nas três frentes, com uma variação em português. Fontes: [[2026-11-10-netflix-guia-de-legendas-pt-br]], [[2026-11-10-bbc-subtitle-guidelines-timing]], [[2026-11-10-szarkowska-gerber-moron-legendas-rapidas-2018]], [[2026-11-10-liao-legendas-rapidas-leitura-superficial]] e [[2026-11-10-brysbaert-taxa-de-leitura-2019]].
+
+**De onde vêm os números:** quase toda a evidência é de **legenda**, texto lido enquanto se olha a imagem (e, na maioria dos estudos, com o som do filme). Num vídeo sem voz, o texto carrega a mensagem inteira e a imagem anima ao lado: é uma tarefa dupla parecida, e os limites da legenda servem como **teto**, não como meta. Nenhuma fonte desta pesquisa mede texto animado em Story ou Reel.
+
+## Quanto texto por segundo
+
+- **O limite em português, da Netflix:** até **17 caracteres por segundo** na legenda de tradução para adultos (13 para crianças), e até 20 na legenda para surdos e ensurdecidos (17 para crianças); em inglês, até 20 para adultos ([[2026-11-10-netflix-guia-de-legendas-pt-br]]). Que o caractere conta espaço e pontuação vem das respostas do Perplexity e do Gemini, não dos guias da Netflix lidos: não verificado.
+- **Em palavras, da BBC:** de **160 a 180 palavras por minuto**, de 0,33 a 0,375 segundo por palavra, e um piso de cerca de **0,3 segundo por palavra** na tela (1,2 s para 4 palavras), com a ressalva de que o tempo é decisão editorial e que contar só palavras é "cru demais" ([[2026-11-10-bbc-subtitle-guidelines-timing]]).
+- **A regra antiga dos seis segundos:** uma legenda cheia de duas linhas por 6 s, cerca de 12 caracteres por segundo, de origem difícil de rastrear; as velocidades vêm subindo (12 na TV escandinava, 15 a 16 na Europa Central, 17 a 20 no streaming) ([[2026-11-10-szarkowska-gerber-moron-legendas-rapidas-2018]]).
+- **Para comparar, a leitura sem imagem:** 238 palavras por minuto na leitura silenciosa de não ficção em inglês, de 175 a 300 na maioria dos adultos; 183 em voz alta; em português, só há na base leitura em voz alta, 181 palavras por minuto nos textos IReST ([[2026-11-10-brysbaert-taxa-de-leitura-2019]]). A legenda pede menos que isso porque divide a atenção com a imagem.
+
+## O que os estudos de olhar mostram
+
+- **12, 16 e 20 caracteres por segundo** (74 pessoas, filmes de diálogo; [[2026-11-10-szarkowska-gerber-moron-legendas-rapidas-2018]]). **No experimento 1** (filme em húngaro, língua que ninguém entendia, então a legenda era a única via): a velocidade não mudou a compreensão; mudou o esforço, com a menor carga relatada a 12 caracteres por segundo (dificuldade e esforço, não frustração); e mudou o olhar: a 20, a proporção do tempo da legenda passada lendo é maior e sobra menos para a imagem. **No experimento 2** (filme em inglês, que entendiam): a frustração foi menor a 20 para todos os grupos, e preferiram a legenda rápida com o texto inteiro. O resumo junta os dois: a legenda lenta provocou mais releitura, "particularmente nos clipes em inglês", com mais frustração e menos gosto.
+- **12, 20 e 28 caracteres por segundo** (31 pessoas, documentários): a compreensão cai com a velocidade; a leitura vira passar de olhos, e cerca de **20% das palavras não foram lidas a 20**, 25% a 28; a legenda rápida atrapalha juntar o que a imagem e o texto dizem; para documentário, os autores preferem abaixo de 20 ([[2026-11-10-liao-legendas-rapidas-leitura-superficial]]). O resumo oficial do artigo (Liao e colegas, *Applied Psycholinguistics*, DOI 10.1017/s0142716421000503, lido no OpenAlex) acrescenta que, com a legenda rápida, menos palavras são relidas, e é a releitura que corrige erro do olho, conserta a compreensão e liga a palavra à imagem.
+- **Reconciliação (leitura do assistente):** os dois estudos não se contradizem tanto quanto parece: o primeiro é ficção de diálogo, o segundo é conteúdo informativo, mais perto do vídeo que ensina. E o experimento 1 de Szarkowska, em que a legenda é a única via, é o mais perto do vídeo sem voz: lá, 12 pesou menos. Para vídeo que ensina, o teto de 17 caracteres por segundo da Netflix em português fica entre duas velocidades testadas no segundo estudo (12 e 20, com a compreensão já mais baixa a 20); nada foi medido a 17.
+
+## Palavra a palavra ou a frase inteira
+
+- **Ler é voltar:** num experimento de laboratório, esconder cada palavra assim que o olho saía dela (o que impede reler, como nos aplicativos que mostram uma palavra por vez) piorou a compreensão, e não só nas frases ambíguas; os autores põem em dúvida esses aplicativos (Schotter, Tran e Rayner, 2014, *Psychological Science* 25(6), 1218-1226; só citação, pelo resumo oficial, lido no OpenAlex, PMID 24747167: https://journals.sagepub.com/doi/abs/10.1177/0956797614531148). O número de participantes (40, pelo resumo da busca) não está no resumo oficial: não verificado. A revisão de Rayner e colegas (2016), citada por Brysbaert, explica por que mais de 1.000 palavras por minuto é impossível sem perda.
+- **Leitura do assistente para o vídeo com texto animado:** as palavras entrarem uma a uma não é o problema que esse estudo mede, quando a frase fica inteira na tela depois de entrar e a pessoa pode reler; o que importa é a frase ficar parada o tempo de ser lida e relida antes de sair ou de algo competir com ela (critério 2 de [[principios-de-motion-design]]). Nenhuma fonte desta pesquisa mede se a entrada palavra a palavra ajuda ou atrapalha em relação à frase aparecer de uma vez: lacuna.
+
+## Como medir um vídeo pela régua (leitura do assistente)
+
+Para cada cena, contar os caracteres e as palavras da frase e calcular o tempo que ela pediria a 17 caracteres por segundo e a 0,33 segundo por palavra (o piso, 0,3 s por palavra), contra o tempo em que ela fica visível, da primeira palavra até o fim da cena. A frase que fica abaixo dos dois números é a que a avaliação vai apontar como sem tempo, e o problema piora quando a cena tem movimento grande competindo com a frase enquanto ela entra. A tela com várias frases é decisão em aberto: cada frase pelo seu tempo, contado de quando entra, ou a tela inteira pela soma (três frases de 50 a 60 caracteres somadas pedem perto de 10 s).
+
+## A tela parada do Story (o item 9 de [[stories-o-que-evitar]])
+
+Uma foto no Story fica cerca de 7 s (Metricool, sem primária da Meta). Pela régua da legenda, 7 s comportam cerca de **119 caracteres a 17 por segundo, ou 21 palavras a 0,33 s cada** (23 no piso de 0,3 s). Mas a tela parada não divide a atenção com imagem em movimento, que é o motivo de a legenda pedir menos: fica mais perto da leitura sem imagem. Em inglês, a leitura silenciosa (238 palavras por minuto, de 175 a 300 na maioria) daria de 20 a 35 palavras em 7 s, cerca de 28 na média; em português, a base só tem a leitura em voz alta (181 palavras por minuto), que dá as mesmas 21. Nenhuma fonte mede a tela parada de Story: a legenda dá um piso conservador, a leitura silenciosa, um teto. Um teto de 40 palavras no Story avulso pediria cerca de 13 s nesse ritmo. Leitura do assistente: ou esse teto conta com a pessoa segurando o dedo na tela (o que o app permite), ou está alto para uma tela de 7 s; a decisão de mudar a régua é de quem a mantém, e o jeito de decidir é o que o item 9 já propõe: calibrar contra os toques para voltar que a coleta guarda.
+
+## Critérios para o roteiro e a avaliação (leitura do assistente)
+
+1. **Cada frase fica na tela pelo menos `caracteres ÷ 17` segundos**, e no mínimo 0,3 s por palavra, contados da primeira palavra até o começo da saída; para conteúdo denso, mirar 15 caracteres por segundo (escolha do assistente, entre os 12 e os 17 das fontes, sem medida própria).
+2. **Depois da última palavra, a frase fica parada** um tempo de releitura antes de qualquer movimento grande (ligado ao critério 2 de [[principios-de-motion-design]]).
+3. **Frase longa demais para a cena se divide em duas,** em vez de acelerar.
+4. **Na tela parada de Story, a faixa é de cerca de 21 a 28 palavras em 7 s:** 21 (cerca de 120 caracteres) é o piso pela régua da legenda e pela leitura em voz alta em português; 28, a leitura silenciosa média em inglês. Qual vale, e se o teto da rubrica muda, a calibração pela navegação decide.
+
+## Não verificado (sem fonte aberta)
+
+Da resposta do Gemini e do Perplexity, sem fonte aberta: os mínimos e máximos de duração da Netflix (5/6 s e 7 s por legenda) e da EBU (1 s; 6 s para duas linhas, 4 s para uma); o limite de 42 caracteres por linha; e a distribuição do olhar a 16 caracteres por segundo (30 a 40% do tempo na legenda) como "ponto ideal".
+
+## Ver também
+
+[[principios-de-motion-design]] (o movimento que não compete com a frase), [[stories-o-que-evitar]] (item 9, a tela parada), [[texto-que-cabe-e-legibilidade]] (tamanho e contraste do texto), [[roteiro-em-formato-curto-o-que-e-medido]] (o que é medido em formato curto).

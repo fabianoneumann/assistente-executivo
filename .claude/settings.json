@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(python -X utf8 scripts/confere_ambiente.py:*)",
+      "Bash(python -X utf8 scripts/confere_dados.py:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.local)",
+      "Read(./.claude/settings.local.json)",
+      "Edit(./.claude/settings.local.json)",
+      "Edit(./.env)",
+      "Edit(./.env.local)"
+    ]
+  }
+}

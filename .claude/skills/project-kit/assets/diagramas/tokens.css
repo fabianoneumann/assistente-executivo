@@ -1,0 +1,21 @@
+/* Os tokens do onboarding do kit de projeto (assets/projeto/onboarding/index.html), tirados do <style> dele.
+   Claro no :root; escuro pelo prefers-color-scheme e pelo data-theme="dark" (o mesmo valor nos dois). */
+:root {
+  --fundo: #f7f6f2; --papel: #ffffff; --tinta: #1f2328; --suave: #5b636e; --linha: #d6d3cb;
+  --destaque: #2f6f4e; --destaque-fundo: #e3f0e8; --alerta: #9a5b13; --alerta-fundo: #f7ecdc;
+  --fonte: system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #14171b; --papel: #1c2026; --tinta: #e6e8eb; --suave: #a3abb5; --linha: #363c45;
+    --destaque: #7cc59c; --destaque-fundo: #1f3328; --alerta: #e0a95e; --alerta-fundo: #3a2c1a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --fundo: #14171b; --papel: #1c2026; --tinta: #e6e8eb; --suave: #a3abb5; --linha: #363c45;
+  --destaque: #7cc59c; --destaque-fundo: #1f3328; --alerta: #e0a95e; --alerta-fundo: #3a2c1a;
+  color-scheme: dark;
+}
+body { margin: 0; background: var(--fundo); color: var(--tinta); font: 16px/1.55 var(--fonte); }

@@ -1,0 +1,31 @@
+# A licença do texto: CC BY 4.0
+
+O texto deste repositório (os arquivos `.md`, os modelos e as páginas em HTML, fora o código) é licenciado sob a **Creative Commons Atribuição 4.0 Internacional (CC BY 4.0)**: <https://creativecommons.org/licenses/by/4.0/legalcode.pt>. Você pode copiar, adaptar e usar, inclusive comercialmente, desde que dê o crédito ("assistente-executivo, de Fabiano Neumann, licença CC BY 4.0"), diga se mudou algo e ponha o link da licença.
+
+O código (os arquivos `.py`, `.js`, `.css`, `.sh` e os modelos de configuração) é licenciado sob a MIT, no arquivo [`LICENSE`](./LICENSE).
+
+## As exceções: o que é de terceiro
+
+A licença acima vale para o que é deste repositório, e não para o material de terceiro citado nele.
+
+- **As fichas de `knowledge/sources/`** descrevem fontes de terceiros. Cada uma traz, no campo `licenca`, a licença da fonte original e onde ela está escrita. Neste modelo, nenhuma ficha traz o texto integral da fonte: a ficha de fonte de licença livre e a de fonte protegida vêm em palavras próprias, com citações curtas, de até umas 25 palavras, e o integral se lê na fonte, pelo link. As três fichas livres que ainda têm trecho colado à fonte vêm como citação simples (o título, o autor, o link e a licença).
+- **As 17 fichas de fontes em CC BY-SA** seguem na licença da fonte (CC BY-SA, a versão indicada em cada uma), e não na CC BY 4.0. Quem as adaptar publica a adaptação na mesma licença:
+  - `knowledge/sources/2026-10-29-agent-workflow-memory.md`
+  - `knowledge/sources/2026-10-29-bernat-css-ritmo-vertical.md`
+  - `knowledge/sources/2026-10-29-mdn-grid-e-outros-metodos-de-layout.md`
+  - `knowledge/sources/2026-10-29-mdn-text-box-trim.md`
+  - `knowledge/sources/2026-10-29-mdn-text-fit.md`
+  - `knowledge/sources/2026-10-29-printwiki-copyfitting.md`
+  - `knowledge/sources/2026-11-04-berger-independent-aggregation-2026.md`
+  - `knowledge/sources/2026-11-10-wikipedia-arma-de-tchekhov.md`
+  - `knowledge/sources/2026-11-10-wikipedia-doze-principios-da-animacao.md`
+  - `knowledge/sources/2026-11-11-wikipedia-camera-multiplano.md`
+  - `knowledge/sources/2026-11-12-blender-manual-camera-follow-path-e-track-to.md`
+  - `knowledge/sources/2026-11-12-blender-manual-eevee-cycles-gpu-e-grease-pencil.md`
+  - `knowledge/sources/2026-11-12-blender-manual-line-art-e-freestyle.md`
+  - `knowledge/sources/2026-11-12-blender-manual-render-pela-linha-de-comando-e-gltf.md`
+  - `knowledge/sources/2026-11-12-entitybench-consistencia-de-entidade-arxiv-2026.md`
+  - `knowledge/sources/2026-11-12-wikipedia-model-sheet.md`
+  - `knowledge/sources/2026-11-12-wikipedia-regra-dos-30-graus-e-dolly-zoom.md`
+- **As fichas de fontes em CC BY-ND** seguem na licença da fonte, sem obra derivada do texto licenciado.
+- **Os métodos** citados nos guias de `maps/` são de quem os criou, com a origem atribuída em cada guia. "Wheel of Life" e "Blue Ocean" são marcas de terceiros, que este repositório não usa como nome: "Roda da Vida" e "Matriz EREC" são nomes descritivos. Os desenhos do `maps/board/` foram feitos para este repositório.

@@ -1,0 +1,13 @@
+[
+  {"query": "exporta o carrossel em JPEG para eu ver as telas", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "fecha o post de amanhã e sobe as imagens no bucket para publicar", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "regera só as telas 3 e 5 do slides.html que eu ajustei", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "grava a tela animada do carrossel em MP4 e confere se a API aceita", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "renderiza a prévia dos Stories de quinta com os adesivos simulados", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "a tela 8 em vídeo, me dá o quadro final em imagem para o portão", "should_trigger": true, "esperada": "slides-export"},
+  {"query": "deixa a tela 4 mais forte, ela está meio vazia", "should_trigger": false, "esperada": "visual-form"},
+  {"query": "roda as conferências de forma no slides.html antes de eu ver, sem exportar", "should_trigger": false, "esperada": "visual-form"},
+  {"query": "anima o mecanismo da calculadora de manivela na tela 4", "should_trigger": false, "esperada": "object-anatomy"},
+  {"query": "gera uma ilustração a lápis do globo para a capa", "should_trigger": false, "esperada": "image-gen"},
+  {"query": "sobe este PDF no bucket e me dá a URL pública", "should_trigger": false, "esperada": "r2-storage"}
+]

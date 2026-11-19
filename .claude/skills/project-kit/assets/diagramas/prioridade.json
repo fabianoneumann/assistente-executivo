@@ -1,0 +1,140 @@
+{
+ "modelo": "grafo",
+ "direcao": "DOWN",
+ "titulo": "A prioridade de uma issue",
+ "sobretitulo": "A matriz de Eisenhower, como pergunta",
+ "afirmacao": "Quem abre a issue responde três perguntas, nesta ordem: há data externa próxima ou defeito numa versão instalada (urgente); a issue é o último bloqueio aberto de outra (alta); ela está numa milestone aberta (média, ou baixa sem milestone). Estar numa milestone é o que a torna importante; a urgência vem do prazo de fora e do bloqueio.",
+ "grupos": [
+  {
+   "id": "perguntas",
+   "rotulo": "As perguntas, nesta ordem"
+  },
+  {
+   "id": "resultado",
+   "rotulo": "A prioridade"
+  }
+ ],
+ "nos": [
+  {
+   "id": "aberta",
+   "numero": null,
+   "titulo": "Issue aberta",
+   "subtitulo": "Quem abre preenche a prioridade",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "perguntas",
+   "papel": "entrada"
+  },
+  {
+   "id": "p1",
+   "numero": 1,
+   "titulo": "Data de fora ou defeito?",
+   "subtitulo": "Data externa próxima, ou defeito numa versão instalada",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "perguntas"
+  },
+  {
+   "id": "urgente",
+   "numero": null,
+   "titulo": "Urgente",
+   "subtitulo": "Com ou sem milestone",
+   "selo": "prioridade:urgente",
+   "tipo": "máquina",
+   "grupo": "resultado"
+  },
+  {
+   "id": "p2",
+   "numero": 2,
+   "titulo": "Último bloqueio de outra?",
+   "subtitulo": "Fechá-la deixa outra issue livre",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "perguntas"
+  },
+  {
+   "id": "alta",
+   "numero": null,
+   "titulo": "Alta",
+   "subtitulo": "O bloqueio de quem ainda espera outras não sobe",
+   "selo": "prioridade:alta",
+   "tipo": "máquina",
+   "grupo": "resultado"
+  },
+  {
+   "id": "p3",
+   "numero": 3,
+   "titulo": "Numa milestone aberta?",
+   "subtitulo": "A milestone é o que torna a issue importante",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "perguntas"
+  },
+  {
+   "id": "media",
+   "numero": null,
+   "titulo": "Média",
+   "subtitulo": "Na milestone, sem urgência",
+   "selo": "prioridade:media",
+   "tipo": "pessoa",
+   "grupo": "resultado"
+  },
+  {
+   "id": "baixa",
+   "numero": null,
+   "titulo": "Baixa",
+   "subtitulo": "Sem milestone",
+   "selo": "prioridade:baixa",
+   "tipo": "neutro",
+   "grupo": "resultado"
+  }
+ ],
+ "arestas": [
+  {
+   "de": "aberta",
+   "para": "p1",
+   "rotulo": null,
+   "tipo": "avanço"
+  },
+  {
+   "de": "p1",
+   "para": "urgente",
+   "rotulo": "sim",
+   "tipo": "avanço"
+  },
+  {
+   "de": "p1",
+   "para": "p2",
+   "rotulo": "não",
+   "tipo": "avanço"
+  },
+  {
+   "de": "p2",
+   "para": "alta",
+   "rotulo": "sim",
+   "tipo": "avanço"
+  },
+  {
+   "de": "p2",
+   "para": "p3",
+   "rotulo": "não",
+   "tipo": "avanço"
+  },
+  {
+   "de": "p3",
+   "para": "media",
+   "rotulo": "sim",
+   "tipo": "avanço"
+  },
+  {
+   "de": "p3",
+   "para": "baixa",
+   "rotulo": "não",
+   "tipo": "avanço"
+  }
+ ],
+ "legenda": {
+  "pessoa": "importante, sem pressa",
+  "máquina": "urgente: a data ou o bloqueio"
+ }
+}

@@ -1,0 +1,14 @@
+[
+ {"query": "quero começar um projeto novo de software: um sistema de agendamento para a clínica da minha irmã. me ajuda a estruturar do zero?", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "vou criar um repositório novo para o bot de alertas de estoque e quero que ele já nasça com o mesmo processo do meu outro projeto: issue como spec, CI, travas, a base em knowledge", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "monta um projeto do zero em node com typescript para a API de cotações, com o CI e os modelos de issue", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "tenho a ideia de um app de controle de estoque para pequenos comércios. antes de codar, quero pensar a arquitetura e já deixar o repo pronto", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "cria a estrutura de um projeto novo em FastAPI para o serviço de notificações, com os ADRs e a primeira milestone", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "a equipe vai começar um sistema novo de relatórios e eu quero levar pra ele o jeito de trabalhar que a gente já usa no sistema de vendas", "should_trigger": true, "esperada": "project-kit"},
+ {"query": "roda um code review no script confere_links.py, mudei a parte dos agentes", "should_trigger": false, "esperada": "code-review"},
+ {"query": "pesquisa o estado atual do FastAPI contra o Litestar em 2026, com fontes", "should_trigger": false, "esperada": "research"},
+ {"query": "cria uma landing page pro curso de IA com hero, depoimentos e preço, em React", "should_trigger": false, "esperada": "frontend-design:frontend-design"},
+ {"query": "revisa o texto da decisão sobre sessões paralelas e me diz o que está fraco", "should_trigger": false, "esperada": "review"},
+ {"query": "o sistema de cotações já existe e tem a base em knowledge; pega a issue 14 dele, a do modelo de estratégia, e faz a discussão inicial", "should_trigger": false, "esperada": null},
+ {"query": "adiciona o Dependabot só de segurança e um CI com as ações fixadas por hash no repo do painel de vendas, que já está rodando", "should_trigger": false, "esperada": null}
+]

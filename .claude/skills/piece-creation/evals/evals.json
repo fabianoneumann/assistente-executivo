@@ -1,0 +1,82 @@
+{
+  "skill_name": "piece-creation",
+  "notes": [
+    "Três casos genéricos, um por ponto de partida. Cada um traz os campos das boas práticas da Anthropic (skills, query, files, expected_behavior) e os da skill-creator (id, prompt, expected_output, expectations).",
+    "Os arquivos de entrada não vêm no repositório: quem roda o caso monta antes, numa cópia do projeto, o que o caso pede (a pauta da semana da série, a sequência de origem com as respostas no originals/, o arquivo da ideia crua), e grava as escolhas da pessoa para cada parada, para o agente seguir com elas.",
+    "Esta pasta evals/ não vai à cópia em que a skill roda: ela traz o gabarito.",
+    "Regras comuns: uma rodada por braço; corte na prévia (casos 1 e 2) e na primeira parada (caso 3); quem avalia não rodou."
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "name": "carrossel-serie-ate-a-previa",
+      "skills": ["piece-creation", "piece-script", "review", "visual-form"],
+      "query": "faz o post B da série desta semana",
+      "prompt": "faz o post B da série desta semana",
+      "files": ["marketing/social-media/carousels/series/<série>/rascunho-semana-NN-<tema>.md", "marketing/social-media/carousels/series/<série>/<a pasta do post A>/"],
+      "expected_output": "A prévia das telas do post B, renderizada localmente com as conferências em 0 ERRO, e o estado da peça com cada passo feito, parado, a fazer ou pulado com o motivo.",
+      "expected_behavior": [
+        "o briefing escrito antes do texto, com as peças anteriores do mesmo tipo e da semana abertas e citadas",
+        "a piece-script chamada para o roteiro, com a escaleta antes do texto",
+        "a parada do arco, dos conceitos e das imagens antes do texto (respondida pela escolha gravada), e não pulada em silêncio",
+        "a review rodada por agentes que não escreveram o texto, antes da trava",
+        "a seção 'Estado da criação' no refinamentos.md, sem passo vazio",
+        "a parada antes de exportar, sem --upload e sem portão"
+      ],
+      "expectations": [
+        "o briefing escrito antes do texto, com as peças anteriores do mesmo tipo e da semana abertas e citadas",
+        "a piece-script chamada para o roteiro, com a escaleta antes do texto",
+        "a parada do arco, dos conceitos e das imagens antes do texto (respondida pela escolha gravada), e não pulada em silêncio",
+        "a review rodada por agentes que não escreveram o texto, antes da trava",
+        "a seção 'Estado da criação' no refinamentos.md, sem passo vazio",
+        "a parada antes de exportar, sem --upload e sem portão"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "stories-de-resposta-e-avulso",
+      "skills": ["piece-creation", "piece-script", "visual-form"],
+      "query": "chegaram as respostas da caixinha de quinta, estão no originals da pasta de quinta. faz os Stories de sexta e o compartilhamento de sábado",
+      "prompt": "chegaram as respostas da caixinha de quinta, estão no originals da pasta de quinta. faz os Stories de sexta e o compartilhamento de sábado",
+      "files": ["marketing/social-media/stories/<a pasta de quinta>/roteiro.md", "marketing/social-media/stories/<a pasta de quinta>/originals/"],
+      "expected_output": "O roteiro e a prévia da sequência de sexta (resposta, N1, pela piece-script) e o roteiro e a simulação do compartilhamento de sábado (avulso, N0, escrito pela criação de peças, sem a piece-script).",
+      "expected_behavior": [
+        "a piece-script chamada só para a sexta",
+        "o avulso de sábado em N0, sem a piece-script, e feito antes da sequência ou fora do contexto dela",
+        "as lições lidas e as sequências anteriores do mesmo tipo e da semana abertas antes de escrever",
+        "o banco de desenhos consultado antes de gerar",
+        "nenhuma tela só com texto sem motivo escrito"
+      ],
+      "expectations": [
+        "a piece-script chamada só para a sexta",
+        "o avulso de sábado em N0, sem a piece-script, e feito antes da sequência ou fora do contexto dela",
+        "as lições lidas e as sequências anteriores do mesmo tipo e da semana abertas antes de escrever",
+        "o banco de desenhos consultado antes de gerar",
+        "nenhuma tela só com texto sem motivo escrito"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "ideia-crua-ate-a-primeira-parada",
+      "skills": ["piece-creation", "story-angle", "research", "review"],
+      "query": "marketing/social-media/ideas/<a-ideia>.md\n\nisso rende um post? se render, faz",
+      "prompt": "marketing/social-media/ideas/<a-ideia>.md\n\nisso rende um post? se render, faz",
+      "files": ["marketing/social-media/ideas/<a-ideia>.md"],
+      "expected_output": "A primeira parada com a pessoa, sem texto de peça.",
+      "expected_behavior": [
+        "a decisão de rende ou não, com o porquê",
+        "os formatos candidatos, cada um com o porquê",
+        "a story-angle chamada para a apuração",
+        "a identidade visual sem série decidida como item da mesa",
+        "a parada na mesa de ângulos, sem fato sem fonte"
+      ],
+      "expectations": [
+        "a decisão de rende ou não, com o porquê",
+        "os formatos candidatos, cada um com o porquê",
+        "a story-angle chamada para a apuração",
+        "a identidade visual sem série decidida como item da mesa",
+        "a parada na mesa de ângulos, sem fato sem fonte"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>O grafo</title>
+<link rel="stylesheet" href="tokens.css">
+<!-- O motor de layout: ELK (layered) 0.12.1, embutido ao lado (sem rede); licença EPL-2.0 em elk-LICENSE.md. -->
+<script src="elk.bundled.js"></script>
+<style>
+  /* O modelo de grafo (rodada 2): o que não é um fluxo em passos, como a arquitetura (as partes e as fronteiras) e a
+     árvore de decisão. Sem quebra em fileiras: os grupos são caixas (nós compostos do motor), e o motor roteia as
+     setas entre elas. O cartão, as cores, a legenda e a conferência são os do fluxo.html. */
+  :root {
+    --no-largura: 212px;     /* a largura do cartão; a altura sai do HTML medido */
+    --esp-camada: 36px;      /* entre camadas (36: os vãos entre as fronteiras da arquitetura eram longos, mesa de 18/11) */
+    --esp-no: 28px;          /* entre nós da mesma camada */
+    --esp-aresta: 14px;
+    --esp-aresta-no: 12px;
+    --esp-rotulo: 4px;
+    --pad-grupo: 26px;       /* o respiro dentro da caixa do grupo (cabe o rótulo deitado na lateral, o último recurso) */
+    --pad-grupo-topo: 40px;  /* o topo da caixa, onde mora o rótulo do grupo */
+    --raio-curva: 8px;
+    --largura-lista: 720px;
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px 16px 48px; box-sizing: border-box; }
+  figure { margin: 0; }
+  .cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px;
+         padding-bottom: 20px; border-bottom: 1px solid var(--linha); margin-bottom: 20px; }
+  .sobre { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .cab h2 { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; color: var(--tinta); }
+  .legenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--suave); }
+  .legenda li { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .amostra { width: 14px; height: 14px; border-radius: 4px; box-sizing: border-box; flex: none; }
+  .amostra.pessoa { background: var(--destaque-fundo); border: 1.5px solid var(--destaque); }
+  .amostra.maquina { background: var(--alerta-fundo); border: 1.5px solid var(--alerta); }
+  .amostra.conteiner { background: var(--papel); border: 1.5px solid var(--linha); }
+  .amostra.grupo { border: 1.5px solid var(--linha); border-radius: 4px; }
+  .amostra-fio { width: 32px; height: 12px; flex: none; }
+  .amostra-fio line { stroke-width: 1.75; }
+
+  .grafo { position: relative; margin: 0 auto; }
+  .grafo > svg { position: absolute; inset: 0; overflow: visible; }
+  .medida { position: absolute; visibility: hidden; left: -9999px; top: 0; }
+  .caixa-grupo { position: absolute; box-sizing: border-box; border: 1.5px solid var(--linha); border-radius: 16px; }
+  .rotulo-grupo.lateral { writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px 0; }
+  .rotulo-grupo { position: absolute; font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+                  color: var(--suave); white-space: nowrap; background: var(--fundo); padding: 0 6px; }
+
+  .no { position: absolute; box-sizing: border-box; width: var(--no-largura); display: flex; flex-direction: column; gap: 6px;
+        padding: 14px; background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; color: var(--tinta); }
+  .no.pessoa { background: var(--destaque-fundo); border-color: var(--destaque); }
+  .no.maquina { background: var(--alerta-fundo); border-color: var(--alerta); }
+  .no-topo { display: flex; align-items: flex-start; gap: 10px; }
+  .num { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; margin-top: -1px;
+         font-size: 13px; font-weight: 700; line-height: 1; background: var(--papel); border: 1.5px solid var(--linha); color: var(--tinta); box-sizing: border-box; }
+  .no.pessoa .num { border-color: var(--destaque); color: var(--destaque); }
+  .no.maquina .num { border-color: var(--alerta); color: var(--alerta); }
+  .no h3, .no p { text-wrap: pretty; }
+  .no h3 { margin: 0; font-size: 15px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+  .no p { margin: 0; font-size: 13px; line-height: 1.4; color: var(--suave); overflow-wrap: anywhere; }
+  .no .selo { align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+              line-height: 1; padding: 6px 9px 5px; border-radius: 999px; background: var(--linha); color: var(--tinta); white-space: nowrap; }
+  .no.pessoa .selo { background: var(--destaque); color: var(--papel); }
+  .no.maquina .selo { background: var(--alerta); color: var(--papel); }
+  .no.entrada { border-color: var(--linha); background: transparent; }
+  .no.entrada .num { border: 0; background: none; width: auto; height: auto; font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+
+  .rotulo-aresta { position: absolute; box-sizing: border-box; padding: 2px 6px; font-size: 12px; line-height: 16px; white-space: nowrap;
+                   color: var(--tinta); background: var(--fundo); border-radius: 4px; }
+  .rotulo-aresta.recusa { color: var(--alerta); font-weight: 600; }
+  .rotulo-aresta.volta { color: var(--suave); font-style: italic; }
+  .aresta { fill: none; stroke-width: 1.75; stroke-linejoin: round; }
+  .aresta.avanco { stroke: var(--suave); stroke-width: 2; }
+  .aresta.recusa { stroke: var(--alerta); stroke-dasharray: 5 4; }
+  .aresta.volta { stroke: var(--suave); stroke-dasharray: 5 4; }
+  .ponta.avanco, .ponta.volta { fill: var(--suave); }
+  .ponta.recusa { fill: var(--alerta); }
+  .no .tecnologia { margin: 2px 0 4px; font-size: 13px; color: var(--suave); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; }
+  figcaption { margin-top: 18px; max-width: 78ch; font-size: 14px; color: var(--suave); }
+
+  .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .passos { margin: 0; padding: 0; list-style: none; }
+  .estreita .grafo { display: none; }
+  .estreita .passos { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal;
+                      display: flex; flex-direction: column; gap: 10px; }
+  .estreita .passos li { background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; padding: 12px 14px; font-size: 14px; color: var(--suave); }
+  .estreita .passos li.pessoa { background: var(--destaque-fundo); border-color: var(--destaque); }
+  .estreita .passos li.maquina { background: var(--alerta-fundo); border-color: var(--alerta); }
+  .estreita .passos li.titulo-grupo { background: none; border: 0; padding: 8px 2px 0; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .estreita .passos li b { display: block; color: var(--tinta); font-size: 15px; }
+  .estreita .passos li.liga { background: none; border: 0; padding: 0 14px; font-size: 13px; }
+  .erro-diagrama { margin-top: 16px; border: 1.5px solid var(--alerta); background: var(--alerta-fundo); color: var(--tinta);
+                   border-radius: 12px; padding: 16px 18px; font-size: 14px; }
+  .erro-diagrama b { display: block; margin-bottom: 6px; }
+  .erro-diagrama ul { margin: 6px 0 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+<main>
+<figure id="figura">
+  <header class="cab">
+    <div><p class="sobre" id="sobretitulo"></p><h2 id="titulo"></h2></div>
+    <ul class="legenda" id="legenda"></ul>
+  </header>
+  <div class="grafo" id="grafo" role="img"></div>
+  <ol class="passos so-leitor" id="passos" aria-label="As partes e as ligações, em texto"></ol>
+  <figcaption id="legenda-texto"></figcaption>
+</figure>
+</main>
+
+<!-- Cópia do arquitetura.json para abrir o arquivo direto do disco (file:// não deixa ler o .json ao lado).
+     Por http, a página lê o arquivo de ?dados=. O diagrama_render.py --embutir troca esta cópia. -->
+<script type="application/json" id="dados-embutidos">
+{
+ "modelo": "grafo",
+ "direcao": "DOWN",
+ "titulo": "Contêineres: o projeto de exemplo do kit",
+ "sobretitulo": "Arquitetura (C4, nível de contêiner)",
+ "afirmacao": "O projeto de exemplo do kit em contêineres: quem usa chama a API, que lê e grava no banco; quem desenvolve pede ao agente, e o trabalho passa pelas travas do agente e do git antes de chegar ao repositório, onde o CI confere e a versão sai. O Dependabot só abre o PR de segurança. Os grupos fazem o papel das fronteiras.",
+ "grupos": [
+  {
+   "id": "pessoas",
+   "rotulo": "Quem usa e quem desenvolve"
+  },
+  {
+   "id": "maquina",
+   "rotulo": "Na máquina de quem desenvolve"
+  },
+  {
+   "id": "github",
+   "rotulo": "No GitHub"
+  },
+  {
+   "id": "producao",
+   "rotulo": "Onde o sistema roda"
+  }
+ ],
+ "nos": [
+  {
+   "id": "dev",
+   "numero": null,
+   "titulo": "Quem desenvolve",
+   "subtitulo": "Escreve a issue, decide o plano e valida",
+   "selo": null,
+   "tipo": "pessoa",
+   "grupo": "pessoas"
+  },
+  {
+   "id": "agente",
+   "numero": null,
+   "titulo": "O agente",
+   "subtitulo": "Roda no clone do repositório",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "maquina",
+   "tecnologia": "Claude Code"
+  },
+  {
+   "id": "travas-agente",
+   "numero": null,
+   "titulo": "As travas do agente",
+   "subtitulo": "O hook do fluxo e o deny das permissões",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "maquina",
+   "tecnologia": "Python, hook do Claude Code"
+  },
+  {
+   "id": "githooks",
+   "numero": null,
+   "titulo": "Os hooks do git",
+   "subtitulo": "pre-commit e pre-push, para pessoas e agentes",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "maquina",
+   "tecnologia": "Python, hooks do git"
+  },
+  {
+   "id": "repo",
+   "numero": null,
+   "titulo": "O repositório",
+   "subtitulo": "As issues, os PRs, o main e as tags",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "github",
+   "tecnologia": "GitHub"
+  },
+  {
+   "id": "ci",
+   "numero": null,
+   "titulo": "O CI",
+   "subtitulo": "Formato, log, testes e smoke",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "github",
+   "tecnologia": "GitHub Actions"
+  },
+  {
+   "id": "dependabot",
+   "numero": null,
+   "titulo": "O Dependabot",
+   "subtitulo": "Só os alertas de segurança",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "github",
+   "tecnologia": "GitHub Dependabot"
+  },
+  {
+   "id": "usuario",
+   "numero": null,
+   "titulo": "Quem usa o sistema",
+   "subtitulo": "Pelo navegador ou por outro sistema",
+   "selo": null,
+   "tipo": "pessoa",
+   "grupo": "pessoas"
+  },
+  {
+   "id": "api",
+   "numero": null,
+   "titulo": "A API",
+   "subtitulo": "A interface do sistema, com o /health",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "producao",
+   "tecnologia": "Python, FastAPI"
+  },
+  {
+   "id": "banco",
+   "numero": null,
+   "titulo": "O banco",
+   "subtitulo": "Onde o dado mora e de onde se recupera",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "producao",
+   "tecnologia": "banco relacional"
+  }
+ ],
+ "arestas": [
+  {
+   "de": "dev",
+   "para": "agente",
+   "rotulo": "pede a tarefa pela conversa",
+   "tipo": "avanço"
+  },
+  {
+   "de": "agente",
+   "para": "travas-agente",
+   "rotulo": "cada comando",
+   "tipo": "avanço"
+  },
+  {
+   "de": "travas-agente",
+   "para": "githooks",
+   "rotulo": "commit liberado",
+   "tipo": "avanço"
+  },
+  {
+   "de": "githooks",
+   "para": "repo",
+   "rotulo": "push liberado",
+   "tipo": "avanço"
+  },
+  {
+   "de": "repo",
+   "para": "ci",
+   "rotulo": "dispara a cada push e PR",
+   "tipo": "avanço"
+  },
+  {
+   "de": "dependabot",
+   "para": "repo",
+   "rotulo": "PR de segurança",
+   "tipo": "avanço"
+  },
+  {
+   "de": "ci",
+   "para": "api",
+   "rotulo": "entrega a versão aprovada",
+   "tipo": "avanço"
+  },
+  {
+   "de": "usuario",
+   "para": "api",
+   "rotulo": "faz o pedido por HTTPS",
+   "tipo": "avanço"
+  },
+  {
+   "de": "api",
+   "para": "banco",
+   "rotulo": "lê e grava por SQL",
+   "tipo": "avanço"
+  }
+ ],
+ "legenda": {
+  "pessoa": "uma pessoa",
+  "máquina": "uma trava, que recusa e diz o que falta",
+  "grupo": "uma fronteira",
+  "conteiner": "um contêiner, com a tecnologia entre colchetes"
+ },
+ "c4": "contêiner"
+}
+</script>
+<script>
+(async function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const sv = (tag, attrs = {}) => { const e = document.createElementNS(SVGNS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
+  const classeTipo = t => ({ 'pessoa': 'pessoa', 'máquina': 'maquina' })[t] || 'neutro';
+  const classeAresta = t => ({ 'avanço': 'avanco', 'recusa': 'recusa', 'volta': 'volta' })[t] || 'avanco';
+
+  // 1. O dado e a conferência dele, a mesma do fluxo.html. Por http, o arquivo de ?dados= (ou o arquitetura.json);
+  //    aberta direto do disco (file:// não deixa ler o .json ao lado), a cópia embutida no fim da página.
+  const fonte = new URLSearchParams(location.search).get('dados') || 'arquitetura.json';
+  let D;
+  try { const r = await fetch(fonte, { cache: 'no-store' }); if (!r.ok) throw 0; D = await r.json(); }
+  catch (e) { D = JSON.parse(document.getElementById('dados-embutidos').textContent); }
+  const TIPOS_NO = ['pessoa', 'máquina', 'neutro'], TIPOS_ARESTA = ['avanço', 'recusa', 'volta'];
+  const erros = [];
+  const texto = (v, onde) => { if (typeof v !== 'string' || !v.trim()) erros.push(`${onde}: falta o texto`); };
+  texto(D.titulo, 'titulo'); texto(D.afirmacao, 'afirmacao');
+  for (const k of ['nos', 'arestas', 'grupos']) if (!Array.isArray(D[k])) erros.push(`${k}: falta a lista`);
+  if (!D.legenda || typeof D.legenda !== 'object') erros.push('legenda: falta o objeto');
+  if (!erros.length) {
+    const usados = new Set([...D.nos.map(n => n && n.tipo), ...D.arestas.map(a => a && a.tipo)]);
+    for (const k of ['pessoa', 'máquina', 'recusa', 'volta']) if (usados.has(k)) texto(D.legenda[k], `legenda.${k}`);
+    if (!D.nos.length) erros.push('nos: a lista está vazia');
+    const gids = new Set(D.grupos.map(g => g.id)), ids = new Set();
+    D.grupos.forEach((g, k) => { texto(g.id, `grupos[${k}].id`); texto(g.rotulo, `grupos[${k}].rotulo`); });
+    D.nos.forEach((n, k) => { const onde = `nos[${k}]` + (n && n.id ? ` (${n.id})` : '');
+      texto(n.id, onde + '.id'); if (ids.has(n.id) || gids.has(n.id)) erros.push(`${onde}: o id "${n.id}" se repete`); ids.add(n.id);
+      texto(n.titulo, onde + '.titulo');
+      if (!TIPOS_NO.includes(n.tipo)) erros.push(`${onde}.tipo: "${n.tipo}" não é ${TIPOS_NO.join(', ')}`);
+      if (!gids.has(n.grupo)) erros.push(`${onde}.grupo: o grupo "${n.grupo}" não existe em grupos`); });
+    D.arestas.forEach((a, k) => { const onde = `arestas[${k}] (${a.de} → ${a.para})`;
+      for (const lado of ['de', 'para']) if (!ids.has(a[lado])) erros.push(`${onde}: o passo "${a[lado]}" (em ${lado}) não existe em nos`);
+      if (!TIPOS_ARESTA.includes(a.tipo)) erros.push(`${onde}.tipo: "${a.tipo}" não é ${TIPOS_ARESTA.join(', ')}`); });
+  }
+  if (erros.length) throw Object.assign(new Error('o dado do diagrama não serve: ' + erros.join('; ')), { dados: erros });
+  const nos = D.nos, porId = Object.fromEntries(nos.map(n => [n.id, n]));
+
+  $('#sobretitulo').textContent = D.sobretitulo || '';
+  $('#titulo').textContent = D.titulo; document.title = D.titulo;
+  $('#legenda-texto').textContent = D.afirmacao;
+  $('#grafo').setAttribute('aria-label', D.afirmacao);
+
+  // A lista em texto, por grupo: o leitor de tela a lê; na tela estreita, ela é a figura.
+  //    No padrão do NHS Scotland: cada parte é uma âncora, e a ligação leva a ela pelo link.
+  const passos = $('#passos'), ancora = id => 'parte-' + String(id).replace(/[^\w-]/g, '_');
+  for (const g of D.grupos) {
+    passos.append(el('li', 'titulo-grupo', g.rotulo));
+    for (const n of nos.filter(n => n.grupo === g.id)) {
+      const li = el('li', ({ 'pessoa': 'pessoa', 'máquina': 'maquina' })[n.tipo] || ''); li.id = ancora(n.id);
+      li.append(el('b', null, (n.numero != null ? n.numero + '. ' : '') + n.titulo),
+        document.createTextNode([n.tecnologia ? `[${n.tecnologia}]` : '', n.subtitulo, n.selo].filter(Boolean).join('. ')));
+      passos.append(li);
+      for (const a of D.arestas.filter(a => a.de === n.id)) {
+        const v = el('li', 'liga' + (a.tipo === 'recusa' ? ' recusa' : ''));
+        v.append(document.createTextNode('→ ' + (a.rotulo ? a.rotulo + ': ' : '') + (a.tipo === 'avanço' ? 'segue para ' : 'volta a ')));
+        const ln = el('a', null, porId[a.para].titulo); ln.href = '#' + ancora(a.para); v.append(ln);
+        passos.append(v);
+      }
+    }
+  }
+  const css = getComputedStyle(document.documentElement), tok = n => parseFloat(css.getPropertyValue(n));
+
+  // A legenda: só os tipos usados, mais a caixa da fronteira.
+  const leg = $('#legenda');
+  const itemCor = (cls, txt) => { const li = el('li'); li.append(el('span', 'amostra ' + cls), el('span', null, txt)); return li; };
+  const itemFio = (cls, txt) => { const li = el('li'); const s = sv('svg', { class: 'amostra-fio', viewBox: '0 0 32 12' });
+    s.append(sv('line', { x1: 1, y1: 6, x2: 24, y2: 6, class: 'aresta ' + cls }), sv('path', { d: 'M22,1.5 L31,6 L22,10.5 z', class: 'ponta ' + cls }));
+    li.append(s, el('span', null, txt)); return li; };
+  const usa = t => nos.some(n => n.tipo === t) || D.arestas.some(a => a.tipo === t);
+  if (usa('pessoa')) leg.append(itemCor('pessoa', D.legenda['pessoa']));
+  if (usa('máquina')) leg.append(itemCor('maquina', D.legenda['máquina']));
+  if (D.legenda.grupo) leg.append(itemCor('grupo', D.legenda.grupo));
+  if (D.legenda.conteiner) leg.append(itemCor('conteiner', D.legenda.conteiner));
+  if (usa('recusa')) leg.append(itemFio('recusa', D.legenda.recusa));
+  if (usa('volta')) leg.append(itemFio('volta', D.legenda.volta));
+  if (window.matchMedia(`(max-width: ${tok('--largura-lista')}px)`).matches) {
+    document.documentElement.classList.add('estreita'); document.body.dataset.layout = 'lista'; document.body.dataset.pronto = '1'; return; }
+
+  // 2. Os cartões e os rótulos, medidos antes do layout.
+  const grafo = $('#grafo'), medida = el('div', 'medida'); grafo.append(medida);
+  const W = tok('--no-largura'), cartoes = {}, ALT = {};
+  for (const n of nos) {
+    const c = el('div', 'no ' + classeTipo(n.tipo) + (n.papel === 'entrada' ? ' entrada' : '')); c.dataset.id = n.id;
+    const topo = el('div', 'no-topo'), entrada = n.papel === 'entrada';
+    if (n.numero != null || entrada) topo.append(el('span', 'num', n.numero != null ? String(n.numero) : 'Entrada'));
+    if (!entrada) topo.append(el('h3', null, n.titulo));
+    c.append(topo); if (entrada) c.append(el('h3', null, n.titulo));
+    // a tecnologia do contêiner (regra do C4: todo contêiner diz com o que é feito), entre colchetes, como a notação pede
+    if (n.tecnologia) c.append(el('p', 'tecnologia', `[${n.tecnologia}]`));
+    if (n.subtitulo) c.append(el('p', null, n.subtitulo));
+    if (n.selo) c.append(el('span', 'selo', n.selo));
+    c.style.width = W + 'px'; medida.append(c); cartoes[n.id] = c;
+  }
+  await document.fonts.ready;
+  for (const [id, c] of Object.entries(cartoes)) { ALT[id] = Math.ceil(c.getBoundingClientRect().height); c.style.height = ALT[id] + 'px'; }
+  // a caixa do grupo não fica mais estreita que o rótulo dele (com o respiro dos dois lados)
+  const largGrupo = Object.fromEntries(D.grupos.map(g => { const e = el('div', 'rotulo-grupo', g.rotulo); medida.append(e);
+    return [g.id, Math.ceil(e.getBoundingClientRect().width) + 28]; }));
+  // A saída de decisão: o nó com duas ou mais setas rotuladas saindo (a pergunta e o "sim" e o "não"). O rótulo dela vai
+  // junto da saída da pergunta (TAIL no motor), e não no meio da seta, onde se lê com o destino. Não vale no C4, em que
+  // toda seta tem rótulo obrigatório e um contêiner com duas relações não é uma pergunta.
+  const saidasRot = {}; for (const a of D.arestas) if (a.rotulo) saidasRot[a.de] = (saidasRot[a.de] || 0) + 1;
+  const ehSaida = a => !D.c4 && !!a.rotulo && saidasRot[a.de] >= 2;
+  if (D.c4) document.body.dataset.c4 = '1';
+  const rotulos = D.arestas.map(a => { if (!a.rotulo) return null; const e = el('div', 'rotulo-aresta ' + classeAresta(a.tipo), a.rotulo); medida.append(e);
+    const b = e.getBoundingClientRect(); return { el: e, w: Math.ceil(b.width), h: Math.ceil(b.height) }; });
+
+  // 3. O motor: os grupos como nós compostos (a caixa da fronteira), as arestas na raiz. O ELK.js (0.9.3 e 0.12.1) devolve o cartão
+  //    relativo ao grupo e a seta relativa ao contêiner dela (`container`): o desenho soma o deslocamento (as opções
+  //    elk.json.shapeCoords e edgeCoords não valem nesta versão, conferido em 18/11).
+  const largura = grafo.parentElement.clientWidth;
+  const P = tok('--pad-grupo'), PT = tok('--pad-grupo-topo');
+  const grafoElk = dir => ({
+    id: 'raiz',
+    layoutOptions: {
+      'elk.algorithm': 'layered', 'elk.direction': dir, 'elk.edgeRouting': 'ORTHOGONAL',
+      'elk.hierarchyHandling': 'INCLUDE_CHILDREN',
+      'elk.layered.considerModelOrder.strategy': 'NODES_AND_EDGES', 'elk.layered.nodePlacement.strategy': 'NETWORK_SIMPLEX',
+      'elk.layered.spacing.nodeNodeBetweenLayers': String(tok('--esp-camada')), 'elk.spacing.nodeNode': String(tok('--esp-no')),
+      'elk.spacing.edgeEdge': String(tok('--esp-aresta')), 'elk.spacing.edgeNode': String(tok('--esp-aresta-no')),
+      'elk.layered.spacing.edgeNodeBetweenLayers': String(tok('--esp-aresta-no')), 'elk.spacing.edgeLabel': String(tok('--esp-rotulo')),
+      'elk.edgeLabels.placement': 'CENTER', 'elk.padding': '[top=4,left=4,bottom=4,right=4]',
+    },
+    children: D.grupos.map(g => ({ id: 'g:' + g.id,
+      layoutOptions: { 'elk.padding': `[top=${PT},left=${P},bottom=${P},right=${P}]`,
+        'elk.nodeSize.constraints': 'MINIMUM_SIZE', 'elk.nodeSize.minimum': `(${largGrupo[g.id]}, 0)` },
+      children: nos.filter(n => n.grupo === g.id).map(n => ({ id: n.id, width: W, height: ALT[n.id] })) })),
+    edges: D.arestas.map((a, i) => ({ id: 'a' + i, sources: [a.de], targets: [a.para],
+      labels: rotulos[i] ? [{ id: 'r' + i, text: a.rotulo, width: rotulos[i].w, height: rotulos[i].h,
+        layoutOptions: ehSaida(a) ? { 'elk.edgeLabels.placement': 'TAIL' } : {} }] : [] })),
+  });
+  const elk = new ELK();
+  const dirs = D.direcao ? [D.direcao] : ['RIGHT', 'DOWN'];
+  let L = null; const falhas = [];
+  for (const dir of dirs) {
+    let R; try { R = await elk.layout(grafoElk(dir)); } catch (e) { falhas.push(`${dir}: ${e.message || e}`); continue; }
+    if (!R.edges.every(e => e.sections && e.sections.length)) { falhas.push(`${dir}: aresta sem rota`); continue; }
+    if (R.width <= largura) { L = R; L.dir = dir; break; }
+    if (!L || R.width < L.width) { L = R; L.dir = dir; }
+  }
+  if (!L) throw new Error('o motor não desenhou o grafo: ' + falhas.join(' | '));
+  if (L.width > largura) throw new Error(`o grafo pede ${Math.ceil(L.width)} px e a coluna tem ${largura}: use "direcao": "DOWN", menos partes por grupo ou um cartão mais estreito`);
+  document.body.dataset.layout = JSON.stringify({ dir: L.dir, largura: Math.ceil(L.width) });
+  const dx = Math.max(0, Math.round((largura - L.width) / 2));
+  grafo.style.width = largura + 'px'; grafo.style.height = Math.ceil(L.height) + 'px';
+
+  // 4. O desenho: as caixas dos grupos, as setas, os cartões, os rótulos.
+  const svg = sv('svg', { width: largura, height: Math.ceil(L.height), 'aria-hidden': 'true' });
+  const defs = sv('defs');
+  for (const t of ['avanco', 'recusa', 'volta']) {
+    const m = sv('marker', { id: 'ponta-' + t, viewBox: '0 0 10 10', refX: 10, refY: 5, markerWidth: 9, markerHeight: 9, markerUnits: 'userSpaceOnUse', orient: 'auto' });
+    m.append(sv('path', { d: 'M0,1 L10,5 L0,9 z', class: 'ponta ' + t })); defs.append(m);
+  }
+  svg.append(defs); grafo.prepend(svg);
+  const rotulosGrupo = [];
+  for (const g of L.children) {
+    const box = el('div', 'caixa-grupo'); Object.assign(box.style, { left: (g.x + dx) + 'px', top: g.y + 'px', width: g.width + 'px', height: g.height + 'px' });
+    grafo.append(box);
+    const rot = el('div', 'rotulo-grupo', D.grupos.find(x => 'g:' + x.id === g.id).rotulo); rot.dataset.grupo = g.id;
+    grafo.append(rot); rotulosGrupo.push({ rot, g });
+    for (const c of g.children || []) { const k = cartoes[c.id]; k.style.left = (g.x + c.x + dx) + 'px'; k.style.top = (g.y + c.y) + 'px'; grafo.append(k); }
+  }
+  const RAIO = tok('--raio-curva');
+  const caminho = pts => { let d = `M${pts[0].x},${pts[0].y}`;
+    for (let k = 1; k < pts.length - 1; k++) { const a = pts[k - 1], b = pts[k], c = pts[k + 1];
+      const l1 = Math.hypot(b.x - a.x, b.y - a.y), l2 = Math.hypot(c.x - b.x, c.y - b.y), rr = Math.min(RAIO, l1 / 2, l2 / 2);
+      d += ` L${b.x - (b.x - a.x) / l1 * rr},${b.y - (b.y - a.y) / l1 * rr} Q${b.x},${b.y} ${b.x + (c.x - b.x) / l2 * rr},${b.y + (c.y - b.y) / l2 * rr}`; }
+    const z = pts[pts.length - 1]; return d + ` L${z.x},${z.y}`; };
+  const desloc = { raiz: { x: 0, y: 0 } }; for (const g of L.children) desloc[g.id] = { x: g.x, y: g.y };
+  for (const e of L.edges) {
+    const i = +e.id.slice(1), a = D.arestas[i], t = classeAresta(a.tipo), o = desloc[e.container] || desloc.raiz;
+    let pts = (e.sections || []).flatMap(s => [s.startPoint, ...(s.bendPoints || []), s.endPoint]).map(p => ({ x: p.x + o.x + dx, y: p.y + o.y }));
+    pts = pts.filter((p, k) => k === 0 || Math.hypot(p.x - pts[k - 1].x, p.y - pts[k - 1].y) > 0.5);
+    const path = sv('path', { d: caminho(pts), class: 'aresta ' + t, 'marker-end': `url(#ponta-${t})` });
+    Object.assign(path.dataset, { de: a.de, para: a.para, tipo: a.tipo, indice: String(i) });
+    svg.append(path);
+    const lb = (e.labels || [])[0];
+    if (rotulos[i] && lb) { const ro = rotulos[i].el; ro.style.left = (lb.x + o.x + dx) + 'px'; ro.style.top = (lb.y + o.y) + 'px'; ro.dataset.aresta = String(i); if (ehSaida(a)) ro.dataset.saida = '1'; grafo.append(ro); }
+  }
+  // O rótulo do grupo vai ao canto do topo que nenhuma seta cruza (a seta entra no grupo pelo topo, na altura do
+  // cartão de destino): primeiro o esquerdo, depois o direito; se as duas cruzam, o do pé, à esquerda e à direita.
+  const pontos = [...svg.querySelectorAll('path.aresta')].flatMap(p => { const t = p.getTotalLength(), out = [];
+    for (let s = 0; s <= t; s += 2) out.push(p.getPointAtLength(s)); return out; });
+  for (const { rot, g } of rotulosGrupo) {
+    const w = rot.offsetWidth, h = rot.offsetHeight, x0 = g.x + dx, y0 = g.y;
+    const cands = [[x0 + 14, y0 + 12], [x0 + g.width - 14 - w, y0 + 12], [x0 + 14, y0 + g.height - 12 - h], [x0 + g.width - 14 - w, y0 + g.height - 12 - h]];
+    const livre = ([x, y]) => !pontos.some(p => p.x > x - 2 && p.x < x + w + 2 && p.y > y - 2 && p.y < y + h + 2);
+    let pos = cands.find(livre);
+    if (!pos) { // o último recurso: deitado na lateral esquerda, onde a seta não entra (ela entra pelo topo ou pelo lado do fluxo)
+      rot.classList.add('lateral'); const wl = rot.offsetWidth, hl = rot.offsetHeight;
+      pos = [x0 + 4, y0 + Math.max(12, (g.height - hl) / 2)]; if (hl > g.height - 24) { rot.classList.remove('lateral'); pos = cands[0]; }
+      void wl; }
+    rot.style.left = pos[0] + 'px'; rot.style.top = pos[1] + 'px';
+  }
+  medida.remove();
+  document.body.dataset.pronto = '1';
+})().catch(err => {
+  document.body.dataset.pronto = 'erro'; document.body.dataset.erro = String(err && err.stack || err); console.error(err);
+  const fig = document.querySelector('#figura'), box = document.createElement('div'); box.className = 'erro-diagrama'; box.setAttribute('role', 'alert');
+  const b = document.createElement('b'); b.textContent = 'O diagrama não saiu.'; box.append(b);
+  const ul = document.createElement('ul'); for (const t of (err && err.dados) || [String(err && err.message || err)]) { const li = document.createElement('li'); li.textContent = t; ul.append(li); }
+  box.append(ul); fig.querySelectorAll('.grafo').forEach(e => e.remove()); fig.append(box);
+});
+</script>
+<script>
+/* Dentro de um iframe (o onboarding do projeto embute os diagramas), a página diz a altura dela ao pai quando fica pronta
+   e quando muda de largura, para o iframe crescer sem barra de rolagem. Por postMessage, que vale também em file://. */
+(function () {
+  if (window.parent === window) return;
+  const avisar = () => parent.postMessage({ diagrama: 'altura', altura: document.documentElement.scrollHeight }, '*');
+  new MutationObserver(() => { if (document.body.dataset.pronto) avisar(); })
+    .observe(document.body, { attributes: true, attributeFilter: ['data-pronto'] });
+  window.addEventListener('resize', () => { if (document.body.dataset.pronto) avisar(); });
+})();
+</script>
+</body>
+</html>

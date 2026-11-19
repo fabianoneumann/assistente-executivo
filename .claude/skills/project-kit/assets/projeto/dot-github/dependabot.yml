@@ -1,0 +1,21 @@
+# O Dependabot só de segurança (knowledge/versao-e-dependencias.md):
+# - "open-pull-requests-limit: 0" desliga as atualizações de versão. As de segurança não contam nesse limite e não têm
+#   agenda: o PR abre quando nasce um alerta. O "schedule" é obrigatório no formato, mas só rege as de versão.
+# - Este arquivo não liga as de segurança: isso é a opção "Dependabot security updates" do repositório.
+# - Sem "groups": um PR por pacote, uma triagem, um commit de squash.
+# - Sem responsável por padrão: quem acompanha o repositório (o dono, que nasce com o watch ligado) já recebe o alerta
+#   e o PR por e-mail. O --responsavel do montar.py acrescenta o assignees, quando a equipe quer um nome.
+version: 2
+updates:
+  - package-ecosystem: {{ECOSSISTEMA}}
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+{{ASSIGNEES}}
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+{{ASSIGNEES}}

@@ -1,0 +1,22 @@
+[
+  {"query": "antes de travar o texto do carrossel sobre automação de atendimento, roda a passada de enriquecimento na camada de texto", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "o que a nossa base de conhecimento diria sobre o arco desse post? tem alguma técnica que a gente não está usando?", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "itera esse roteiro trazendo mais um ponto de vista, com o que a gente já estudou na base", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "estamos deixando de usar alguma coisa da base nas imagens do post B? olha a coluna de conceitos", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "passa um olho de método na forma das telas, pela base, antes de eu ver a prévia", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "na cena de abertura do vídeo, o que a base ensina sobre som e efeito que podia entrar?", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "minha aula de integração está pronta, mas quero ver se a base tem algo de storytelling que eu não apliquei na progressão", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "enriquece os Stories de quinta com o que a gente sabe de dispositivos, sem mexer no que já travou", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "qual técnica de movimento de câmera da base caberia na troca da estação 2 para a 3 do vídeo?", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "o roteiro da palestra do evento de março podia usar mais da base? faz uma passada no arco", "should_trigger": true, "esperada": "base-enrichment"},
+  {"query": "revisa esse texto do carrossel e acha os problemas antes de eu ler", "should_trigger": false, "esperada": "review"},
+  {"query": "pesquisa dados recentes sobre adoção de IA no trabalho para embasar o post", "should_trigger": false, "esperada": "research"},
+  {"query": "escreve o texto das telas do post A a partir da escaleta", "should_trigger": false, "esperada": "piece-script"},
+  {"query": "deixa a tela 4 mais forte, ela está meio vazia", "should_trigger": false, "esperada": "visual-form"},
+  {"query": "faz o post da semana inteiro, do ângulo à prévia", "should_trigger": false, "esperada": "piece-creation"},
+  {"query": "gera uma ilustração a lápis de um teletipo dos anos 60", "should_trigger": false, "esperada": "image-gen"},
+  {"query": "ingere esse artigo sobre roteiro de vídeo curto na base de conhecimento", "should_trigger": false, "esperada": "research"},
+  {"query": "acha um ângulo para a ideia sobre chatbots de atendimento virar pauta", "should_trigger": false, "esperada": "story-angle"},
+  {"query": "exporta o carrossel e confere as telas em código", "should_trigger": false, "esperada": "slides-export"},
+  {"query": "anota essa ideia: um post sobre o que a base de conhecimento do assistente aprendeu", "should_trigger": false, "esperada": "idea-capture"}
+]

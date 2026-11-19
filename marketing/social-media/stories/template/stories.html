@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stories: modelo em flexbox (copiar para a pasta da sequência)</title>
+<link rel="stylesheet" href="../../carousels/series/exemplo/design/caderno.css">
+<script src="../../carousels/series/exemplo/design/caderno.js"></script>
+<link rel="stylesheet" href="../adesivos.css">
+<style>
+  /* Modelo de sequência de Stories. Como usar: copiar este arquivo para stories/AAAA-MM-DD-<tema>/, renomear para
+     stories.html (os caminhos relativos já valem a partir de lá), trocar o texto e apagar as telas que sobram. Os
+     caminhos apontam para a série de exemplo: troque "exemplo" pelo nome da série da sequência. Tudo o que é da série
+     vem do caderno.css dela; aqui só o que é de Stories:
+     - 1080 x 1920 no papel da série (tipo-a ou tipo-b);
+     - o texto essencial fica na área segura, de y 192 a 1802 e de x 32 a 1048 (stories/README.md): a coluna começa em
+       192 e termina a 118 px do pé; nas telas com adesivo, termina antes dele;
+     - corpo de 40 a 46 px, título de 76 a 80 px, um tamanho por papel em cada tela; o negrito marca as palavras-chave,
+       o marca-texto só a frase para levar, no máximo uma por tela;
+     - cada tela declara o adesivo em data-adesivo (enquete, caixinha, reacao, barra), que a prévia simula;
+     - os desenhos de enfeite ficam fora da coluna, em posição fixa, onde não há texto (o espacos.py mede os vazios). */
+  #stage{height:1920px}
+  .slide{height:1920px}
+  .coluna{left:96px;right:96px}
+  .titulo{font-size:80px;line-height:96px}
+  .slide .corpo{font-size:44px;line-height:48px}
+  .slide .nota{font-size:44px;line-height:48px}
+  .desenho{position:absolute;transform:translateX(-50%) rotate(var(--giro,0deg)) scaleX(var(--vira,1))}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1. abertura com enquete: a pergunta em cima, a enquete na posição padrão do app (783 a 1137; --adesivo-top muda), o desenho embaixo -->
+<section class="slide tipo-b s1 active" data-adesivo="enquete" style="--adesivo-top:783px">
+  <div class="coluna" style="top:192px;bottom:1200px">
+    <h1 class="bloco titulo">A pergunta que abre a sequência, com a <span class="marca">frase para levar</span>?</h1>
+  </div>
+  <!-- <img class="desenho" src="assets/desenho.png" alt="" style="left:540px;top:1200px;width:400px"> -->
+</section>
+
+<!-- 2. tela densa: título, dois parágrafos e a nota, numa coluna só; os respiros repartem o que sobra (peso em --w) -->
+<section class="slide tipo-b s2">
+  <div class="coluna" style="top:192px;bottom:118px">
+    <h2 class="bloco titulo">O título da tela densa, em duas linhas.</h2>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco corpo"><b>A palavra-chave</b> em negrito para quem passa os olhos, e a explicação curta para quem lê.</p>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco corpo">O segundo parágrafo. Uma ideia por tela; o que não cabe vai para a próxima, não para o corpo menor.</p>
+    <span class="respiro" style="--w:2"></span>
+    <p class="bloco nota">A nota que puxa a próxima tela.</p>
+  </div>
+</section>
+
+<!-- 3. fecho com caixinha: o texto termina antes da caixinha (744 a 1176 na posição padrão) -->
+<section class="slide tipo-b s3" data-adesivo="caixinha">
+  <div class="coluna" style="top:192px;bottom:1220px">
+    <p class="bloco titulo">O pedido, em uma frase.</p>
+    <span class="respiro" style="--w:1"></span>
+    <p class="bloco corpo">O que a pessoa ganha ao responder.</p>
+  </div>
+</section>
+
+</div>
+</body>
+</html>

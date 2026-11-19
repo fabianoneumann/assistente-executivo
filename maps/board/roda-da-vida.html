@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roda da Vida</title>
+<link rel="stylesheet" href="tokens.css">
+</head>
+<body>
+<main>
+  <p><a href="index.html">Quadro de mapas</a></p>
+  <h1>Roda da Vida</h1>
+  <p class="nota">Modelo em branco. Para um retrato, o assistente copia esta página, troca as áreas e as notas abaixo pelas do arquivo <code>maps/roda-da-vida/AAAA-MM-DD.md</code> e grava ao lado, como <code>roda-da-vida-AAAA-MM-DD.html</code>.</p>
+  <div class="figura"><svg id="roda" viewBox="-170 0 980 640" role="img" aria-labelledby="roda-titulo"><title id="roda-titulo">Roda da Vida em branco</title></svg></div>
+</main>
+<script>
+// A fonte desta página: as áreas e as notas do retrato (em branco no modelo). Nota ausente é null, e não zero.
+const AREAS = ["Saúde e disposição", "Equilíbrio emocional", "Desenvolvimento intelectual", "Finanças",
+  "Carreira e propósito", "Contribuição", "Família", "Relacionamento amoroso", "Vida social",
+  "Lazer e criatividade", "Espiritualidade"];
+const NOTAS = AREAS.map(() => null);
+
+const NS = "http://www.w3.org/2000/svg";
+const svg = document.getElementById("roda");
+const C = 320, R = 220, cores = ["--q1", "--q2", "--q3", "--q4"];
+const el = (tag, attrs, pai = svg) => { const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v); pai.appendChild(e); return e; };
+const ponto = (i, r) => { const a = -Math.PI / 2 + (i / AREAS.length) * 2 * Math.PI;
+  return [C + r * Math.cos(a), C + r * Math.sin(a)]; };
+
+for (let n = 2; n <= 10; n += 2) el("circle", { cx: C, cy: C, r: R * n / 10, fill: "none", stroke: "var(--grade)", "stroke-width": 1 });
+AREAS.forEach((area, i) => {
+  const [x0, y0] = ponto(i, R), [x1, y1] = ponto(i + 1, R);
+  const cor = `var(${cores[i % cores.length]})`;
+  el("path", { d: `M${C},${C} L${x0},${y0} A${R},${R} 0 0 1 ${x1},${y1} Z`, fill: cor, "fill-opacity": 0.08, stroke: "var(--linha)", "stroke-width": 1 });
+  const nota = NOTAS[i];
+  if (nota !== null) {
+    const r = R * nota / 10, [a0, b0] = ponto(i, r), [a1, b1] = ponto(i + 1, r);
+    el("path", { d: `M${C},${C} L${a0},${b0} A${r},${r} 0 0 1 ${a1},${b1} Z`, fill: cor, "fill-opacity": 0.55 });
+  }
+  const [lx, ly] = ponto(i + 0.5, R + 30);
+  const t = el("text", { x: lx, y: ly, "text-anchor": lx < C - 10 ? "end" : lx > C + 10 ? "start" : "middle",
+    "dominant-baseline": "middle", "font-size": 16 });
+  t.textContent = area;
+});
+for (let n = 2; n <= 10; n += 2) { const t = el("text", { x: C + 4, y: C - R * n / 10 + 12, "font-size": 10, fill: "var(--apoio)" }); t.textContent = n; }
+</script>
+</body>
+</html>

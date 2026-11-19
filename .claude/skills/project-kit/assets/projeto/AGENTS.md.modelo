@@ -1,0 +1,5 @@
+# AGENTS.md
+
+As instruções deste repositório estão no `CLAUDE.md`, a fonte única. Leia-o antes de qualquer tarefa, e o `knowledge/index.md` para saber o que mais abrir.
+
+As travas de `.claude/` valem só no Claude Code. No Codex e em qualquer outro agente valem as do git (`.githooks/`, ligadas por `python .githooks/hooks.py instalar`) e o CI, e o fluxo do `CLAUDE.md` vale do mesmo jeito, menos o `/code-review` do passo 5, que é do Claude Code: no Codex, a revisão de código dele.

@@ -1,0 +1,38 @@
+{
+  "name": "assistente-executivo",
+  "owner": {
+    "name": "assistente-executivo"
+  },
+  "metadata": {
+    "description": "O ambiente do assistente executivo como plugin: as treze skills e os dois agentes deste repositório, para instalar noutro projeto.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "assistente-executivo",
+      "source": "./",
+      "description": "Skills de captura de ideia, revisão, apuração, pesquisa, imagem, bucket R2 a família de produção de peças para o Instagram e o kit de projeto de software novo. As com chave só rodam depois de configurada a chave de quem usa (ver README).",
+      "version": "0.1.0",
+      "strict": false,
+      "skills": [
+        "./.claude/skills/idea-capture",
+        "./.claude/skills/review",
+        "./.claude/skills/story-angle",
+        "./.claude/skills/research",
+        "./.claude/skills/image-gen",
+        "./.claude/skills/r2-storage",
+        "./.claude/skills/piece-creation",
+        "./.claude/skills/piece-script",
+        "./.claude/skills/base-enrichment",
+        "./.claude/skills/visual-form",
+        "./.claude/skills/object-anatomy",
+        "./.claude/skills/slides-export",
+        "./.claude/skills/project-kit"
+      ],
+      "agents": [
+        "./agents/base-enrichment.md",
+        "./agents/object-anatomy.md"
+      ]
+    }
+  ]
+}

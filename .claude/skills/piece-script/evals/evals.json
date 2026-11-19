@@ -1,0 +1,73 @@
+{
+  "skill_name": "piece-script",
+  "notes": [
+    "Três casos genéricos, um por formato. Cada um traz os campos das boas práticas da Anthropic (query, files, expected_behavior) e os da skill-creator (id, prompt, expected_output, expectations): prompt repete query, e expectations repete expected_behavior.",
+    "Os arquivos de entrada não vêm no repositório: quem roda o caso monta antes, numa cópia do projeto, a pauta com o ângulo e os não escolhidos (carrossel), a moldura da sequência e as respostas no originals/ (Stories) ou a escaleta aprovada (cena), e as fichas em knowledge/sources/ que sustentam cada fato.",
+    "Esta pasta evals/ não vai à cópia em que a skill roda: ela traz o gabarito, e o agente da rodada não pode tê-lo ao alcance.",
+    "Regras comuns: corte na trava do texto; as paradas respondidas por uma escolha gravada antes; quem avalia não rodou."
+  ],
+  "evals": [
+    {
+      "id": 1,
+      "name": "carrossel-avulso-ate-a-trava",
+      "query": "faz o roteiro do carrossel avulso a partir da pauta que está no arquivo da ideia, até a trava do texto",
+      "prompt": "faz o roteiro do carrossel avulso a partir da pauta que está no arquivo da ideia, até a trava do texto",
+      "files": ["marketing/social-media/ideas/<a-ideia-com-estagio-pauta>.md", "knowledge/sources/<as-fichas-da-pauta>.md"],
+      "expected_output": "A escaleta N2 do carrossel (cabeça, telas com os campos comuns e do formato, pé), a coluna do que aparece e o texto das telas, revisados e travados, sem slides.html nem imagem gerada.",
+      "expected_behavior": [
+        "A escaleta vem antes do texto, com Promete e Paga em em rótulos próprios em toda tela.",
+        "Toda fala entre aspas tem a ficha própria com o verbatim, ou fica fora das aspas.",
+        "Cada ponto dos ângulos não escolhidos vai à peça a que serve, com a unidade de lá, ou fica fora com o porquê.",
+        "A coluna do que aparece nomeia um arquivo do banco em cada tela, ou o porquê de gerar.",
+        "A revisão roda pela skill review antes de pedir o ok da trava."
+      ],
+      "expectations": [
+        "A escaleta vem antes do texto, com Promete e Paga em em rótulos próprios em toda tela.",
+        "Toda fala entre aspas tem a ficha própria com o verbatim, ou fica fora das aspas.",
+        "Cada ponto dos ângulos não escolhidos vai à peça a que serve, com a unidade de lá, ou fica fora com o porquê.",
+        "A coluna do que aparece nomeia um arquivo do banco em cada tela, ou o porquê de gerar.",
+        "A revisão roda pela skill review antes de pedir o ok da trava."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "stories-de-resposta-n1",
+      "query": "chegaram as respostas da caixinha, estão no originals da pasta da sequência de ontem. faz o roteiro dos Stories de resposta",
+      "prompt": "chegaram as respostas da caixinha, estão no originals da pasta da sequência de ontem. faz o roteiro dos Stories de resposta",
+      "files": ["marketing/social-media/stories/<a-sequencia-de-origem>/roteiro.md", "marketing/social-media/stories/<a-sequencia-de-origem>/originals/"],
+      "expected_output": "O roteiro.md da sequência de resposta em N1, com o critério de escolha escrito antes das respostas e o 'não se aplica, porque…' nos campos fora do nível.",
+      "expected_behavior": [
+        "O critério de escolha está escrito antes de ler as respostas, ou vem da sequência de origem com a linha citada.",
+        "Nenhum @ nem texto integral de resposta sai do originals/.",
+        "Nenhum desenho repete o que foi ao ar no post do dia nem na sequência de origem, sem exceção por motivo escrito.",
+        "Os campos fora do N1 saem com o 'não se aplica, porque…', nenhum some."
+      ],
+      "expectations": [
+        "O critério de escolha está escrito antes de ler as respostas, ou vem da sequência de origem com a linha citada.",
+        "Nenhum @ nem texto integral de resposta sai do originals/.",
+        "Nenhum desenho repete o que foi ao ar no post do dia nem na sequência de origem, sem exceção por motivo escrito.",
+        "Os campos fora do N1 saem com o 'não se aplica, porque…', nenhum some."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "cena-com-voz-a-folha",
+      "query": "escreve a folha desta cena com narração, a partir da escaleta aprovada",
+      "prompt": "escreve a folha desta cena com narração, a partir da escaleta aprovada",
+      "files": ["<a-pasta-da-cena>/escaleta.md"],
+      "expected_output": "A folha da cena (tela, fala e som por linha, com o tempo), sem gerar voz, sem gravar vídeo e sem bucket.",
+      "expected_behavior": [
+        "A coluna da tela vem antes da fala (o roteiro silencioso).",
+        "Cada frase de voz tem o tipo (S, F, A, C ou R), e nenhuma R fora da exceção do rótulo curto ou do emblema no fio; o desenho literal que entra na palavra conta como R.",
+        "Há uma deixa de som por acontecimento.",
+        "A fala está escrita para o ouvido, com o tempo de cada frase."
+      ],
+      "expectations": [
+        "A coluna da tela vem antes da fala (o roteiro silencioso).",
+        "Cada frase de voz tem o tipo (S, F, A, C ou R), e nenhuma R fora da exceção do rótulo curto ou do emblema no fio; o desenho literal que entra na palavra conta como R.",
+        "Há uma deixa de som por acontecimento.",
+        "A fala está escrita para o ouvido, com o tempo de cada frase."
+      ]
+    }
+  ]
+}

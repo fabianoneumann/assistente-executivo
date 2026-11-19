@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.production)",
+      "Bash(git * --no-verify*)",
+      "Bash(git commit -n*)",
+      "Bash(git config --unset core.hooksPath*)",
+      "Bash(git config --unset-all core.hooksPath*)",
+      "Bash(git -c core.hooksPath*)",
+      "PowerShell(git * --no-verify*)",
+      "PowerShell(git commit -n*)",
+      "PowerShell(git config --unset core.hooksPath*)",
+      "PowerShell(git config --unset-all core.hooksPath*)",
+      "PowerShell(git -c core.hooksPath*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(gh pr create *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-create",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "Bash(gh pr new *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-create",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "Bash(gh pr merge *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-merge",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "Bash(git commit *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" commit",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "Bash(git -C * commit *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" commit",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "PowerShell(gh pr create *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-create",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(gh pr new *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-create",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(gh pr merge *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" pr-merge",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(git commit *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" commit",
+            "timeout": 30
+          },
+          {
+            "type": "command",
+            "if": "PowerShell(git -C * commit *)",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/fluxo.sh\" commit",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  }
+}

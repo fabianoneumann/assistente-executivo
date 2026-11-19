@@ -1,0 +1,23 @@
+{
+ "skill_name": "visual-form",
+ "notes": [
+  "Um caso genérico sobre a série de exemplo: roda numa cópia limpa do repositório, sem esta pasta evals/, sem chave de geração (o lugar da imagem fica marcado) e sem --upload."
+ ],
+ "evals": [
+  {
+   "id": 1,
+   "name": "segundo-post-da-serie-de-exemplo",
+   "prompt": "Use a skill visual-form. Na série de exemplo, crie a pasta marketing/social-media/carousels/series/exemplo/2099-01-01_teste com um texto.md travado de três telas (escreva você: capa, uma tela de conteúdo com uma nota e uma tela de chamada, no formato do exemplo-de-post/texto.md, com a linha \"Texto travado em\" num refinamentos.md) e faça a forma até a prévia, a partir do exemplo-de-post. Sem imagem gerada, sem --upload, sem git. No fim, diga o estado, os arquivos e as conferências.",
+   "expected_output": "O slides.html da pasta com três telas no design system da série de exemplo, as conferências da forma em 0 ERRO e nenhuma palavra fora do texto travado; a I2 registrada como \"não se aplica\" se não houver publicada do mesmo tipo.",
+   "files": [
+    "marketing/social-media/carousels/series/exemplo/"
+   ],
+   "expectations": [
+    "conferir_telas.py e medir_blocos.py em 0 ERRO no slides.html final, reconferidos por quem conduz",
+    "nenhum AVISO texto_fora_do_travado no slides.html final",
+    "o CSS da peça só posiciona: nenhuma cor, letra ou tamanho novo fora do caderno.css",
+    "o bloco da forma no refinamentos.md, com a I2 dita como feita ou como não se aplica"
+   ]
+  }
+ ]
+}

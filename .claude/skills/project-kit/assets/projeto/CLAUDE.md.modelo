@@ -1,0 +1,57 @@
+# {{NOME}}
+
+{{DESCRICAO}}
+
+Este arquivo é o **roteador** do repositório: diz o que ler e quando. O conhecimento fica em `knowledge/`, carregado sob demanda (entrada: `knowledge/index.md`); o porquê de cada regra daqui está em `knowledge/processo.md` e em `knowledge/travas.md`.
+
+## Onde as coisas moram
+
+- `knowledge/`: a base, no padrão LLM Wiki. A arquitetura, o plano, as decisões (`knowledge/decisions/NNN-slug.md`) e o log. As regras de operação estão em `knowledge/README.md`.
+- `onboarding/`: as páginas de quem chega ao projeto, em HTML com os diagramas em SVG, abertas no navegador. Mudam na mesma entrega que a regra que desenham. Em `onboarding/diagramas/`, o dado de cada diagrama é o bloco JSON dentro da própria página (`<script type="application/json">`); muda-se o bloco, e o CI confere o esquema dele (`onboarding/diagramas/esquema.py`).
+- `docs/`: só a operação do sistema (rodar, implantar, diagnosticar), quando ela existir.
+- `.github/`: os modelos de issue e de PR, o CI, o Dependabot e as notas da versão.
+- `.claude/` e `.githooks/`: as travas do fluxo (`knowledge/travas.md`).
+
+## Regras do projeto
+
+- **Não inventar.** O que se afirma sobre o sistema vem do código ou da base. Sem fonte, vira item do campo "A decidir" da issue.
+- **A base validada antes do commit.** O agente só commita o que muda em `knowledge/` ou em `onboarding/` depois de a pessoa ler o texto e dizer ok na conversa. Não há trava no hook: a regra é esta linha.
+- **Knowledge-in-the-loop.** A entrega que contraria a base corrige a base na mesma entrega, e isso entra no "Pronto quando".
+- **Decisão de arquitetura ou de ferramental** vira ADR em `knowledge/decisions/NNN-slug.md`, pelo `000-modelo.md`.
+- **Pastas em inglês,** conteúdo em português.
+- **Sem credencial no repositório.** Ela fica no `.env` local, e o `.env.example` vai sem valor real.
+- **Sem caminho absoluto.** Outro repositório se cita pelo nome.
+- **Teto de ~150 linhas** por arquivo markdown, menos o `knowledge/log.md` e o `knowledge/index.md`.
+
+## Stack e comandos
+
+A stack é {{STACK_DESCRICAO}} (ADR 001), e o ferramental está no ADR 002.
+
+- `{{CMD_INSTALAR}}`: instala as dependências.
+- `{{CMD_FORMATAR}}` e `{{CMD_FORMATAR_CHECK}}`: formata, e confere o formato.
+- `{{CMD_LINT}}`: o lint.
+- `{{CMD_TESTES}}`: os testes.
+- `{{CMD_SMOKE}}`: o smoke, que roda em todo PR.
+- `{{CMD_E2E}}`: a bateria inteira, antes de cada versão.
+- `python .githooks/hooks.py instalar`: liga os hooks do git neste clone, uma vez por clone.
+
+## O fluxo por issue, nesta ordem
+
+O porquê de cada passo está em `knowledge/processo.md`. Aqui fica a sequência, que é o que se esquece.
+
+1. **Discussão inicial:** confrontar a spec com o código e a base de hoje. Fica pronta quando dá para escrever o plano sem adivinhar.
+2. **Plano** a partir da issue, e o aceite da pessoa.
+3. **Branch `<issue>-<tema>`** a partir de `{{BASE}}`, numa worktree.
+4. **Implementar.**
+5. **`/code-review`** sobre a branch.
+6. **Validação da entrega** contra o "Pronto quando", com a exploratória, antes do PR.
+7. **Sincronizar com `{{BASE}}`** (`git fetch` e `git merge origin/{{BASE}}`), fazer o push e abrir o PR com `Closes #N` (ou `Refs #N`, numa etapa) e o modelo preenchido.
+8. **Marcar as divergências** no PR e ajustar as issues relacionadas. Se `{{BASE}}` andou, sincronizar de novo. O **merge é por squash**, assim que o CI passa e a entrega está validada.
+
+**Como o agente abre e fecha o PR.** O `gh pr create --body-file <arquivo>` leva o `.github/PULL_REQUEST_TEMPLATE.md` preenchido, gravado fora do repositório. O `gh pr create` e o `gh pr merge` rodam cada um numa chamada própria, sozinhos na linha; o push e o corpo vão em chamadas antes. O hook recusa o que falta e diz o quê (`knowledge/travas.md`).
+
+**A versão.** Quando as portas passam (o CI verde no `{{BASE}}`, a bateria do `{{CMD_E2E}}` e as notas conferidas), o agente cria a tag anotada `vX.Y.Z` no `{{BASE}}` e a envia. [kit:conta=org]A regra de tag do GitHub impede movê-la ou apagá-la.[kit:fim][kit:conta=user]**A tag publicada não se move nem se apaga;** o erro se corrige com a versão seguinte. Esta linha é a regra: na conta pessoal, o repositório privado não tem a regra de tag do GitHub sem o plano Pro, e o kit não a cria.[kit:fim] O detalhe está em `knowledge/versao-e-dependencias.md`.
+
+**A issue.** Antes de abrir, buscar a mesma ideia nas issues abertas e nas fechadas. Ela nasce pelo modelo de `.github/ISSUE_TEMPLATE/` (spec ou defeito), com `gh issue create --body-file`. A prioridade, a milestone, o "blocked by" e a busca "o que pegar agora" estão em `knowledge/metadados.md`.
+
+**A revisão.** As correções de uma rodada de revisão entram num commit só, e não um por achado.

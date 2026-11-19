@@ -1,0 +1,188 @@
+{
+ "modelo": "grafo",
+ "direcao": "DOWN",
+ "titulo": "Contêineres: o projeto de exemplo do kit",
+ "sobretitulo": "Arquitetura (C4, nível de contêiner)",
+ "afirmacao": "O projeto de exemplo do kit em contêineres: quem usa chama a API, que lê e grava no banco; quem desenvolve pede ao agente, e o trabalho passa pelas travas do agente e do git antes de chegar ao repositório, onde o CI confere e a versão sai. O Dependabot só abre o PR de segurança. Os grupos fazem o papel das fronteiras.",
+ "grupos": [
+  {
+   "id": "pessoas",
+   "rotulo": "Quem usa e quem desenvolve"
+  },
+  {
+   "id": "maquina",
+   "rotulo": "Na máquina de quem desenvolve"
+  },
+  {
+   "id": "github",
+   "rotulo": "No GitHub"
+  },
+  {
+   "id": "producao",
+   "rotulo": "Onde o sistema roda"
+  }
+ ],
+ "nos": [
+  {
+   "id": "dev",
+   "numero": null,
+   "titulo": "Quem desenvolve",
+   "subtitulo": "Escreve a issue, decide o plano e valida",
+   "selo": null,
+   "tipo": "pessoa",
+   "grupo": "pessoas"
+  },
+  {
+   "id": "agente",
+   "numero": null,
+   "titulo": "O agente",
+   "subtitulo": "Roda no clone do repositório",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "maquina",
+   "tecnologia": "Claude Code"
+  },
+  {
+   "id": "travas-agente",
+   "numero": null,
+   "titulo": "As travas do agente",
+   "subtitulo": "O hook do fluxo e o deny das permissões",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "maquina",
+   "tecnologia": "Python, hook do Claude Code"
+  },
+  {
+   "id": "githooks",
+   "numero": null,
+   "titulo": "Os hooks do git",
+   "subtitulo": "pre-commit e pre-push, para pessoas e agentes",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "maquina",
+   "tecnologia": "Python, hooks do git"
+  },
+  {
+   "id": "repo",
+   "numero": null,
+   "titulo": "O repositório",
+   "subtitulo": "As issues, os PRs, o main e as tags",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "github",
+   "tecnologia": "GitHub"
+  },
+  {
+   "id": "ci",
+   "numero": null,
+   "titulo": "O CI",
+   "subtitulo": "Formato, log, testes e smoke",
+   "selo": "Recusa",
+   "tipo": "máquina",
+   "grupo": "github",
+   "tecnologia": "GitHub Actions"
+  },
+  {
+   "id": "dependabot",
+   "numero": null,
+   "titulo": "O Dependabot",
+   "subtitulo": "Só os alertas de segurança",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "github",
+   "tecnologia": "GitHub Dependabot"
+  },
+  {
+   "id": "usuario",
+   "numero": null,
+   "titulo": "Quem usa o sistema",
+   "subtitulo": "Pelo navegador ou por outro sistema",
+   "selo": null,
+   "tipo": "pessoa",
+   "grupo": "pessoas"
+  },
+  {
+   "id": "api",
+   "numero": null,
+   "titulo": "A API",
+   "subtitulo": "A interface do sistema, com o /health",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "producao",
+   "tecnologia": "Python, FastAPI"
+  },
+  {
+   "id": "banco",
+   "numero": null,
+   "titulo": "O banco",
+   "subtitulo": "Onde o dado mora e de onde se recupera",
+   "selo": null,
+   "tipo": "neutro",
+   "grupo": "producao",
+   "tecnologia": "banco relacional"
+  }
+ ],
+ "arestas": [
+  {
+   "de": "dev",
+   "para": "agente",
+   "rotulo": "pede a tarefa pela conversa",
+   "tipo": "avanço"
+  },
+  {
+   "de": "agente",
+   "para": "travas-agente",
+   "rotulo": "cada comando",
+   "tipo": "avanço"
+  },
+  {
+   "de": "travas-agente",
+   "para": "githooks",
+   "rotulo": "commit liberado",
+   "tipo": "avanço"
+  },
+  {
+   "de": "githooks",
+   "para": "repo",
+   "rotulo": "push liberado",
+   "tipo": "avanço"
+  },
+  {
+   "de": "repo",
+   "para": "ci",
+   "rotulo": "dispara a cada push e PR",
+   "tipo": "avanço"
+  },
+  {
+   "de": "dependabot",
+   "para": "repo",
+   "rotulo": "PR de segurança",
+   "tipo": "avanço"
+  },
+  {
+   "de": "ci",
+   "para": "api",
+   "rotulo": "entrega a versão aprovada",
+   "tipo": "avanço"
+  },
+  {
+   "de": "usuario",
+   "para": "api",
+   "rotulo": "faz o pedido por HTTPS",
+   "tipo": "avanço"
+  },
+  {
+   "de": "api",
+   "para": "banco",
+   "rotulo": "lê e grava por SQL",
+   "tipo": "avanço"
+  }
+ ],
+ "legenda": {
+  "pessoa": "uma pessoa",
+  "máquina": "uma trava, que recusa e diz o que falta",
+  "grupo": "uma fronteira",
+  "conteiner": "um contêiner, com a tecnologia entre colchetes"
+ },
+ "c4": "contêiner"
+}

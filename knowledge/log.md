@@ -1,0 +1,21 @@
+# Log da base de conhecimento
+
+Registro só de acréscimo: ingestões, consultas arquivadas e passes de lint. O prefixo é fixo para ficar fácil de ler por máquina: `grep "^## \[" log.md | tail`.
+
+Formato: `## [AAAA-MM-DD] <tipo> | <assunto>`, seguido de um parágrafo com o que entrou, de onde veio, a rota que funcionou quando a fonte não abriu de primeira, e o que ficou de fora e por quê. Tipos: **`setup`** (mudança na estrutura da base) · **`ingest`** (fontes novas e síntese) · **`enrich`** (aprofunda uma página existente) · **`top-up`** (atualiza os números de uma síntese) · **`nota`** (síntese de discussão, sem pesquisa de fora) · **`pauta`** (apuração da skill `story-angle` até o ângulo escolhido) · **`query`** (pergunta arquivada) · **`lint`** (passe de varredura). Tipo novo entra nesta lista na mesma operação em que é usado pela primeira vez.
+
+## [2026-11-17] setup | a base nasce da cópia do método, sem as fontes pagas
+
+A base nasce com a estrutura (este log, a porta de entrada, o README com os rituais e a régua de `sources/`) e com as sínteses de método de um ambiente anterior: apuração e checagem (`journalism/`), oferta e venda (`sales-and-offers/`), leitura de números (`data-analysis/`), Claude Code (`anthropic-claude/`) e avaliação, rubrica, revisão e orquestração de agentes (`agent-engineering/`). Vieram as fichas de fonte com licença registrada; as fontes sem licença registrada aparecem nas sínteses como citação simples (título, autor e endereço), e o material de curso pago não entrou. As decisões e os casos daquele ambiente ficaram de fora; das sínteses ficou a regra e o porquê.
+
+## [2026-11-18] setup | a área software-engineering, com o kit de projeto novo
+
+A área nasce com uma página: o desenho da skill `project-kit` (`kit-de-projeto-novo.md`), que diz de onde veio cada parte do processo de um CRM de atendimento em produção. A síntese da prática do CRM e o inventário item a item que originou o kit ficaram fora; a página do kit resume as três classes dele (processo, interação, só do projeto).
+
+## [2026-11-18] setup | a base do modelo público
+
+A base deste modelo público sai da anterior com a régua apertada: as fichas de fonte livre vêm só como citação simples (o título, o autor, o link e a licença), sem a ficha de estudo e sem o integral; as fichas de posts de criadores e de livros protegidos saíram, e as sínteses que se apoiavam nelas citam a fonte pela citação simples; sete fichas tiveram a citação aparada para até umas 25 palavras; três sínteses que reconstruíam o método de um curso pago saíram. A régua do público está em `sources/README.md`.
+
+## [2026-11-19] setup | as fichas livres voltam em palavras próprias
+
+As 180 fichas de fonte livre que tinham entrado só como citação simples voltam com a ficha de estudo em palavras próprias, sem o texto integral e sem seção de trechos copiados: o integral se lê na fonte, pelo link. Cada uma passou antes pelo `parafrase.py` contra o próprio integral: 177 voltaram (174 com a ficha em outra língua que a fonte, que o script não mede, e 3 sem trecho colado), e 3 ficaram como citação simples por trecho colado acima do limiar (a Lei 15.263/2025, a metodologia do Projeto Comprova e os artigos 8 e 46 a 48 da Lei 9.610/1998). Três citações acima de 25 palavras foram aparadas. As duas fichas dos plugins de dados da Anthropic perderam a seção de trechos integrais, e o que só estava nela foi para o corpo em palavras próprias. As fichas que seguiam a fonte frase a frase foram reescritas no trecho apontado pela conferência lado a lado.

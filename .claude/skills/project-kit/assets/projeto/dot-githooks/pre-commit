@@ -1,0 +1,18 @@
+#!/bin/sh
+# O pre-commit do projeto: o formatador no conteúdo que vai no commit (o do índice) e o log da base em ordem.
+# A lógica e os testes estão em .githooks/hooks.py e test_hooks.py; o porquê, em knowledge/travas.md.
+# Desligar neste clone: git config --unset core.hooksPath.
+py=""
+for p in python3 python py; do
+  if "$p" -c "import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)" >/dev/null 2>&1; then py=$p; break; fi
+done
+if [ -z "$py" ]; then
+  echo "[pre-commit] sem Python 3.9 ou mais novo no PATH: o formato e o log nao foram conferidos (o CI confere)." >&2
+  exit 0
+fi
+PYTHONUTF8=1 "$py" "$(dirname "$0")/hooks.py" pre-commit
+codigo=$?
+# 3 é a recusa de verdade; outro código é o hook que nem rodou: avisa e deixa o commit seguir.
+[ "$codigo" -eq 3 ] && exit 1
+[ "$codigo" -ne 0 ] && echo "[pre-commit] o hook nao rodou (saiu com $codigo): o formato e o log nao foram conferidos." >&2
+exit 0

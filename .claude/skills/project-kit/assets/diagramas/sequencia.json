@@ -1,0 +1,35 @@
+{
+ "modelo": "sequencia",
+ "arquitetura": "arquitetura.json",
+ "titulo": "Do pedido ao PR: quem fala com quem",
+ "sobretitulo": "Sequência do processo, com as partes da arquitetura",
+ "afirmacao": "Quem desenvolve pede ao agente; cada commit passa pela trava do agente e pelos hooks do git, que recusam e dizem o que falta; o push dispara o CI, e a correção volta na mesma branch até o CI ficar verde, quando o PR está pronto para o merge.",
+ "legenda": {
+  "mensagem": "pedido",
+  "retorno": "resposta",
+  "nota": "nota",
+  "recusa": "a trava recusa e diz o que falta"
+ },
+ "participantes": ["dev", "agente", "travas-agente", "githooks", "repo", "ci"],
+ "passos": [
+  {"tipo": "mensagem", "de": "dev", "para": "agente", "texto": "pede a tarefa, com a issue"},
+  {"tipo": "mensagem", "de": "agente", "para": "travas-agente", "texto": "git commit"},
+  {"tipo": "mensagem", "de": "travas-agente", "para": "githooks", "texto": "o commit liberado"},
+  {"tipo": "bloco", "bloco": "alt", "rotulo": "o formato ou o log não passam",
+   "passos": [
+    {"tipo": "mensagem", "de": "githooks", "para": "agente", "texto": "recusa e diz o que falta", "retorno": true, "recusa": true}
+   ],
+   "senao": {"rotulo": "passam",
+    "passos": [
+     {"tipo": "mensagem", "de": "githooks", "para": "repo", "texto": "git push"}
+    ]}},
+  {"tipo": "mensagem", "de": "repo", "para": "ci", "texto": "dispara o CI"},
+  {"tipo": "nota", "sobre": ["ci"], "texto": "da falha mais barata à mais cara, até 3 min"},
+  {"tipo": "bloco", "bloco": "loop", "rotulo": "até o CI ficar verde",
+   "passos": [
+    {"tipo": "mensagem", "de": "ci", "para": "repo", "texto": "o resultado", "retorno": true},
+    {"tipo": "mensagem", "de": "agente", "para": "repo", "texto": "a correção, na mesma branch"}
+   ]},
+  {"tipo": "mensagem", "de": "repo", "para": "dev", "texto": "o PR pronto para o merge", "retorno": true}
+ ]
+}

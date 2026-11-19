@@ -1,0 +1,22 @@
+[
+ {"query": "faz os Stories de terça", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "faz o post B da série desta semana", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "chegaram as respostas da caixinha de quinta, estão no originals da pasta de quinta. a enquete deu 10 votos: 6 \"sou eu\" e 4 \"já construí algo\". faz os Stories de sexta e o compartilhamento de sábado", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "marketing/social-media/ideas/o-atendente-que-nunca-dorme.md\n\nisso rende um post? se render, faz", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "bora produzir a peça da semana que vem: o post A de quem estiver no quadro da série", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "o post de quinta sai amanhã às 18h. monta o compartilhamento dele nos Stories pra quarta de manhã", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "quero um carrossel avulso sobre os três erros de quem começa a usar agente de código, pode montar até a prévia", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "preciso de um Story avulso pra amanhã cedo, só uma tela, com a pergunta da caixinha sobre o que o pessoal já automatizou", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "faz o educativo de sexta a partir da pauta que já tá no arquivo da ideia", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "tive uma ideia agora: o prompt que vira cartão de tarefa. acho que rende um carrossel, faz ele", "should_trigger": true, "esperada": "piece-creation"},
+ {"query": "refaz o arco do post B da série", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "isso rende post?", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "dá uma olhada se tem algo errado no roteiro", "should_trigger": false, "esperada": "review"},
+ {"query": "o que a base tem que eu não usei nesta aula?", "should_trigger": false, "esperada": "base-enrichment"},
+ {"query": "deixa a tela 4 mais forte", "should_trigger": false, "esperada": "visual-form"},
+ {"query": "gera uma ilustração da régua de cálculo", "should_trigger": false, "esperada": "image-gen"},
+ {"query": "anota essa ideia antes que eu esqueça: um carrossel sobre a história do backpropagation contada pelos erros", "should_trigger": false, "esperada": "idea-capture"},
+ {"query": "mudei a tela 3 do post A, regera só ela e confere as telas", "should_trigger": false, "esperada": "slides-export"},
+ {"query": "reescreve o texto do Story 3 de sexta, ficou comprido demais pra tela", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "pesquisa quantas empresas pequenas já usam chatbot no atendimento", "should_trigger": false, "esperada": "research"}
+]

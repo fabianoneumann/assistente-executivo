@@ -1,0 +1,14 @@
+[
+  {"query": "gera um desenho a lápis de um teletipo antigo para a tela 3", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "preciso de uma ilustração de uma calculadora de manivela no traço da série", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "faz uma folha de expressões do meu personagem, curioso, sorrindo e em dúvida", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "cria um mock de tela de app de agenda para eu mostrar no post", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "gera um hero para a página do produto, com um notebook numa mesa de madeira", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "tem alguma imagem já gerada de globo que eu possa reaproveitar? se não, gera uma", "should_trigger": true, "esperada": "image-gen"},
+  {"query": "deixa a tela 4 mais forte, ela está meio vazia", "should_trigger": false, "esperada": "visual-form"},
+  {"query": "anima o mecanismo da calculadora mostrando como ela soma", "should_trigger": false, "esperada": "object-anatomy"},
+  {"query": "monta um one-pager do produto no visual da marca", "should_trigger": false, "esperada": "frontend-design"},
+  {"query": "exporta o carrossel em JPEG", "should_trigger": false, "esperada": "slides-export"},
+  {"query": "sobe essa imagem no bucket e me dá o link", "should_trigger": false, "esperada": "r2-storage"},
+  {"query": "escreve o texto das telas do post sobre o primeiro chatbot", "should_trigger": false, "esperada": "piece-script"}
+]

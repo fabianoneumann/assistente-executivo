@@ -1,0 +1,4 @@
+# SDKs da skill de pesquisa. Instalar, da raiz do projeto:
+#   python -m pip install -r .claude/skills/research/requirements.txt
+openai>=2.46.0
+google-genai>=2.12.1

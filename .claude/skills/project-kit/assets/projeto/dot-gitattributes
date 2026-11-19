@@ -1,0 +1,17 @@
+# O fim de linha: LF no repositório e no disco, em toda plataforma. Sem isto, o git do Windows entrega CRLF,
+# e o formatador acusa no Windows o que passa no CI.
+* text=auto eol=lf
+
+# O log da base cresce pelo fim, em várias branches ao mesmo tempo: a união das duas versões no merge,
+# sem conflito (knowledge/README.md).
+knowledge/log.md merge=union
+
+# Binários: nunca converter.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary

@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A sequência</title>
+<link rel="stylesheet" href="tokens.css">
+<style>
+  /* O modelo de sequência (rodada 3): quem fala com quem, numa ordem. É uma vista do mesmo dado da arquitetura: os
+     participantes são ids de nós do JSON do grafo, e o cartão do topo herda dele o título, o tipo e a tecnologia.
+     Sem motor de layout: os participantes ficam numa grade CSS, e cada mensagem é uma linha da sequência, com a seta
+     posta entre as linhas de vida dos dois lados (medidas depois que a grade assenta). A cor, a legenda e a lista em
+     texto são as do fluxo.html; o vocabulário (mensagem, retorno, nota, alt, loop, opt) vem do Mermaid. */
+  :root {
+    --part-min: 120px;        /* a coluna mais estreita de um participante */
+    --linha-msg: 52px;        /* a altura de cada mensagem (o rótulo em cima, a seta embaixo) */
+    --recuo-bloco: 10px;      /* o recuo de cada nível de bloco */
+    --largura-lista: 720px;   /* abaixo desta largura, a figura vira a lista em texto (o celular) */
+  }
+  main { max-width: 1200px; margin: 0 auto; padding: 40px 16px 48px; box-sizing: border-box; }
+  figure { margin: 0; }
+  .cab { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 40px;
+         padding-bottom: 20px; border-bottom: 1px solid var(--linha); margin-bottom: 20px; }
+  .sobre { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--suave); }
+  .cab h2 { margin: 0; font-size: 24px; line-height: 1.2; font-weight: 700; letter-spacing: -.01em; color: var(--tinta); }
+  .legenda { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--suave); }
+  .legenda li { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+  .amostra-fio { width: 32px; height: 12px; flex: none; }
+  .amostra-nota { width: 16px; height: 12px; border: 1.5px solid var(--linha); background: var(--papel); border-radius: 3px; box-sizing: border-box; }
+
+  .seq { position: relative; }
+  .cabeca { display: grid; gap: 16px; align-items: stretch; }
+  .part { box-sizing: border-box; padding: 12px; background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; color: var(--tinta); }
+  .part.pessoa { background: var(--destaque-fundo); border-color: var(--destaque); }
+  .part.maquina { background: var(--alerta-fundo); border-color: var(--alerta); }
+  .part h3 { margin: 0; font-size: 14px; line-height: 1.3; font-weight: 700; overflow-wrap: anywhere; }
+  .part p { margin: 4px 0 0; font-size: 12px; color: var(--suave); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; overflow-wrap: anywhere; }
+  .corpo { position: relative; padding: 18px 0 24px; }
+  .vida { position: absolute; top: 0; bottom: 0; width: 0; border-left: 1.5px dashed var(--linha); }
+  .linha { position: relative; height: var(--linha-msg); }
+  .rot-msg { position: absolute; top: 4px; box-sizing: border-box; padding: 1px 6px; font-size: 13px; line-height: 18px; color: var(--tinta);
+             background: var(--fundo); border-radius: 4px; text-align: center; overflow-wrap: anywhere; }
+  .rot-msg .n { font-weight: 700; color: var(--suave); margin-right: 4px; }
+  .seta { position: absolute; top: calc(var(--linha-msg) - 14px); height: 0; border-top: 2px solid var(--suave); }
+  .seta.retorno { border-top-style: dashed; border-top-width: 1.75px; }
+  .seta.recusa { border-top-color: var(--alerta); border-top-width: 2px; }
+  .legenda .recusa { color: var(--alerta); }
+  .ponta { position: absolute; top: -6px; width: 0; height: 0; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+  .ponta.dir { right: -1px; border-left: 9px solid var(--suave); }
+  .ponta.esq { left: -1px; border-right: 9px solid var(--suave); }
+  .seta.recusa .ponta.dir { border-left-color: var(--alerta); }
+  .seta.recusa .ponta.esq { border-right-color: var(--alerta); }
+  .auto { position: absolute; top: calc(var(--linha-msg) - 30px); width: 36px; height: 18px; box-sizing: border-box;
+          border: 2px solid var(--suave); border-left: 0; border-radius: 0 6px 6px 0; }
+  .auto .ponta.esq { top: 11px; left: -2px; }
+  .linha.anota { height: auto; padding: 8px 0; }
+  .nota { position: relative; box-sizing: border-box; padding: 8px 12px; background: var(--papel); border: 1.5px solid var(--linha);
+          border-radius: 8px; font-size: 13px; line-height: 1.4; color: var(--tinta); }
+  .bloco { position: relative; box-sizing: border-box; border: 1.5px solid var(--linha); border-radius: 10px; margin: 10px 0; padding: 26px 0 6px; }
+  .rot-bloco { position: absolute; top: -1px; left: -1px; padding: 3px 10px; font-size: 12px; font-weight: 700; color: var(--suave);
+               background: var(--fundo); border: 1.5px solid var(--linha); border-radius: 10px 0 10px 0; }
+  .rot-bloco i { font-weight: 400; font-style: normal; }
+  .senao { position: relative; border-top: 1.5px dashed var(--linha); margin-top: 6px; padding-top: 26px; }
+  .senao > .rot-senao { position: absolute; top: 4px; left: 10px; font-size: 12px; color: var(--suave); }
+
+  .so-leitor { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+  .passos, .passos ol { margin: 0; padding: 0; list-style: none; }
+  .estreita .seq { display: none; }
+  .estreita .passos { position: static; width: auto; height: auto; overflow: visible; clip: auto; clip-path: none; white-space: normal;
+                      display: flex; flex-direction: column; gap: 8px; }
+  .estreita .passos li { background: var(--papel); border: 1.5px solid var(--linha); border-radius: 12px; padding: 10px 14px; font-size: 14px; color: var(--tinta); }
+  .estreita .passos li.grupo-passos { background: none; border-style: dashed; }
+  .estreita .passos ol { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .estreita .passos li b { color: var(--tinta); }
+  .erro-diagrama { margin-top: 16px; border: 1.5px solid var(--alerta); background: var(--alerta-fundo); color: var(--tinta);
+                   border-radius: 12px; padding: 16px 18px; font-size: 14px; }
+  .erro-diagrama b { display: block; margin-bottom: 6px; }
+  .erro-diagrama ul { margin: 6px 0 0; padding-left: 18px; }
+  figcaption { margin-top: 18px; max-width: 78ch; font-size: 14px; color: var(--suave); }
+</style>
+</head>
+<body>
+<main>
+<figure id="figura">
+  <header class="cab">
+    <div><p class="sobre" id="sobretitulo"></p><h2 id="titulo"></h2></div>
+    <ul class="legenda" id="legenda"></ul>
+  </header>
+  <div class="seq" id="seq" role="img"></div>
+  <ol class="passos so-leitor" id="passos" aria-label="A sequência, em texto"></ol>
+  <figcaption id="legenda-texto"></figcaption>
+</figure>
+</main>
+
+<!-- Cópia do sequencia.json para abrir o arquivo direto do disco, com os nós da arquitetura em "_nos" (file:// não deixa
+     ler o .json ao lado). Por http, a página lê o arquivo de ?dados= e o da arquitetura que ele aponta. O
+     diagrama_render.py --embutir troca esta cópia. -->
+<script type="application/json" id="dados-embutidos">
+{
+ "modelo": "sequencia",
+ "arquitetura": "arquitetura.json",
+ "titulo": "Do pedido ao PR: quem fala com quem",
+ "sobretitulo": "Sequência (vista da arquitetura)",
+ "afirmacao": "Quem desenvolve pede ao agente; cada commit passa pela trava do agente e pelos hooks do git, que recusam e dizem o que falta; o push dispara o CI, e a correção volta na mesma branch até o CI ficar verde, quando o PR está pronto para o merge.",
+ "legenda": {
+  "mensagem": "pedido",
+  "retorno": "resposta",
+  "nota": "nota",
+  "recusa": "a trava recusa e diz o que falta"
+ },
+ "participantes": [
+  "dev",
+  "agente",
+  "travas-agente",
+  "githooks",
+  "repo",
+  "ci"
+ ],
+ "passos": [
+  {
+   "tipo": "mensagem",
+   "de": "dev",
+   "para": "agente",
+   "texto": "pede a tarefa, com a issue"
+  },
+  {
+   "tipo": "mensagem",
+   "de": "agente",
+   "para": "travas-agente",
+   "texto": "git commit"
+  },
+  {
+   "tipo": "mensagem",
+   "de": "travas-agente",
+   "para": "githooks",
+   "texto": "o commit liberado"
+  },
+  {
+   "tipo": "bloco",
+   "bloco": "alt",
+   "rotulo": "o formato ou o log não passam",
+   "passos": [
+    {
+     "tipo": "mensagem",
+     "de": "githooks",
+     "para": "agente",
+     "texto": "recusa e diz o que falta",
+     "retorno": true,
+     "recusa": true
+    }
+   ],
+   "senao": {
+    "rotulo": "passam",
+    "passos": [
+     {
+      "tipo": "mensagem",
+      "de": "githooks",
+      "para": "repo",
+      "texto": "git push"
+     }
+    ]
+   }
+  },
+  {
+   "tipo": "mensagem",
+   "de": "repo",
+   "para": "ci",
+   "texto": "dispara o CI"
+  },
+  {
+   "tipo": "nota",
+   "sobre": [
+    "ci"
+   ],
+   "texto": "da falha mais barata à mais cara, até 3 min"
+  },
+  {
+   "tipo": "bloco",
+   "bloco": "loop",
+   "rotulo": "até o CI ficar verde",
+   "passos": [
+    {
+     "tipo": "mensagem",
+     "de": "ci",
+     "para": "repo",
+     "texto": "o resultado",
+     "retorno": true
+    },
+    {
+     "tipo": "mensagem",
+     "de": "agente",
+     "para": "repo",
+     "texto": "a correção, na mesma branch"
+    }
+   ]
+  },
+  {
+   "tipo": "mensagem",
+   "de": "repo",
+   "para": "dev",
+   "texto": "o PR pronto para o merge",
+   "retorno": true
+  }
+ ],
+ "_nos": {
+  "dev": {
+   "id": "dev",
+   "titulo": "Quem desenvolve",
+   "tipo": "pessoa"
+  },
+  "agente": {
+   "id": "agente",
+   "titulo": "O agente",
+   "tipo": "neutro",
+   "tecnologia": "Claude Code"
+  },
+  "travas-agente": {
+   "id": "travas-agente",
+   "titulo": "As travas do agente",
+   "tipo": "máquina",
+   "tecnologia": "Python, hook do Claude Code"
+  },
+  "githooks": {
+   "id": "githooks",
+   "titulo": "Os hooks do git",
+   "tipo": "máquina",
+   "tecnologia": "Python, hooks do git"
+  },
+  "repo": {
+   "id": "repo",
+   "titulo": "O repositório",
+   "tipo": "neutro",
+   "tecnologia": "GitHub"
+  },
+  "ci": {
+   "id": "ci",
+   "titulo": "O CI",
+   "tipo": "máquina",
+   "tecnologia": "GitHub Actions"
+  },
+  "dependabot": {
+   "id": "dependabot",
+   "titulo": "O Dependabot",
+   "tipo": "neutro",
+   "tecnologia": "GitHub Dependabot"
+  },
+  "usuario": {
+   "id": "usuario",
+   "titulo": "Quem usa o sistema",
+   "tipo": "pessoa"
+  },
+  "api": {
+   "id": "api",
+   "titulo": "A API",
+   "tipo": "neutro",
+   "tecnologia": "Python, FastAPI"
+  },
+  "banco": {
+   "id": "banco",
+   "titulo": "O banco",
+   "tipo": "neutro",
+   "tecnologia": "banco relacional"
+  }
+ }
+}
+</script>
+
+<script>
+(async () => {
+  const $ = s => document.querySelector(s);
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+
+  // 1. O dado, a arquitetura de que ele é vista e a conferência dos dois (a mesma do diagrama_esquema.py).
+  const fonte = new URLSearchParams(location.search).get('dados') || 'sequencia.json';
+  let D, NOS = null;
+  try { const r = await fetch(fonte, { cache: 'no-store' }); if (!r.ok) throw 0; D = await r.json(); }
+  catch (e) { D = JSON.parse(document.getElementById('dados-embutidos').textContent); }
+  if (D._nos) NOS = D._nos;
+  else if (D.arquitetura) {
+    try { const r = await fetch(new URL(D.arquitetura, new URL(fonte, location.href)), { cache: 'no-store' }); if (!r.ok) throw 0;
+          NOS = Object.fromEntries((await r.json()).nos.map(n => [n.id, n])); }
+    catch (e) { NOS = null; }
+  }
+  const erros = [], BLOCOS = ['alt', 'loop', 'opt'];
+  const texto = (v, onde) => { if (typeof v !== 'string' || !v.trim()) erros.push(`${onde}: falta o texto`); };
+  texto(D.titulo, 'titulo'); texto(D.afirmacao, 'afirmacao');
+  if (D.arquitetura && !NOS) erros.push(`arquitetura: não abriu ${D.arquitetura}`);
+  if (!Array.isArray(D.participantes)) erros.push('participantes: falta a lista');
+  if (!Array.isArray(D.passos)) erros.push('passos: falta a lista');
+  const P = [];
+  if (!erros.length) {
+    for (const [k, p] of D.participantes.entries()) {
+      const id = typeof p === 'string' ? p : p && p.id, proprio = typeof p === 'object' ? p : {};
+      const no = (NOS && NOS[id]) || null;
+      if (!id) { erros.push(`participantes[${k}]: falta o id`); continue; }
+      if (NOS && !no && !proprio.titulo) erros.push(`participantes[${k}]: "${id}" não é um nó da arquitetura`);
+      P.push({ id, titulo: proprio.titulo || (no && no.titulo) || id, tipo: proprio.tipo || (no && no.tipo) || 'neutro',
+               tecnologia: proprio.tecnologia || (no && no.tecnologia) || '' });
+    }
+    const ids = new Set(P.map(p => p.id));
+    const conferir = (lista, onde) => lista.forEach((s, k) => { const o = `${onde}[${k}]`;
+      if (s.tipo === 'mensagem') { for (const lado of ['de', 'para']) if (!ids.has(s[lado])) erros.push(`${o}.${lado}: "${s[lado]}" não está em participantes`); texto(s.texto, o + '.texto'); }
+      else if (s.tipo === 'nota') { for (const x of [].concat(s.sobre)) if (!ids.has(x)) erros.push(`${o}.sobre: "${x}" não está em participantes`); texto(s.texto, o + '.texto'); }
+      else if (s.tipo === 'bloco') { if (!BLOCOS.includes(s.bloco) || !Array.isArray(s.passos)) { erros.push(`${o}: o bloco "${s.bloco}" não é ${BLOCOS.join(', ')} ou falta a lista passos`); return; }
+        texto(s.rotulo, o + '.rotulo'); conferir(s.passos, o + '.passos'); if (s.senao) conferir(s.senao.passos || [], o + '.senao.passos'); }
+      else erros.push(`${o}.tipo: "${s.tipo}" não é mensagem, nota ou bloco`); });
+    conferir(D.passos, 'passos');
+  }
+  if (erros.length) throw Object.assign(new Error('o dado do diagrama não serve: ' + erros.join('; ')), { dados: erros });
+  const porId = Object.fromEntries(P.map(p => [p.id, p])), col = Object.fromEntries(P.map((p, i) => [p.id, i]));
+  const classeTipo = t => ({ 'pessoa': 'pessoa', 'máquina': 'maquina' })[t] || '';
+
+  $('#sobretitulo').textContent = D.sobretitulo || '';
+  $('#titulo').textContent = D.titulo; document.title = D.titulo;
+  $('#legenda-texto').textContent = D.afirmacao;
+  $('#seq').setAttribute('aria-label', D.afirmacao);
+
+  // A legenda: o pedido, a resposta e a nota, só os usados.
+  const usa = { mensagem: false, retorno: false, nota: false, recusa: false };
+  const varrer = l => l.forEach(s => { if (s.tipo === 'mensagem') { usa[s.retorno ? 'retorno' : 'mensagem'] = true; if (s.recusa) usa.recusa = true; } if (s.tipo === 'nota') usa.nota = true;
+    if (s.tipo === 'bloco') { varrer(s.passos); if (s.senao) varrer(s.senao.passos || []); } });
+  varrer(D.passos);
+  const leg = $('#legenda'), L = D.legenda || {};
+  const fio = (tracejado, txt) => { const li = el('li'), s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('class', 'amostra-fio'); s.setAttribute('viewBox', '0 0 32 12');
+    s.innerHTML = `<line x1="1" y1="6" x2="24" y2="6" stroke="currentColor" stroke-width="1.75" ${tracejado ? 'stroke-dasharray="4 3"' : ''}/><path d="M22,1.5 L31,6 L22,10.5 z" fill="currentColor"/>`;
+    li.append(s, el('span', null, txt)); return li; };
+  if (usa.mensagem) leg.append(fio(false, L.mensagem || 'pedido'));
+  if (usa.retorno) leg.append(fio(true, L.retorno || 'resposta'));
+  if (usa.recusa) { const li = fio(true, L.recusa || 'a trava recusa e diz o que falta'); li.classList.add('recusa'); leg.append(li); }
+  if (usa.nota) { const li = el('li'); li.append(el('span', 'amostra-nota'), el('span', null, L.nota || 'nota')); leg.append(li); }
+
+  // A lista em texto (o padrão do NHS Scotland): o leitor de tela a lê, e na tela estreita ela é a figura.
+  let n = 0;
+  const lista = (passos, ol) => passos.forEach(s => {
+    if (s.tipo === 'mensagem') { n++; const li = el('li'); li.append(el('b', null, `${n}. ${porId[s.de].titulo} → ${porId[s.para].titulo}: `),
+      document.createTextNode(s.texto + (s.retorno ? ' (resposta)' : ''))); ol.append(li); }
+    else if (s.tipo === 'nota') ol.append(el('li', null, `Nota sobre ${[].concat(s.sobre).map(x => porId[x].titulo).join(' e ')}: ${s.texto}`));
+    else { const li = el('li', 'grupo-passos'), cab = { alt: `Se ${s.rotulo}:`, loop: `Repete, ${s.rotulo}:`, opt: `Só se ${s.rotulo}:` }[s.bloco];
+      li.append(el('b', null, cab)); const sub = el('ol'); lista(s.passos, sub); li.append(sub); ol.append(li);
+      if (s.senao) { const li2 = el('li', 'grupo-passos'); li2.append(el('b', null, `Senão, se ${s.senao.rotulo}:`)); const sub2 = el('ol'); lista(s.senao.passos || [], sub2); li2.append(sub2); ol.append(li2); } } });
+  lista(D.passos, $('#passos'));
+  const css = getComputedStyle(document.documentElement), tok = k => parseFloat(css.getPropertyValue(k));
+  if (window.matchMedia(`(max-width: ${tok('--largura-lista')}px)`).matches) {
+    document.documentElement.classList.add('estreita'); document.body.dataset.layout = 'lista'; document.body.dataset.pronto = '1'; return; }
+
+  // 2. A grade dos participantes e as linhas da sequência.
+  const seq = $('#seq'), cabeca = el('div', 'cabeca'), corpo = el('div', 'corpo');
+  cabeca.style.gridTemplateColumns = `repeat(${P.length}, minmax(var(--part-min), 1fr))`;
+  for (const p of P) { const c = el('div', 'part ' + classeTipo(p.tipo)); c.dataset.id = p.id; c.append(el('h3', null, p.titulo));
+    if (p.tecnologia) c.append(el('p', null, `[${p.tecnologia}]`)); cabeca.append(c); }
+  seq.append(cabeca, corpo);
+  let m = 0;
+  const linhas = (passos, pai, nivel) => passos.forEach(s => {
+    if (s.tipo === 'mensagem') { m++; const ln = el('div', 'linha msg'); Object.assign(ln.dataset, { de: s.de, para: s.para, n: m });
+      const r = el('div', 'rot-msg'); r.append(el('span', 'n', m + '.'), document.createTextNode(s.texto)); ln.append(r);
+      if (s.de === s.para) { const a = el('div', 'auto'); a.append(el('span', 'ponta esq')); ln.append(a); }
+      else { const a = el('div', 'seta' + (s.retorno ? ' retorno' : '') + (s.recusa ? ' recusa' : '')); a.append(el('span', 'ponta ' + (col[s.para] > col[s.de] ? 'dir' : 'esq'))); ln.append(a); }
+      pai.append(ln); }
+    else if (s.tipo === 'nota') { const ln = el('div', 'linha anota'); ln.dataset.sobre = [].concat(s.sobre).join(' '); ln.append(el('div', 'nota', s.texto)); pai.append(ln); }
+    else { const b = el('div', 'bloco'); b.dataset.nivel = nivel; b.style.marginLeft = b.style.marginRight = (nivel * tok('--recuo-bloco')) + 'px';
+      const rb = el('span', 'rot-bloco'); rb.append(document.createTextNode(s.bloco + ' '), el('i', null, '[' + s.rotulo + ']')); b.append(rb);
+      linhas(s.passos, b, nivel + 1);
+      if (s.senao) { const se = el('div', 'senao'); se.append(el('span', 'rot-senao', '[' + s.senao.rotulo + ']')); linhas(s.senao.passos || [], se, nivel + 1); b.append(se); }
+      pai.append(b); } });
+  linhas(D.passos, corpo, 0);
+  await document.fonts.ready;
+
+  // 3. A posição de cada seta, nota e linha de vida, pelo centro de cada participante na grade.
+  const base = corpo.getBoundingClientRect().left;
+  const cx = Object.fromEntries([...cabeca.children].map(c => { const r = c.getBoundingClientRect(); return [c.dataset.id, r.left + r.width / 2 - base]; }));
+  const largCol = cabeca.children[0].getBoundingClientRect().width;
+  for (const p of P) { const v = el('div', 'vida'); v.dataset.id = p.id; v.style.left = cx[p.id] + 'px'; corpo.prepend(v); }
+  for (const ln of corpo.querySelectorAll('.linha.msg')) {
+    const off = ln.getBoundingClientRect().left - base, x1 = cx[ln.dataset.de] - off, x2 = cx[ln.dataset.para] - off;
+    const r = ln.querySelector('.rot-msg');
+    if (ln.dataset.de === ln.dataset.para) { const a = ln.querySelector('.auto'); a.style.left = x1 + 'px';
+      r.style.left = (x1 + 44) + 'px'; r.style.maxWidth = (largCol * 1.6) + 'px'; r.style.textAlign = 'left'; continue; }
+    const a = ln.querySelector('.seta'), esq = Math.min(x1, x2), larg = Math.abs(x2 - x1);
+    a.style.left = esq + 'px'; a.style.width = larg + 'px';
+    const w = Math.max(larg - 12, Math.min(largCol, 220)); r.style.maxWidth = w + 'px';
+    r.style.left = (esq + larg / 2 - Math.min(r.offsetWidth, w) / 2) + 'px';
+    if (r.offsetHeight > 22) ln.style.height = (r.offsetHeight + 34) + 'px', a.style.top = (r.offsetHeight + 20) + 'px';
+  }
+  for (const ln of corpo.querySelectorAll('.linha.anota')) {
+    const off = ln.getBoundingClientRect().left - base, xs = ln.dataset.sobre.split(' ').map(id => cx[id] - off);
+    const nt = ln.querySelector('.nota'), largura = Math.max(Math.max(...xs) - Math.min(...xs) + largCol * 0.6, 180);
+    const cabe = ln.getBoundingClientRect().width - 12;  // a nota não passa da borda da linha (nem da do bloco)
+    nt.style.width = Math.min(largura, cabe) + 'px';
+    nt.style.marginLeft = Math.min(Math.max(6, (Math.min(...xs) + Math.max(...xs)) / 2 - largura / 2), cabe - Math.min(largura, cabe)) + 'px';
+  }
+  document.body.dataset.layout = JSON.stringify({ participantes: P.length, mensagens: m });
+  document.body.dataset.pronto = '1';
+})().catch(err => {
+  document.body.dataset.pronto = 'erro'; document.body.dataset.erro = String(err && err.stack || err); console.error(err);
+  const fig = document.querySelector('#figura'), box = document.createElement('div'); box.className = 'erro-diagrama'; box.setAttribute('role', 'alert');
+  const b = document.createElement('b'); b.textContent = 'O diagrama não saiu.'; box.append(b);
+  const ul = document.createElement('ul'); for (const t of (err && err.dados) || [String(err && err.message || err)]) { const li = document.createElement('li'); li.textContent = t; ul.append(li); }
+  box.append(ul); fig.querySelectorAll('.seq').forEach(e => e.remove()); fig.append(box);
+});
+</script>
+<script>
+/* Dentro de um iframe (o onboarding do projeto embute os diagramas), a página diz a altura dela ao pai quando fica pronta
+   e quando muda de largura, para o iframe crescer sem barra de rolagem. Por postMessage, que vale também em file://. */
+(function () {
+  if (window.parent === window) return;
+  const avisar = () => parent.postMessage({ diagrama: 'altura', altura: document.documentElement.scrollHeight }, '*');
+  new MutationObserver(() => { if (document.body.dataset.pronto) avisar(); })
+    .observe(document.body, { attributes: true, attributeFilter: ['data-pronto'] });
+  window.addEventListener('resize', () => { if (document.body.dataset.pronto) avisar(); });
+})();
+</script>
+</body>
+</html>
