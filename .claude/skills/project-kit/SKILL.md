@@ -72,7 +72,7 @@ Pelo `projeto.md`, "O ponteiro de mão única": o registro do projeto do lado do
 ## As conferências
 
 - O `conferir.py` em 0 ERRO antes do primeiro commit (etapa 4) e depois de cada mudança nos modelos do kit.
-- Os testes do kit: `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` (as três stacks montadas e conferidas, os testes das travas dentro do projeto, e cada erro plantado acusado). Rodam a cada mudança no kit.
+- Os testes do kit: `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` (as três stacks montadas e conferidas, os testes das travas dentro do projeto, e cada erro plantado acusado). Rodam a cada mudança no kit. Os dos diagramas rodam cada um por si (`python -X utf8 .claude/skills/project-kit/scripts/teste_diagrama_conferir.py` e `teste_diagrama_regressao.py`). Os testes e as conferências pedem o PyYAML e o Playwright com o Chromium, do `requirements.txt` da skill (`python -m pip install -r .claude/skills/project-kit/requirements.txt`, depois `python -m playwright install chromium`).
 - Os testes das travas vão junto com o projeto e rodam no CI dele.
 
 ## Ao terminar

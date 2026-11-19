@@ -27,4 +27,4 @@ python -X utf8 .claude/skills/visual-form/scripts/conferir_telas.py marketing/so
 python -X utf8 .claude/skills/visual-form/scripts/teste_papeis.py
 ```
 
-O esperado: 0 ERRO na primeira (o AVISO da área do acento é esperado no exemplo, que quase não usa o acento) e "ok" na segunda.
+O esperado: 0 ERRO e 2 AVISO na primeira, e "ok" na segunda. Os dois avisos são esperados no exemplo: o `acento_area`, porque o exemplo quase não usa o acento; e o `texto_miudo` da tela 2, porque a nota ("a nota aponta o desenho") sai a 32 px, abaixo do piso de 38 px que a rubrica de design dá à nota manuscrita. Na identidade neutra, a nota usa a mesma letra do corpo, no mesmo tamanho; quando a sua série escolher a letra da nota, ponha-a a 38 px ou mais (no `design/caderno.css`, no `design/papeis.json` e na tabela "Letra" do `design-system.md`) e o aviso some. O piso ainda é provisório, a calibrar nas peças publicadas.

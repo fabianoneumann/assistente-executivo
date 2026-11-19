@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import filecmp
 import importlib.util
+import os
 import shutil
 import subprocess
 import sys
@@ -73,7 +74,11 @@ PACOTES = {
     "PIL": ".claude/skills/image-gen/requirements.txt",
     "numpy": ".claude/skills/image-gen/requirements.txt",
     "playwright": ".claude/skills/visual-form/requirements.txt",
+    "yaml": ".claude/skills/project-kit/requirements.txt",
 }
+
+# o nome do pacote para quem instala, quando difere do nome que se importa
+NOME_DO_PACOTE = {"yaml": "PyYAML", "PIL": "Pillow", "google.genai": "google-genai"}
 
 R2 = ["R2_ACCOUNT_ID", "R2_ACCESS_KEY_ID", "R2_SECRET_ACCESS_KEY", "R2_BUCKET_CONTEUDO"]
 R2_UPLOAD = R2 + ["R2_PUBLIC_BASE_CONTEUDO"]  # a subida registra os links: precisa da URL pública
@@ -96,7 +101,10 @@ SKILLS = {
     "piece-creation": {"nota": "orquestra as outras: cada etapa confere a sua skill"},
     "piece-script": {},
     "base-enrichment": {},
-    "project-kit": {"ferr": ["gh"], "nota": "montar e conferir pedem só o git e o Python; o gh, com `gh auth login`, cria o repositório, a milestone e as specs"},
+    "project-kit": {"ferr": ["gh"], "pacotes": ["yaml", "playwright"],
+                    "nota": "montar pede só o git e o Python; o PyYAML valida os YAML na conferência e no CI local, o Playwright "
+                            "(com `python -m playwright install chromium`) desenha e confere os diagramas do onboarding; o gh, "
+                            "com `gh auth login`, cria o repositório, a milestone e as specs"},
 }
 
 COPIAS_DO_CARREGADOR = ["research", "image-gen", "r2-storage", "slides-export"]
@@ -115,6 +123,49 @@ def codex_com_login() -> bool:
         except (OSError, subprocess.TimeoutExpired):
             _LOGIN_CODEX = False
     return _LOGIN_CODEX
+
+
+# as chaves que já tinham valor no ambiente antes de ler o `.env` (variável do sistema, ou o bloco "env"
+# do `.claude/settings.local.json`, que o Claude Code põe no ambiente); o `main` preenche antes do carregador
+DO_AMBIENTE: set[str] = set()
+
+
+def chaves_do_ambiente() -> set[str]:
+    """As chaves de CHAVES que já têm valor no ambiente, antes de o `.env` ser lido."""
+    valores = {c: os.environ.get(c, "").strip() for c in CHAVES}
+    return {c for c, v in valores.items() if v and not v.startswith(ambiente.MARCADORES)}
+
+
+def origem(c: str) -> str:
+    return "variável do sistema" if c in DO_AMBIENTE else ".env"
+
+
+def encontradas(skill: str, upload: bool) -> list[str]:
+    """As chaves da skill que têm valor, cada uma com a origem, sem o valor."""
+    r = SKILLS[skill]
+    nomes = list(r.get("chaves", [])) + list(r.get("upload", []) if upload else []) + list(r.get("chaves_opc", []))
+    nomes += [c for g in r.get("uma_de", []) for c in g]
+    vistos: list[str] = []
+    for c in nomes:
+        if c not in vistos and ambiente.valor(c):
+            vistos.append(c)
+    return [f"{c} ({origem(c)})" for c in vistos]
+
+
+def cabecalho_origem(com_env: bool) -> str:
+    """Uma linha que diz de onde vieram as chaves, para "pronta" não parecer contradizer "sem .env"."""
+    do_env = [c for c in CHAVES if ambiente.valor(c) and c not in DO_AMBIENTE]
+    partes = []
+    if DO_AMBIENTE:
+        partes.append(f"{len(DO_AMBIENTE)} chave(s) vêm de variável do sistema (ou do bloco \"env\" do `.claude/settings.local.json`)")
+    if do_env:
+        partes.append(f"{len(do_env)} do .env")
+    if not partes:
+        return "Nenhuma chave encontrada, nem no .env nem nas variáveis do sistema."
+    texto = "; ".join(partes) + "."
+    if not com_env:
+        texto += " Sem .env, as skills com chave que saem prontas leem a chave da variável do sistema."
+    return texto + " Ao lado de cada skill, a origem de cada chave."
 
 
 def tem_pacote(nome: str) -> bool:
@@ -147,7 +198,7 @@ def faltas(skill: str, upload: bool) -> tuple[list[str], list[str]]:
     pacotes = list(r.get("pacotes", [])) + (list(r.get("pacotes_upload", [])) if upload else [])
     for p in pacotes:
         if not tem_pacote(p):
-            obrig.append(f"pacote Python `{p}`. Como instalar: python -m pip install -r {PACOTES[p]}.")
+            obrig.append(f"pacote Python `{NOME_DO_PACOTE.get(p, p)}`. Como instalar: python -m pip install -r {PACOTES[p]}.")
     for c in r.get("chaves_opc", []):
         if not ambiente.valor(c):
             uso, onde = CHAVES[c]
@@ -184,6 +235,8 @@ def main(argv=None) -> int:
     ap.add_argument("--upload", action="store_true", help="inclui o que a subida ao bucket pede (slides-export)")
     a = ap.parse_args(argv)
 
+    DO_AMBIENTE.clear()
+    DO_AMBIENTE.update(chaves_do_ambiente())
     arq = ambiente.carregar_env(RAIZ)
     if a.skill:
         if a.skill not in SKILLS:
@@ -199,17 +252,24 @@ def main(argv=None) -> int:
                   + (" --upload" if a.upload else ""))
             return 1
         print(f"[OK] a skill {a.skill} pode rodar.")
+        achadas = encontradas(a.skill, a.upload)
+        if achadas:
+            print("  chaves encontradas: " + ", ".join(achadas))
         for linha in opc:
             print(f"  (opcional, desligado) {linha}")
         if SKILLS[a.skill].get("nota"):
             print(f"  nota: {SKILLS[a.skill]['nota']}")
         return 0
 
-    print("O ambiente, skill por skill" + (f" (lendo também o {arq.name} da raiz)" if arq else " (sem .env na raiz)") + ":\n")
+    print("O ambiente, skill por skill" + (f" (lendo também o {arq.name} da raiz)" if arq else " (sem .env na raiz)") + ":")
+    print(cabecalho_origem(arq is not None) + "\n")
     for s in SKILLS:
         obrig, opc = faltas(s, False)
         estado = "falta configurar" if obrig else ("pronta, com partes desligadas" if opc else "pronta")
         print(f"{s:16} {estado}")
+        achadas = encontradas(s, False)
+        if achadas:
+            print("    chaves: " + ", ".join(achadas))
         for linha in obrig:
             print(f"    falta: {linha}")
         for linha in opc:

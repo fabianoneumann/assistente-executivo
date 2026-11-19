@@ -1,6 +1,6 @@
 # Sobre mim
 
-> **Em branco, de propósito.** Cada pessoa que usa o assistente preenche o seu, numa cópia local ou num ramo seu, e decide o que vai ao git. O assistente lê este arquivo para saber com quem fala e, ao escrever conteúdo em seu nome, com que voz. Não ponha aqui senha, documento, endereço nem dado de saúde.
+> **Em branco, de propósito.** Cada pessoa que usa o assistente preenche o seu no próprio repositório, criado a partir deste modelo e deixado privado antes de receber qualquer dado pessoal (o passo a passo está no `README.md` da raiz). O assistente lê este arquivo para saber com quem fala e, ao escrever conteúdo em seu nome, com que voz. Não ponha aqui senha, documento, endereço nem dado de saúde.
 
 Escreva em frases suas; o assistente não inventa o que faltar. Seção vazia pode ficar vazia.
 

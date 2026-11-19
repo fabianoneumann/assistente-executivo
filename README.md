@@ -18,7 +18,7 @@ Depois, o `scripts/confere_dados.py` ajuda a manter assim: rodado antes do push,
 
 ## Antes de ligar: revise as skills
 
-Uma skill é instrução que o Claude segue com as suas permissões, nos seus repositórios e com as suas chaves. O Jev, citado em algumas, é o modelo de decisão da TypeSafe (opcional, pago, com a `TYPESAFE_API_KEY`); sem ele, as skills rodam igual. Leia o `SKILL.md` de cada uma antes de usá-la, e reescreva o que não serve a você. O que é do seu ambiente (caminhos, réguas, comandos, a regra de custo das APIs) está no `references/projeto.md` de cada skill; o método, no `SKILL.md`; e as lições que viraram regra, no `licoes.md`.
+Uma skill é instrução que o Claude segue com as suas permissões, nos seus repositórios e com as suas chaves. O Jev, citado em algumas, é o modelo de decisão da TypeSafe (opcional, pago, com a `TYPESAFE_API_KEY`); sem ele, as skills rodam igual. Leia o `SKILL.md` de cada uma antes de usá-la, e reescreva o que não serve a você; os termos do método que elas usam (mesa, portão, trava do texto, escaleta, I2) estão explicados no [`glossario.md`](./glossario.md). O que é do seu ambiente (caminhos, réguas, comandos, a regra de custo das APIs) está no `references/projeto.md` de cada skill; o método, no `SKILL.md`; e as lições que viraram regra, no `licoes.md`.
 
 | Skill | O que faz | O que lê | O que pode rodar | Chave |
 |---|---|---|---|---|
@@ -28,17 +28,17 @@ Uma skill é instrução que o Claude segue com as suas permissões, nos seus re
 | `research` | pesquisa com fontes (Perplexity, Gemini, busca nativa e, opcional, o Codex), reconcilia e registra fichas e sínteses em `knowledge/` | `knowledge/`, `decisions/`, `context/` | as APIs da Perplexity e do Gemini pela rede; scripts locais de conferência | `PERPLEXITY_API_KEY`, `GEMINI_API_KEY`; opcional: `TYPESAFE_API_KEY` |
 | `image-gen` | gera imagem pelo Nano Banana (Gemini) e, opcional, pelo GPT Image do Codex, com o banco consultado antes e o custo registrado | o banco de imagens, o design system da série | a API do Gemini; o Codex CLI, opcional; a conferência pelo Jev, opcional | `GEMINI_API_KEY`; opcional: `TYPESAFE_API_KEY` |
 | `r2-storage` | sobe, baixa, lista e remove arquivos num bucket R2 da Cloudflare e dá a URL pública ou assinada | as variáveis `R2_*` | a API S3 do R2 pela rede | `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_CONTEUDO` (a URL pública, `R2_PUBLIC_BASE_CONTEUDO`, opcional aqui e obrigatória no `--upload`) |
-| `piece-creation` | leva uma peça (carrossel, Stories) da ideia ou da pauta até a exportação, chamando as outras na ordem, com as paradas para você decidir | as ideias, a série, as rubricas, o portão, `context/publico.md` | nada próprio; cada skill chamada confere a sua chave | nenhuma própria |
+| `piece-creation` | leva uma peça (carrossel, Stories) da ideia ou da pauta até a exportação, chamando as outras na ordem, com as paradas para você decidir | as ideias, a série, as rubricas, o portão, `context/publico.md` | nada próprio; cada skill chamada confere a sua chave | nenhuma própria (a partir da ideia crua, as da `research`) |
 | `piece-script` | escreve o roteiro da peça por formato até a trava do texto | a pauta, as fichas, as sínteses de conteúdo, as rubricas | nada | nenhuma |
 | `base-enrichment` | num subagente isolado, passa pela base sobre uma camada da peça e devolve até cinco sugestões de método | `knowledge/`, as peças irmãs, `marketing/licoes.md` | só grava o relatório dela | nenhuma |
 | `visual-form` | monta o HTML das telas no design system da série, com as conferências em código, até a prévia | o texto travado, a escaleta, o design system da série | Playwright (Chromium) e FFmpeg, locais | nenhuma |
 | `object-anatomy` | num subagente, faz o objeto que se move em SVG por código, com as conferências por script | as fichas que quem chama entrega, a série | Playwright e FFmpeg, locais | nenhuma |
-| `project-kit` | cria um projeto de software novo já estruturado: a discussão inicial, a arquitetura, o plano e os ADRs na base `knowledge/` do projeto, o repositório montado dos modelos (o processo de issues e de PR, o CI, o Dependabot de segurança, as travas, o onboarding) e conferido, e o GitHub com a primeira milestone e as specs, na sua conta pessoal | a conversa, os modelos da skill, `knowledge/software-engineering/` | `git`, Python e o `gh` (criar o repositório, a milestone e as specs) | nenhuma (o `gh` com o seu login) |
+| `project-kit` | cria um projeto de software novo já estruturado: a discussão inicial, a arquitetura, o plano e os ADRs na base `knowledge/` do projeto, o repositório montado dos modelos (o processo de issues e de PR, o CI, o Dependabot de segurança, as travas, o onboarding) e conferido, e o GitHub com a primeira milestone e as specs, na sua conta pessoal | a conversa, os modelos da skill, `knowledge/software-engineering/` | `git`, Python (com o PyYAML e o Playwright do `requirements.txt` dela, para a conferência e os diagramas) e o `gh` (criar o repositório, a milestone e as specs) | nenhuma (o `gh` com o seu login) |
 | `slides-export` | exporta as telas em JPEG e a tela em vídeo em MP4, confere e, com `--upload`, sobe ao bucket e registra os links | as telas, a `legenda.md`, `context/sobre-mim.md` | shot-scraper, Playwright e FFmpeg; com `--upload`, o R2 | só para `--upload`: as do `r2-storage` |
 
-**O ciclo de melhoria da `review` só liga com a issue de reavaliação aberta:** sem ela, a revisão roda mas não deixa registro, e você não mede se a skill está ajudando. Quando quiser medir, abra a issue e ponha o número no `references/projeto.md` da skill. O que você ensina ao assistente sobre como trabalhar fica na memória dele, com cópia opcional no git (`decisions/memoria-e-evolucao.md`).
+**O ciclo de melhoria da `review` só liga com a issue de reavaliação aberta:** sem ela, a revisão roda mas não deixa registro, e você não mede se a skill está ajudando. Quando quiser medir, abra a issue e ponha o número no `references/projeto.md` da skill. A issue junta, a cada revisão, um comentário de uma linha com os números daquele uso (o que se revisou, as lentes, os achados confirmados e derrubados, o que se aplicou, o que a revisão deixou passar e os tokens) e, a partir do 15º registro ou na data de vencimento dela, a proposta de reavaliar a skill com esses números (`.claude/skills/review/references/registro.md`). O que você ensina ao assistente sobre como trabalhar fica na memória dele, com cópia opcional no git (`decisions/memoria-e-evolucao.md`).
 
-**Sem chave nenhuma, funcionam desde o clone:** `idea-capture`, `review`, `piece-script` e `base-enrichment`, e a `project-kit` com o `gh` logado; `visual-form`, `object-anatomy` e a exportação local da `slides-export` pedem só os programas locais. **Sem chave própria, mas dependem de outra:** a `story-angle` apura pela `research` (sem as chaves dela, a apuração para) e a `piece-creation` chama a `research`, a `image-gen` e a `slides-export`, cada uma com a sua. **As com chave não rodam antes de você configurar a sua:** o primeiro passo de cada uma confere, e sem a chave ela para e diz qual variável falta, onde se pega e como se põe. As APIs são cobradas à parte do plano do Claude: antes de usar, preencha a regra de custo das suas contas no `references/projeto.md` da `research` e da `image-gen`.
+**Sem chave nenhuma, funcionam desde o clone:** `idea-capture`, `review`, `piece-script` e `base-enrichment`, e a `project-kit` com o `gh` logado; `visual-form`, `object-anatomy` e a exportação local da `slides-export` pedem só os programas locais. **Sem chave própria, mas dependem de outra:** a `story-angle` apura pela `research` (sem as chaves dela, a apuração para) e a `piece-creation` chama a `research`, a `image-gen` e a `slides-export`, cada uma com a sua. Por isso o carrossel feito a partir de uma ideia crua, que passa pela apuração e pela pesquisa antes do roteiro, pede as chaves da `research` (`PERPLEXITY_API_KEY` e `GEMINI_API_KEY`). **As com chave não rodam antes de você configurar a sua:** o primeiro passo de cada uma confere, e sem a chave ela para e diz qual variável falta, onde se pega e como se põe. As APIs são cobradas à parte do plano do Claude: antes de usar, preencha a regra de custo das suas contas no `references/projeto.md` da `research` e da `image-gen`.
 
 **A vida pessoal não pede skill nem chave:** é o `CLAUDE.md` que diz ao assistente onde lançar uma despesa, um treino, um exame ou um mapa, e os READMEs de `finance/`, `health/` e `maps/` trazem o método e o roteiro do que contar a ele para começar.
 
@@ -66,6 +66,7 @@ Não vêm nesta versão: a publicação no Instagram e as métricas (dependem de
    python -m pip install -r .claude/skills/image-gen/requirements.txt
    python -m pip install -r .claude/skills/r2-storage/requirements.txt
    python -m pip install -r .claude/skills/visual-form/requirements.txt
+   python -m pip install -r .claude/skills/project-kit/requirements.txt
    python -m playwright install chromium
    shot-scraper install
    ```
@@ -74,6 +75,24 @@ Não vêm nesta versão: a publicação no Instagram e as métricas (dependem de
 7. **Primeiro uso:** peça em linguagem natural, como "registra uma ideia: …", "pesquisa o que existe sobre …", "lança uma despesa de …" ou "vamos fazer a minha Roda da Vida". O Claude escolhe a skill pela descrição dela, e o lugar de cada registro pelo `CLAUDE.md`.
 
 **Antes de commitar** material que veio de fora, e sempre antes do push: `python -X utf8 scripts/confere_dados.py` procura chave, e-mail, telefone, caminho de usuário, id de conta e conteúdo de terceiro fora da régua no que iria num commit (o que o `.gitignore` tira, como o `.env` e as pastas `originals/`, fica fora), confere a privacidade do repositório e, rodado sem pastas, o autor de cada commit do histórico: o seu e-mail real sai como achado; no repositório privado, você pode deixá-lo, ou usar o e-mail `noreply` do GitHub (Settings > Emails). Com `--termos <arquivo fora do repositório>`, procura também os nomes e ids que você quer barrar (de clientes, de familiares), sem que a lista entre no git.
+
+### Para conferir que está tudo certo
+
+Da raiz do repositório, no começo e depois de instalar os pacotes. Nenhum destes comandos pede rede nem chave, e nenhum mostra o valor de uma chave.
+
+| Comando | O que confere | O esperado |
+|---|---|---|
+| `python -X utf8 scripts/confere_ambiente.py` | skill por skill, o que já roda e o que falta | código 0, com o quadro: "pronta" nas skills que você configurou e "falta configurar" nas outras, com o que falta; no alto, de onde vieram as chaves (o `.env` ou a variável do sistema) |
+| `python -X utf8 scripts/confere_links.py` | os links entre os arquivos e as duas cópias dos agentes | `-- 0 link(s) quebrado(s)` |
+| `python -X utf8 scripts/confere_dados.py` | chave, dado pessoal e conteúdo de terceiro no que iria num commit | `-- 0 achado(s)` e código 0; o seu e-mail real nos commits sai como achado (ver "Antes de commitar", acima) |
+| `python -X utf8 scripts/teste_confere_dados.py` | os casos do `confere_dados.py` | `TODOS OK` |
+| `python -X utf8 scripts/teste_medir_disparo.py` | os casos do `medir_disparo.py` | `TODOS OK` |
+| `python -X utf8 .claude/skills/research/scripts/teste_conferidores.py` | as conferências das rodadas de pesquisa, sem chamar as APIs | `0 falha(s)`, com as lacunas conhecidas listadas, que não derrubam o teste |
+| `python -X utf8 .claude/skills/review/scripts/teste_registro.py` | a contagem do registro da `review`, sem o `gh` | `0 falha(s)` |
+| `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` | a montagem e a conferência de um projeto novo, nas três stacks (pede o `requirements.txt` da `project-kit`) | `Ran 8 tests` e `OK` (as linhas "Montado em ...", que podem vir antes ou depois, são da montagem) |
+| `python -X utf8 .claude/skills/project-kit/scripts/teste_diagrama_conferir.py`, e o mesmo com `teste_diagrama_regressao.py` no lugar | os diagramas do onboarding (pedem o Playwright com o Chromium) | `tudo certo` em cada um |
+
+Se um deles falhar, a saída diz o que falta ou o que quebrou; o mais comum, no começo, é um pacote não instalado (o `confere_ambiente.py` diz qual e o `requirements.txt` de onde ele vem).
 
 ### O Codex, opcional
 
@@ -128,4 +147,4 @@ O código é MIT ([`LICENSE`](./LICENSE)); o texto é CC BY 4.0 ([`LICENSE-texto
 
 ## Como o repositório se organiza
 
-O mapa do que ler, e quando, está no [`index.md`](./index.md); as regras de manutenção, no [`CLAUDE.md`](./CLAUDE.md). Em resumo: `context/` (quem você é e para quem fala), `decisions/` (o porquê das regras), `knowledge/` (a base de método, com as fontes e a régua de conteúdo de terceiro), `marketing/` (ideias, séries, rubricas), `finance/`, `health/` e `maps/` (a vida pessoal), `.claude/skills/` (as skills) e `scripts/` (os conferidores e o empacotador).
+O mapa do que ler, e quando, está no [`index.md`](./index.md); as regras de manutenção, no [`CLAUDE.md`](./CLAUDE.md); os termos do método, no [`glossario.md`](./glossario.md). Em resumo: `context/` (quem você é e para quem fala), `decisions/` (o porquê das regras), `knowledge/` (a base de método, com as fontes e a régua de conteúdo de terceiro), `marketing/` (ideias, séries, rubricas), `finance/`, `health/` e `maps/` (a vida pessoal), `.claude/skills/` (as skills) e `scripts/` (os conferidores e o empacotador).

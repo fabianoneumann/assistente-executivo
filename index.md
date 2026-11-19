@@ -5,6 +5,7 @@ Abra só o que casa com a tarefa. Cada pasta tem um `README.md` ou um `index.md`
 | Arquivo ou pasta | O que tem | Ler quando |
 |---|---|---|
 | [`README.md`](./README.md) | o repositório privado antes do dado pessoal, os primeiros passos (quem programa e quem não programa), as skills e o que cada uma roda | ao chegar; ao ligar uma skill nova; ao configurar uma chave |
+| [`glossario.md`](./glossario.md) | os termos do método em uma ou duas frases (mesa, portão, trava do texto, escaleta, I2, hub de tema, LLM Wiki, ficha e síntese, lições), cada um com o arquivo onde se aprofunda | ao encontrar um termo do método que não conhece; antes de ler uma skill pela primeira vez |
 | [`context/sobre-mim.md`](./context/sobre-mim.md) | quem usa o assistente, como prefere receber informação e a voz ao escrever conteúdo | ao escrever qualquer coisa em nome da pessoa; ao decidir o formato de uma resposta longa |
 | [`context/publico.md`](./context/publico.md) | para quem você fala, as objeções e as restrições | ao apurar um tema (`story-angle`) e ao fazer uma peça (`piece-creation`) |
 | [`context/brand/`](./context/brand/README.md) | a marca: logos, paleta, letra, fotos | ao montar uma peça ou um material fora de uma série |

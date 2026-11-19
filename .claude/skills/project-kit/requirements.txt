@@ -1,0 +1,8 @@
+# O que os scripts e os testes da project-kit importam de fora da biblioteca padrão. Instalar, da raiz:
+#   python -m pip install -r .claude/skills/project-kit/requirements.txt
+#   python -m playwright install chromium
+# O PyYAML valida os YAML do projeto montado (conferir.py) e lê o CI (ci_local.py); sem ele, o conferir.py só avisa.
+# O Playwright, com o Chromium do segundo passo, desenha e confere os diagramas do onboarding (diagrama_*.py e os testes deles).
+# O montar.py pede só o Python. O que o projeto montado instala fica nos arquivos dele, não aqui.
+PyYAML>=6.0
+playwright>=1.40
