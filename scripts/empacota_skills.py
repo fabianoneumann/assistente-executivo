@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Empacota as skills em ZIP para subir à conta do claude.ai (Customize > Skills), a rota do Cowork e do chat.
+"""Empacota as skills em ZIP para subir à conta do claude.ai (Customize > Skills), a rota da conversa do app (o chat, sem pasta; ainda por testar).
 
 Uso, da raiz:
   python -X utf8 scripts/empacota_skills.py                    # todas, em dist/
@@ -8,7 +8,7 @@ Uso, da raiz:
 O upload à conta aceita só seis campos no frontmatter (name, description, license, compatibility, metadata,
 allowed-tools): outro campo faz o envio falhar. Este script tira os outros (por exemplo `context`, `agent` e
 `background` das skills de subagente) e avisa o que muda com isso. Avisa também quando a skill usa a injeção
-`!` ou variáveis do Claude Code, que o claude.ai e o Cowork não rodam.
+`!` ou variáveis do Claude Code, que a conversa do claude.ai não roda.
 
 O ZIP leva a pasta da skill inteira, menos `__pycache__`, `.venv` e `originals/`. A pasta `dist/` fica fora do git.
 """
@@ -58,12 +58,12 @@ def empacotar(nome: str, dist: Path) -> list[str]:
         avisos.append(f"{nome}: tirados do frontmatter {', '.join(tirados)}"
                       + (" (na conta, a skill roda na conversa principal, não num subagente isolado)" if "context" in tirados else ""))
     if re.search(r"^!`|\s!`", corpo, re.M):
-        avisos.append(f"{nome}: usa a injeção `!`, que o claude.ai e o Cowork trocam por um aviso")
+        avisos.append(f"{nome}: usa a injeção `!`, que a conversa do claude.ai troca por um aviso")
     if "${CLAUDE_" in corpo:
         avisos.append(f"{nome}: usa variáveis ${{CLAUDE_...}}, que a skill da conta não substitui")
     if (pasta / "scripts").is_dir():
         avisos.append(f"{nome}: tem scripts; na conta, eles rodam só com \"Code execution and file creation\" ligado, "
-                      "e as chaves do .env não vão junto (teste no Cowork antes de prometer)")
+                      "e as chaves do .env não vão junto (teste na conversa do app antes de prometer)")
     dist.mkdir(exist_ok=True)
     destino = dist / f"{nome}.zip"
     with zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED) as z:
@@ -83,7 +83,7 @@ def main(argv: list[str]) -> int:
         for linha in empacotar(n, RAIZ / "dist"):
             erro |= linha.startswith("[ERRO]")
             print(linha)
-    print("Para subir: claude.ai > Customize > Skills > enviar o ZIP (uma skill por ZIP). Ver README, \"Quem não programa\".")
+    print("Para subir: claude.ai > Customize > Skills > enviar o ZIP (uma skill por ZIP). Ver README, caminho 2, \"Ainda por testar\".")
     return 1 if erro else 0
 
 

@@ -10,7 +10,7 @@ Um modelo de ambiente para trabalhar com o Claude como assistente executivo e pe
 
 1. No GitHub, clique em **Use this template** > **Create a new repository**.
 2. Em **visibility**, escolha **Private**. É o seu repositório que vai guardar a sua voz, as suas ideias e, se você usar a parte pessoal, as suas finanças, a sua saúde e os seus mapas. **Escolha Private antes de pôr qualquer dado pessoal.** Se você já criou como público, mude em Settings > General > Danger Zone > Change repository visibility antes de escrever o primeiro registro: o histórico do git guarda o que foi commitado, mesmo depois de apagado.
-3. Siga um dos dois caminhos abaixo: o de quem programa (o Claude Code) ou o de quem não programa (o Cowork, no app do Claude).
+3. Siga um dos dois caminhos abaixo: o de quem programa (o Claude Code no terminal) ou o de quem não programa (a aba Code do app do Claude, sem terminal).
 
 Depois, o `scripts/confere_dados.py` ajuda a manter assim: rodado antes do push, com o `gh` instalado e logado, ele para quando há registro pessoal e o remoto do GitHub é público, e diz como deixar o repositório privado. Ele não roda sozinho (não há hook) e nada confere antes do primeiro registro. Sem o `gh`, ou sem o login dele, sai com o código 3 ("não conferiu") e diz o que falta: a visibilidade no momento da criação é com você.
 
@@ -117,24 +117,25 @@ claude plugin install assistente-executivo@assistente-executivo
 ```
 No plugin, as skills ganham o prefixo (`/assistente-executivo:research`). Elas esperam a estrutura deste repositório (`knowledge/`, `marketing/`, `context/`, `scripts/confere_ambiente.py`); num projeto sem ela, o método vale, os caminhos não, e a conferência de chave fica a cargo do próprio código de cada skill, que para com a mesma mensagem. Não instale o plugin dentro deste repositório: as skills já carregam de `.claude/skills/`, e ficariam em dobro.
 
-## Caminho 2: quem não programa (Cowork, no app do Claude)
+## Caminho 2: quem não programa (o Code, no app do Claude)
 
-O Cowork faz no app do Claude, sem terminal, o mesmo tipo de trabalho do Claude Code. As skills que ele carrega com certeza são as da **sua conta**; o que ele faz com as skills e o `CLAUDE.md` de uma pasta escolhida ainda está por testar (abaixo). Por isso, nesta versão, as skills se instalam uma vez na sua conta.
+O app do Claude no computador tem a aba **Code**, que trabalha numa pasta do seu computador sem você abrir o terminal: é o mesmo Claude Code do caminho 1, numa janela. Para trabalhar com os arquivos de uma pasta, é o caminho que a Anthropic recomenda hoje (o Cowork, que fazia isso antes, foi fundido à conversa do app). Num teste de 19/11, numa cópia deste repositório, o Code do app desktop fez o que o caminho 1 faz: ao escolher a pasta, pediu para confiar nela; leu sozinho o `CLAUDE.md` como instrução; carregou as skills de `.claude/skills/`, que dispararam, e os agentes de `.claude/agents/`; rodou o aviso de início de sessão; recusou sozinho, sem pedir aprovação, a leitura do `.env` e do `.claude/settings.local.json`; leu as chaves dos dois arquivos; rodou o Python e chegou à rede.
 
 1. **O que precisa:** uma conta paga do Claude (Pro, Max ou acima) e o app do Claude no computador (Windows ou macOS), em [claude.ai/download](https://claude.ai/download).
-2. **Ligar a execução de código:** em Settings > Capabilities, ligue "Code execution and file creation". Sem isso, as skills não carregam.
-3. **Baixar o seu repositório:** no GitHub, no repositório que você criou (privado), clique em **Code** > **Download ZIP** e descompacte numa pasta do seu computador. (Quem tiver o GitHub Desktop pode clonar por ele, e aí o que você gravar volta ao GitHub.)
-4. **Instalar as skills na sua conta.** Cada skill precisa virar um ZIP para o app. Peça ao Cowork, com a pasta escolhida: "empacota as skills idea-capture e review com o `scripts/empacota_skills.py`" (ou, num terminal com Python, `python -X utf8 scripts/empacota_skills.py idea-capture review`). Os ZIPs saem em `dist/`. No app, vá em Customize > Skills, envie o ZIP e ligue a skill. O empacotador já tira o que a conta não aceita e avisa o que muda.
-5. **Conectar o Gmail e a Agenda:** em Customize > Connectors, conecte o Gmail e o Google Calendar com a sua própria conta do Google.
-6. **A pasta de trabalho:** no Cowork, escolha a pasta do passo 3. É nela que as skills procuram as ideias (`marketing/social-media/ideas/`), o público e a base, e onde ficam as suas finanças, a sua saúde e os seus mapas. Comece pelo `context/sobre-mim.md` e pelo `context/publico.md`: peça ao Cowork para fazer as perguntas do roteiro e preencher com você.
-7. **Usar:** peça em linguagem natural ("registra esta ideia", "revisa este texto", "o que tenho na agenda amanhã?", "lança o que gastei hoje"). O Cowork pede a sua aprovação antes de apagar arquivo e, conforme o modo escolhido, antes de outras ações.
+2. **Trazer o seu repositório para o computador.** O jeito mais simples é o [GitHub Desktop](https://desktop.github.com/): entre com a sua conta do GitHub, vá em File > Clone repository, escolha o repositório que você criou pelo **Use this template** e a pasta onde ele vai ficar. Assim, o que você gravar volta ao GitHub pelo próprio GitHub Desktop. Outro jeito: crie uma pasta vazia, escolha-a no passo 3 e peça ao agente "clona aqui o meu repositório", com o link dele; se faltar o Git ou o login do GitHub, ele diz o que falta e ajuda.
+3. **Abrir a pasta no Code:** no app, abra a aba **Code**, escolha o ambiente "This computer" e a pasta do repositório (pode estar em outro disco). O app pergunta "Trust this workspace?" e lista o `.claude/settings.json` como o que pode rodar código: confie depois de ter lido as skills (acima). O modo de permissão vem em "Auto".
+4. **Pedir ao agente o que faltar:** peça "confere o ambiente com o `scripts/confere_ambiente.py` e instala o que faltar". Se o Python não estiver instalado, o agente o instala antes, e depois os pacotes que o script apontar (o caminho 1 lista quais são, no passo 5).
+5. **As chaves:** peça "cria o arquivo de chaves da research com o `scripts/prepara_chaves.py`" (troque `research` pela skill que você vai usar). Ele cria o `.env`, só se ainda não existir, e diz em que linha fica cada variável. Abra o `.env` num editor de texto (o Bloco de Notas serve) e troque o marcador `COLE_...` pelo valor; cada linha do arquivo diz para que serve a chave e onde se pega. Não cole a chave na conversa: o agente não consegue ler esse arquivo, e é assim que deve ser. Quem lê as chaves são os scripts das skills. Depois, comece uma sessão nova. (O bloco `env` do `.claude/settings.local.json` também funciona, ver o passo 4 do caminho 1.)
+6. **Preencher o contexto:** `context/sobre-mim.md` e `context/publico.md` vêm em branco, com o roteiro. Peça ao agente para fazer as perguntas do roteiro e preencher com você.
+7. **Usar:** peça em linguagem natural ("registra esta ideia", "revisa este texto", "pesquisa o que existe sobre …", "lança o que gastei hoje"). Antes de mandar ao GitHub, peça ao agente para rodar o `scripts/confere_dados.py` (ver "Antes de commitar", no caminho 1).
 
-**Para quem não programa, a primeira versão recomenda as duas skills que não dependem de chave nenhuma:** `idea-capture` e `review`, e a parte pessoal, que não pede skill. A `story-angle` apura pela `research`, que no modo só busca nativa não pede chave, mas pede a busca web e os scripts de conferência; se ela roda no Cowork, e como o Cowork trata as chaves das outras, ainda está por testar.
+O que o caminho 1 diz das skills, das chaves e das conferências vale aqui: é o mesmo programa. As conferências da tabela "Para conferir que está tudo certo" o agente roda por você.
+
+**Acompanhar pelo celular:** o app desktop tem o Remote Control, que permite acompanhar pelo celular uma sessão aberta no computador. Ainda não testamos esse uso aqui: conte com ele como possibilidade.
 
 **Ainda por testar, antes de contar com isso:**
-- se o Gmail envia e responde, e se a Agenda cria evento, ou se só leem;
-- o que o Cowork faz com a pasta `.claude/` e com o `CLAUDE.md` de uma pasta escolhida;
-- se as skills com chave rodam no Cowork, e de onde ele leria a chave.
+- o caminho pela conversa do app (o chat), sem pasta, com as skills instaladas na sua conta pelo ZIP do `scripts/empacota_skills.py` (Customize > Skills): fica para depois;
+- o Gmail e a Agenda pelos conectores da conta (Customize > Connectors) dentro do Code: se leem, se enviam e respondem, se criam evento.
 
 ## A vida pessoal
 
