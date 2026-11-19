@@ -18,6 +18,8 @@ O briefing vai num bloco **"## Briefing"** do `roteiro.md`, logo depois do front
 
 Para a moldura (objetivo, pedido único, a provocação com a origem e a fonte, os fatos com a peça de origem), o README dos Stories manda; na resposta, a moldura se decide **antes de ler as respostas**.
 
+**Na sequência de consciência e de venda** (rubrica de Stories, seção própria, desde a v0.3, a testar): o briefing cita as sequências de jab dos dias anteriores (a venda chega depois delas, README dos Stories, "O arco e a venda") e diz onde a informação crítica (o prazo, o preço, a data da turma ou da entrega, o caminho de compra) está também fora do Story, num post ou numa legenda com texto alternativo, para quem decide conferir [pessoa].
+
 ## O avulso de uma tela (N0), inteiro aqui
 
 O avulso é a peça mais curta da semana e não deve carregar o processo da sequência. Por isso:

@@ -1,6 +1,6 @@
 # O que evitar em Stories: texto e montagem
 
-Os erros de texto e de montagem que fazem um Story falhar com quem chega nele: a referência de tempo que erra no dia seguinte, a tela que só faz sentido para quem viu a anterior, a chamada que o app não deixa cumprir, o adesivo no lugar errado e o que o leitor de tela não alcança. Para cada item: de onde vem, se a conferência é de código, pergunta de um avaliador tipado (o Jev, opcional) ou julgamento, e o que a base já cobre. A régua é `marketing/social-media/rubrica-de-stories.md`, e as regras de produção, `marketing/social-media/stories/README.md`. A área segura de Stories está em [[carrossel-instagram]].
+Os erros de texto e de montagem que fazem um Story falhar com quem chega nele: a referência de tempo que erra no dia seguinte, a tela que só faz sentido para quem viu a anterior, a chamada que o app não deixa cumprir, o adesivo no lugar errado e o que o leitor de tela não alcança. Para cada item: de onde vem, se a conferência é de código, pergunta de um avaliador tipado (o Jev, opcional) ou julgamento, e o que a base já cobre. O método de mercado (o que fazer) está em [[metodos-de-mercado-stories]] e [[stories-10x-dispositivos]]; a régua é `marketing/social-media/rubrica-de-stories.md`, e as regras de produção, `marketing/social-media/stories/README.md`. A área segura de Stories está em [[carrossel-instagram]].
 
 ## 1. Referência presa ao momento, além de hoje, amanhã e ontem
 
@@ -15,7 +15,7 @@ O Story fica no ar 24 horas e atravessa a virada do dia; a sequência sai entre 
 
 ## 2. O Story que vai para os Destaques
 
-No Destaque, o Story deixa de vencer em 24 horas, e até o que a regra permite erra: "terça, 18h" vira uma terça qualquer. A base não tem regra de texto para o Destaque. A Central de Ajuda do Instagram, que descreve os Destaques, não renderizou na pesquisa.
+No Destaque, o Story deixa de vencer em 24 horas, e até o que a regra permite erra: "terça, 18h" vira uma terça qualquer. A base só fala de Destaque como guarda de sequências profundas num perfil do zero (o Ladeira, em [[metodos-de-mercado-stories]], item 2), sem regra de texto. A Central de Ajuda do Instagram, que descreve os Destaques, não renderizou na pesquisa.
 
 **Vira:** julgamento sobre o que guardar; e código, se o roteiro declarar `destaque: true` no frontmatter: aí a lista vale inteira, mais o dia da semana sem data. A alternativa é a tela de Destaque nascer à parte, sem referência de tempo.
 
@@ -27,11 +27,11 @@ Muita gente chega a um Story sem ter passado pelos anteriores: pelo Destaque, po
 
 ## 4. Chamada que a plataforma não deixa cumprir
 
-- **"Arrasta pra cima":** o gesto saiu do app, e não existe mais como chamada. O link nos Stories é por adesivo.
-- **"Link na bio" sem contexto:** a Universidade do Alabama pede que a chamada diga o destino (*Accessibility Tips for Instagram Stories*, de Digital Accessibility, The University of Alabama, https://accessibility.ua.edu/accessibilityresources/accessibility-tips-for-instagram-stories/).
+- **"Arrasta pra cima":** o gesto saiu do app, e o Sobral já registra que não existe mais como chamada ([[metodos-de-mercado-stories]], item 14). O link nos Stories é por adesivo.
+- **"Link na bio" sem contexto:** a Universidade do Alabama pede que a chamada diga o destino ([[2026-10-29-ua-acessibilidade-stories-instagram]]).
 - **"Clica aqui":** pelo mesmo motivo, o rótulo diz para onde vai ("Link: inscrição na oficina", no exemplo da página); e "clica no link" sem adesivo de link na tela é pedido impossível.
 
-**Vira:** código para a lista ("arrasta pra cima", "arrasta para cima", "link na bio", "clica aqui", "clique aqui") e para o texto que fala em link numa tela sem adesivo de link (o `data-adesivo` ganharia o tipo `link`); o Jev para a chamada sem destino claro.
+**Vira:** código para a lista ("arrasta pra cima", "arrasta para cima", "link na bio", "clica aqui", "clique aqui") e para o texto que fala em link numa tela sem adesivo de link (o `data-adesivo` ganharia o tipo `link`); o Jev para a chamada sem destino claro. **Coberto pelo método:** o pedido por palavra ou levantada de mão, com link só no último Story do dia ([[stories-10x-dispositivos]], perguntas 19 e 20).
 
 ## 5. Adesivo perto da borda direita ou da caixa de resposta
 
@@ -41,7 +41,7 @@ Um toque na metade direita da tela avança para o próximo Story, e o pé da tel
 
 ## 6. Stories sem texto alternativo
 
-O Instagram não aceita texto alternativo próprio nos Stories (*Accessibility Tips for Instagram Stories*; a Universidade de Nebraska–Lincoln diz o mesmo, só citação), e o post oficial de 2022 só fala de texto alternativo em fotos (*Advancing Accessibility on Instagram*, de Instagram (blog oficial, sem autor individual), https://about.instagram.com/blog/tips-and-tricks/advancing-accessibility-on-instagram). Telas montadas em HTML e exportadas são imagem do começo ao fim: o texto é desenhado no HTML e vira pixel, e o leitor de tela não o lê. A página do Alabama recomenda pôr o essencial com a ferramenta de texto do app, o que sugere que o texto nativo chega ao leitor de tela (não conferido), e publicar a informação crítica também num post do feed, com texto alternativo: "Use Stories for promotion, not as the only source of information." Nebraska–Lincoln vai além e sugere parar de usar Stories até a Meta dar o recurso.
+O Instagram não aceita texto alternativo próprio nos Stories ([[2026-10-29-ua-acessibilidade-stories-instagram]]; a Universidade de Nebraska–Lincoln diz o mesmo, só citação), e o post oficial de 2022 só fala de texto alternativo em fotos ([[2026-10-29-instagram-avancos-em-acessibilidade]]). Telas montadas em HTML e exportadas são imagem do começo ao fim: o texto é desenhado no HTML e vira pixel, e o leitor de tela não o lê. A página do Alabama recomenda pôr o essencial com a ferramenta de texto do app, o que sugere que o texto nativo chega ao leitor de tela (não conferido), e publicar a informação crítica também num post do feed, com texto alternativo: "Use Stories for promotion, not as the only source of information." Nebraska–Lincoln vai além e sugere parar de usar Stories até a Meta dar o recurso.
 
 **Vira:** julgamento sobre o que é crítico (data de evento, prazo, a resposta de uma dúvida), com a regra de o Story nunca ser o único lugar dessa informação. **Coberto em parte:** a publicação pela API pode mandar o texto alternativo dos posts (por exemplo, de uma seção "Texto alternativo" na `legenda.md`).
 
@@ -53,7 +53,7 @@ Nem o Instagram nem a página do Alabama dão um número; ela pede "contraste fo
 
 ## 8. Vídeo sem legenda
 
-"Stories with audio must be understandable without sound" (Alabama). O adesivo de legendas existe nos Stories desde maio de 2021, gera o texto do áudio e deixa corrigir palavra por palavra, em 17 línguas com o português (*Advancing Accessibility on Instagram*); a legenda automática erra e precisa de revisão, e não pode cobrir botões nem o nome. Quanto se assiste sem som: a pesquisa trouxe "1/3 toca sem som", sem primária aberta; o número que circula atribuído ao próprio Instagram é de 60% dos vídeos de Stories vistos com som (40% sem), de cerca de 2018, também não conferido. Para a regra, basta a direção: uma parte grande vê sem som.
+"Stories with audio must be understandable without sound" (Alabama). O adesivo de legendas existe nos Stories desde maio de 2021, gera o texto do áudio e deixa corrigir palavra por palavra, em 17 línguas com o português ([[2026-10-29-instagram-avancos-em-acessibilidade]]); a legenda automática erra e precisa de revisão, e não pode cobrir botões nem o nome. Quanto se assiste sem som: a pesquisa trouxe "1/3 toca sem som", sem primária aberta; o número que circula atribuído ao próprio Instagram é de 60% dos vídeos de Stories vistos com som (40% sem), de cerca de 2018, também não conferido. Para a regra, basta a direção: uma parte grande vê sem som.
 
 **Vira:** julgamento e processo: o item em vídeo do roteiro leva "legenda: adesivo, revisada". **Não coberto** pela régua de texto: o vídeo pede processo próprio.
 
@@ -67,12 +67,12 @@ Uma foto nos Stories fica cerca de 7 segundos na tela, e o Metricool recomenda d
 
 | Item | Vira | Já na base |
 |---|---|---|
-| 1. Referência ao momento | código (lista, horário), Jev (implícita), julgamento (fuso) | hoje, amanhã e ontem, no README de Stories |
+| 1. Referência ao momento | código (lista, horário), Jev (implícita), julgamento (fuso) | hoje, amanhã e ontem, no README de Stories; o fuso: o prazo de venda leva "horário de Brasília" (rubrica de Stories, "Sequência de consciência e de venda", a testar) |
 | 2. Destaque | julgamento; código com `destaque: true` | o ERRO `destaque_sem_data` do `conferir_telas.py` |
 | 3. Depender de outra tela | Jev nas telas de entrada; julgamento no meio | resultado sem a pergunta; comentário do compartilhamento |
-| 4. Chamada impossível | código (lista, link sem adesivo), Jev (destino) | a lista e o link sem adesivo como AVISOs do `conferir_telas.py` |
+| 4. Chamada impossível | código (lista, link sem adesivo), Jev (destino) | link só no último Story; "arrasta para cima" em [[metodos-de-mercado-stories]]; a lista e o link sem adesivo como AVISOs do `conferir_telas.py` |
 | 5. Adesivo na borda ou no pé | código (área segura) | área segura em [[carrossel-instagram]]; o texto sob o adesivo e a caixa fora da área segura como AVISOs do `conferir_telas.py` |
-| 6. Sem texto alternativo | julgamento (o que é crítico) | texto alternativo nos posts (na publicação pela API) |
+| 6. Sem texto alternativo | julgamento (o que é crítico) | texto alternativo nos posts (na publicação pela API); na venda, o teste [pessoa] da rubrica de Stories ("Sequência de consciência e de venda") |
 | 7. Contraste | código (cores sólidas), imagem (foto e degradê) | WCAG 1.4.3 |
 | 8. Vídeo sem legenda | julgamento e processo | o aviso do `video_do_story.py` para o vídeo com voz sem "legenda: ..., revisada" no roteiro |
 | 9. Tempo de tela | código (palavras), medida (voltar) | [[tempo-de-leitura-em-video]] |
@@ -81,6 +81,6 @@ Tudo o mais que a página do Alabama pede e a base já pratica: frases curtas, o
 
 ## Fontes
 
-- **Raw:** *Accessibility Tips for Instagram Stories*, *Advancing Accessibility on Instagram*.
+- **Raw:** [[2026-10-29-ua-acessibilidade-stories-instagram]], [[2026-10-29-instagram-avancos-em-acessibilidade]].
 - **Só citação:** Metricool (Kalum), "How Long Can (and Should) Instagram Stories Be?", 07/11/2025, atualizado em 19/06/2026, https://metricool.com/instagram-stories-length/ ("each one will show for 7 seconds"; de 5 a 7 segundos para foto); University of Nebraska–Lincoln, "Digital Accessibility Best Practices for Social Media", https://ada.unl.edu/digital-accessibility-best-practices-social-media (Stories sem texto alternativo; post do feed com texto alternativo depois, ou parar de usar Stories); Central de Ajuda do Instagram e Meta Business Help, páginas sobre Stories (Destaques, área de toque, duração), que não renderizaram na pesquisa.
 - **Não verificado:** "1/3 dos Stories toca sem som" (sem primária); "60% dos vídeos de Stories são vistos com som", atribuído ao Instagram em matérias de cerca de 2018.
