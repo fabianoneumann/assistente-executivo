@@ -2,18 +2,20 @@
 
 Skill de pesquisa profissional: coleta de várias fontes de alta qualidade, o Claude faz a síntese, analítica (a voz de escrita de quem usa, em `context/sobre-mim.md`, só entra quando a pesquisa vira post ou aula), e registra na base `knowledge/` seguindo os rituais do LLM Wiki. Processo e roteamento estão no [`SKILL.md`](./SKILL.md); o que é do projeto, em [`references/projeto.md`](./references/projeto.md).
 
+**Funciona desde o clone, sem chave nenhuma, no modo só busca nativa:** o raso vai pela busca web da sessão do Claude Code (`WebSearch`) e a verificação pela leitura da primária, sem os scripts; a triangulação é menor (um índice só) e não há profundo, e a rodada e a síntese registram o modo ([`references/modo-nativo.md`](./references/modo-nativo.md)). As chaves abaixo acrescentam índices (o Perplexity e o Gemini no raso) e o profundo.
+
 ## Chaves de API
 
 | Variável | Obrigatória? | Fornecedor | Onde se pega |
 |---|---|---|---|
-| `PERPLEXITY_API_KEY` | sim | Perplexity / Sonar (raso e profundo) | https://www.perplexity.ai/account/api/keys (a API é paga à parte do plano do app) |
-| `GEMINI_API_KEY` | sim | Google Gemini pelo AI Studio (raso, padrão, e profundo) | https://aistudio.google.com/apikey |
+| `PERPLEXITY_API_KEY` | não (sem as duas, o modo só busca nativa) | Perplexity / Sonar (raso e profundo) | https://www.perplexity.ai/account/api/keys (a API é paga à parte do plano do app) |
+| `GEMINI_API_KEY` | não (sem as duas, o modo só busca nativa) | Google Gemini pelo AI Studio (raso, padrão, e profundo) | https://aistudio.google.com/apikey |
 | `VERTEX_API_KEY` | não | Google Vertex AI, o raso por `--provider vertex` (pós-pago) | https://console.cloud.google.com/vertex-ai (Vertex AI > chave de API do modo expresso, num projeto com faturamento) |
 | `TYPESAFE_API_KEY` | não | o Jev, só para sondar perguntas tipadas sobre a triagem (`references/projeto.md`) | https://docs.typesafe.ai |
 
 **Como pôr:** copie o `.env.example` da raiz para `.env` (o `.env` nunca vai ao git) e preencha as linhas; ou ponha as variáveis no bloco `env` do seu `.claude/settings.local.json`, que também fica fora do git. O que já está no ambiente vence o `.env`. Depois, reinicie a sessão do Claude Code. Os scripts leem as chaves pelo `scripts/ambiente.py` desta pasta (cópia idêntica do `scripts/ambiente.py` da raiz) e nunca imprimem o valor; sem a chave, param com a mensagem do que falta, onde se pega e como se põe.
 
-**Para conferir**, da raiz: `python -X utf8 scripts/confere_ambiente.py --skill research`.
+**Para conferir**, da raiz: `python -X utf8 scripts/confere_ambiente.py --skill research`. Sem as chaves, ele sai com 0 e o `[AVISO]` do modo só busca nativa, com o que falta para o modo completo.
 
 **O free tier do Gemini não serve ao raso:** a busca (grounding) tem cota zero nele, embora o texto sem busca funcione.
 

@@ -12,7 +12,7 @@ A orquestradora da criação de peças: **guarda a ordem, o estado e as paradas,
 
 **Lições:** antes de começar, leia as abertas e as apontadas em [`licoes.md`](./licoes.md) desta pasta. **O que é deste projeto** (as pastas, as réguas, o portão, o público, as lições das peças) está em [`references/projeto.md`](./references/projeto.md).
 
-**As credenciais:** esta skill não usa chave. As skills que ela chama e que usam (a `research`, a `image-gen` e a `slides-export` com `--upload`) conferem cada uma a própria credencial no passo 0 delas; se uma delas parar por falta de chave, a peça para naquele passo, o estado registra "parado, porque falta a chave <VARIÁVEL>", e a mensagem da skill vai à pessoa como veio.
+**As credenciais:** esta skill não usa chave. As skills que ela chama e que usam (a `research`, a `image-gen` e a `slides-export` com `--upload`) conferem cada uma a própria credencial no passo 0 delas. A `research` não para por falta de chave: roda no modo só busca nativa e avisa, e o aviso vai à pessoa e ao estado da peça. Se outra parar por falta de chave, a peça para naquele passo, o estado registra "parado, porque falta a chave <VARIÁVEL>", e a mensagem da skill vai à pessoa como veio.
 
 ## A entrada: de onde a peça parte
 

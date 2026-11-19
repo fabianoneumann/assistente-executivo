@@ -24,4 +24,5 @@ As decisões de estrutura, de método e de negócio deste repositório, **um arq
 | [`memoria-e-evolucao.md`](./memoria-e-evolucao.md) | O seu feedback na memória do Claude Code, o que vale para o repositório em `decisions/`, e o espelho opcional da memória (só em repositório privado) |
 | [`kit-de-projeto-novo.md`](./kit-de-projeto-novo.md) | O kit de projeto novo (skill `project-kit`): o processo pronto, a stack à escolha, as travas que recusam sem perguntar, e o que é da conta pessoal de quem usa |
 | [`vida-pessoal-e-mapas.md`](./vida-pessoal-e-mapas.md) | A vida pessoal no mesmo modelo: as pastas com o método e sem registro, as três famílias de framework, os cuidados de privacidade, as fontes dos mapas |
-| [`pesquisa-tooling.md`](./pesquisa-tooling.md) | O ferramental da skill `research`: coletores e sintetizador, raso e profundo, autonomia com veto, o peso das fontes |
+| [`pesquisa-tooling.md`](./pesquisa-tooling.md) | O ferramental da skill `research`: coletores e sintetizador, raso e profundo, o modo só busca nativa sem chave, autonomia com veto, o peso das fontes |
+| [`tarefas-e-agenda.md`](./tarefas-e-agenda.md) | Tarefa vira issue do próprio repositório, com um projeto do GitHub como quadro; a agenda e o e-mail ficam com os conectores, sem envio sem o ok |

@@ -22,9 +22,7 @@ Processo previsível de pesquisa de nível profissional (pensar como jornalista 
 
 ## Passo 0, as credenciais
 
-Antes de tudo, rode da raiz do projeto `python -X utf8 scripts/confere_ambiente.py --skill research`. Se ele sair com `[PARE]`, pare aqui: repasse à pessoa a mensagem dele (qual variável falta, onde se pega e como se põe) e não tente rodar a skill sem a chave. Se o script não existir (a skill instalada como plugin noutro projeto), siga: o próprio código da skill para com a mesma mensagem na primeira chamada.
-
-As obrigatórias são a `PERPLEXITY_API_KEY` e a `GEMINI_API_KEY`; a `VERTEX_API_KEY` e o Codex são opcionais, e o que faltar deles só desliga a parte deles.
+Antes de tudo, rode da raiz do projeto `python -X utf8 scripts/confere_ambiente.py --skill research`. A skill não para por falta de chave: sem a `PERPLEXITY_API_KEY` e a `GEMINI_API_KEY`, ele sai com 0 e o `[AVISO]` do **modo só busca nativa**, que você repassa à pessoa como veio, e segue. Nesse modo o raso vai só pela `WebSearch` e pelo `WebFetch` da sessão, sem os scripts, e o profundo não existe; com uma só das chaves, roda também a frente dela. O que muda na rodada e no registro está em [`references/modo-nativo.md`](./references/modo-nativo.md). Com as chaves, nada muda: o modo nativo é o fallback. Sem o script (a skill como plugin noutro projeto), a frente cujo script sair com `[PARE]` fica de fora e a rodada segue no modo que sobrou, com o aviso. A `VERTEX_API_KEY` e o Codex são opcionais: o que faltar só desliga a parte deles.
 
 ## Duas manoplas
 
@@ -44,7 +42,7 @@ Padrão é **raso** e você age sozinho. Escale para **profundo** quando o tema 
 
 ## Passo 2, raso (as quatro frentes, em paralelo)
 
-Dispare as frentes **na mesma leva** (as chamadas Bash e a ferramenta `WebSearch`, numa só mensagem): é barato e enriquece por triangulação (índices diferentes acham fontes diferentes; quando concordam, sobe a confiança no que procurar na primária, mas não confirma; quando discordam, é sinal a reconciliar, não ruído). A pergunta pede o fato, sem levar a hipótese de quem pediu (Passo 5, "O peso das fontes"):
+No modo só busca nativa, só a `WebSearch`, com mais variações (`references/modo-nativo.md`). Dispare as frentes **na mesma leva** (as chamadas Bash e a ferramenta `WebSearch`, numa só mensagem): é barato e enriquece por triangulação (índices diferentes acham fontes diferentes; quando concordam, sobe a confiança no que procurar na primária, mas não confirma; quando discordam, é sinal a reconciliar, não ruído). A pergunta pede o fato, sem levar a hipótese de quem pediu (Passo 5, "O peso das fontes"):
 
 ```
 python -X utf8 .claude/skills/research/scripts/perplexity_search.py --mode shallow --query "<pergunta>"
@@ -74,7 +72,7 @@ Escolha o motor pela **natureza do dado**, não pelo rótulo do tema:
 - Dado citável, estatística, estudo específico → **Perplexity Deep**: `python -X utf8 .claude/skills/research/scripts/perplexity_search.py --mode deep --query "<pergunta>"`
 - Técnico-científico ou varredura ampla → **Gemini Deep**: `python -X utf8 .claude/skills/research/scripts/gemini_search.py --mode deep --query "<pergunta>"`
 
-Os dois profundos são **assíncronos** (levam minutos): **rode em background** e retome ao terminar. Rodar dois profundos é desperdício (caro e redundante): escolha um.
+**No modo só busca nativa, não há profundo:** diga isso à pessoa e ofereça configurar as chaves; até lá, o raso itera mais (Passo 2.5) e a lacuna fica registrada. Os dois profundos são **assíncronos** (levam minutos): **rode em background** e retome ao terminar. Rodar dois profundos é desperdício (caro e redundante): escolha um.
 
 ## Passo 4, triagem preliminar
 

@@ -31,9 +31,9 @@ Peça sem série não herda o design system de uma série. Por isso a identidade
 
 ## 4. A apuração e a primeira mesa
 
-Com o "rende", a `story-angle` apura (Fases 1 e 2, com a `research`, que confere a própria chave antes de buscar) e monta a mesa de ângulos dela (Fase 3). **A primeira mesa com a pessoa junta as camadas vizinhas**: os ângulos da `story-angle`, os formatos candidatos (seção 2) e, sem série, as direções de identidade visual (seção 3). É uma parada só, porque as três escolhas são pequenas e se decidem juntas (o ângulo puxa o formato, e o formato puxa a forma). **A mesa é uma só, montada por esta skill:** a mesa da Fase 3 da `story-angle`, na ordem dela, é o primeiro bloco, e o formato e a identidade vêm em seguida. A revisão antes dela é a da seção "Revisão" do `SKILL.md`.
+Com o "rende", a `story-angle` apura (Fases 1 e 2, com a `research`, que confere a própria chave antes de buscar e, sem ela, apura no modo só busca nativa) e monta a mesa de ângulos dela (Fase 3). **A primeira mesa com a pessoa junta as camadas vizinhas**: os ângulos da `story-angle`, os formatos candidatos (seção 2) e, sem série, as direções de identidade visual (seção 3). É uma parada só, porque as três escolhas são pequenas e se decidem juntas (o ângulo puxa o formato, e o formato puxa a forma). **A mesa é uma só, montada por esta skill:** a mesa da Fase 3 da `story-angle`, na ordem dela, é o primeiro bloco, e o formato e a identidade vêm em seguida. A revisão antes dela é a da seção "Revisão" do `SKILL.md`.
 
 - **Nenhum fato sem fonte na mesa:** o que a apuração não fechou vai marcado "não verificado", com a pergunta e a fonte que o responderia, e não entra como fato em ângulo nenhum.
-- **Sem rede, sem a chave da pesquisa ou sem a apuração autorizada,** a mesa sai com os candidatos que a base sustenta e as levas planejadas como pendência, e diz isso no topo.
+- **Sem as chaves da pesquisa,** a apuração roda no modo só busca nativa, e a mesa diz isso no topo (triangulação menor, sem profundo). **Sem rede ou sem a apuração autorizada,** a mesa sai com os candidatos que a base sustenta e as levas planejadas como pendência, e diz isso no topo.
 
 Escolhido o ângulo, o arquivo da ideia ganha a pauta (`estagio: pauta`, pela `story-angle`), e a peça segue pelo briefing do formato escolhido (passo 2 do `SKILL.md`, agora com o formato fixo).

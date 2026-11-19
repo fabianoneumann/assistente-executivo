@@ -38,4 +38,4 @@ O arquivo da skill com o que muda de projeto para projeto. O `SKILL.md` guarda o
 
 ## Chaves
 
-Esta skill não lê chave. As buscas vão pela `research`, que pede as dela no Passo 0.
+Esta skill não lê chave. As buscas vão pela `research`, que confere as dela no Passo 0 e, sem elas, roda no modo só busca nativa: a apuração funciona desde o clone, com triangulação menor e sem profundo, e a rodada registra o modo. As chaves da `research` acrescentam índices.

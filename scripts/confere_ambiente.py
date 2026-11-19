@@ -7,7 +7,8 @@ Uso, da raiz do repositório:
   python -X utf8 scripts/confere_ambiente.py --skill slides-export --upload   # inclui o que a subida ao bucket pede
 
 O primeiro passo de cada skill com chave roda a segunda forma. Código de saída:
-  0  a skill pode rodar (o opcional que faltar só desliga uma parte, e o quadro diz qual);
+  0  a skill pode rodar (o opcional que faltar só desliga uma parte, e o quadro diz qual; a research
+     sem as chaves roda no modo só busca nativa e sai com 0 e o [AVISO]);
   1  falta algo obrigatório: a skill para e repassa a mensagem;
   2  uso errado (skill desconhecida).
 
@@ -59,7 +60,7 @@ CHAVES = {
 
 # ferramenta de linha de comando: (para que serve, como se instala)
 FERRAMENTAS = {
-    "gh": ("ler e comentar issues e PRs (review); criar o repositório, a milestone e as specs (project-kit)", "https://cli.github.com, depois `gh auth login`"),
+    "gh": ("as tarefas como issue e o quadro; ler e comentar issues e PRs (review); criar o repositório, a milestone e as specs (project-kit)", "https://cli.github.com, depois `gh auth login`"),
     "codex": ("o Codex como segunda revisão de código e buscador extra (opcional)", "https://developers.openai.com/codex/cli, depois `codex login`"),
     "shot-scraper": ("a foto das telas (slides-export)", "python -m pip install shot-scraper; depois, shot-scraper install"),
     "ffmpeg": ("o vídeo das telas e os quadros (slides-export, visual-form, object-anatomy)", "https://ffmpeg.org/download.html (no Windows: winget install Gyan.FFmpeg)"),
@@ -87,9 +88,11 @@ R2_UPLOAD = R2 + ["R2_PUBLIC_BASE_CONTEUDO"]  # a subida registra os links: prec
 SKILLS = {
     "idea-capture": {},
     "review": {"ferr_opc": ["gh", "codex"], "chaves_opc": ["TYPESAFE_API_KEY"]},
-    "story-angle": {"nota": "sem chave própria, mas a apuração vai toda pela research: sem as chaves dela, a story-angle para na primeira busca (confira com --skill research)"},
-    # a GEMINI_API_KEY é a rota padrão (e a única do modo profundo da research); a Vertex é pós-pago, só com estimativa
-    "research": {"chaves": ["PERPLEXITY_API_KEY", "GEMINI_API_KEY"], "pacotes": ["openai", "google.genai"],
+    "story-angle": {"nota": "sem chave própria; a apuração vai pela research, que sem as chaves dela roda no modo só busca "
+                            "nativa (triangulação menor, sem profundo); as chaves acrescentam índices (confira com --skill research)"},
+    # sem frente nenhuma por API, a research roda no modo só busca nativa (a WebSearch e o WebFetch da sessão);
+    # a GEMINI_API_KEY é a rota padrão do Gemini (e a única do profundo dele); a Vertex é pós-pago, só com estimativa
+    "research": {"frentes": {"Perplexity": ("PERPLEXITY_API_KEY", "openai"), "Gemini": ("GEMINI_API_KEY", "google.genai")},
                  "chaves_opc": ["VERTEX_API_KEY", "TYPESAFE_API_KEY"], "ferr_opc": ["codex"]},
     "image-gen": {"chaves": ["GEMINI_API_KEY"], "pacotes": ["google.genai", "PIL", "numpy"],
                   "chaves_opc": ["VERTEX_API_KEY", "TYPESAFE_API_KEY"], "ferr_opc": ["codex"]},
@@ -98,7 +101,8 @@ SKILLS = {
                       "upload": R2_UPLOAD, "pacotes_upload": ["boto3"]},
     "visual-form": {"ferr": ["ffmpeg"], "pacotes": ["playwright", "PIL", "numpy"]},
     "object-anatomy": {"ferr": ["ffmpeg"], "pacotes": ["playwright", "PIL", "numpy"], "ferr_opc": ["node"]},
-    "piece-creation": {"nota": "orquestra as outras: cada etapa confere a sua skill"},
+    "piece-creation": {"nota": "orquestra as outras: cada etapa confere a sua skill (a pesquisa roda desde o clone no modo "
+                               "só busca nativa)"},
     "piece-script": {},
     "base-enrichment": {},
     "project-kit": {"ferr": ["gh"], "pacotes": ["yaml", "playwright"],
@@ -108,6 +112,9 @@ SKILLS = {
 }
 
 COPIAS_DO_CARREGADOR = ["research", "image-gen", "r2-storage", "slides-export"]
+
+AVISO_NATIVO = ("modo só busca nativa (sem Perplexity e Gemini): triangulação menor; para o modo completo, "
+                "configure as chaves em .env")
 
 
 _LOGIN_CODEX: bool | None = None
@@ -143,7 +150,8 @@ def origem(c: str) -> str:
 def encontradas(skill: str, upload: bool) -> list[str]:
     """As chaves da skill que têm valor, cada uma com a origem, sem o valor."""
     r = SKILLS[skill]
-    nomes = list(r.get("chaves", [])) + list(r.get("upload", []) if upload else []) + list(r.get("chaves_opc", []))
+    nomes = list(r.get("chaves", [])) + list(r.get("upload", []) if upload else [])
+    nomes += [c for c, _ in r.get("frentes", {}).values()] + list(r.get("chaves_opc", []))
     nomes += [c for g in r.get("uma_de", []) for c in g]
     vistos: list[str] = []
     for c in nomes:
@@ -217,6 +225,40 @@ def faltas(skill: str, upload: bool) -> tuple[list[str], list[str]]:
     return obrig, opc
 
 
+def frentes(skill: str) -> tuple[list[str], list[str]]:
+    """(as frentes por API ligadas, o que falta para ligar as desligadas). A frente liga com a chave e o pacote;
+    sem nenhuma, a skill roda no modo só busca nativa, sem bloquear."""
+    ligadas, falta = [], []
+    for nome, (chave, pacote) in SKILLS[skill].get("frentes", {}).items():
+        partes = []
+        if not ambiente.valor(chave):
+            uso, onde = CHAVES[chave]
+            partes.append(f"a variável {chave} ({uso}; onde se pega: {onde})")
+        if not tem_pacote(pacote):
+            partes.append(f"o pacote Python `{NOME_DO_PACOTE.get(pacote, pacote)}` (python -m pip install -r {PACOTES[pacote]})")
+        if partes:
+            falta.append(f"frente {nome}: " + " e ".join(partes) + ".")
+        else:
+            ligadas.append(nome)
+    return ligadas, falta
+
+
+def estado_das_frentes(skill: str) -> tuple[str, str, list[str]]:
+    """(o estado para o quadro, o aviso, o que falta para o modo completo); tudo vazio quando a skill não tem frentes
+    ou tem todas ligadas."""
+    if not SKILLS[skill].get("frentes"):
+        return "", "", []
+    ligadas, falta = frentes(skill)
+    if not falta:
+        return "", "", []
+    if not ligadas:
+        return "pronta no modo só busca nativa", AVISO_NATIVO, falta
+    desligadas = [n for n in SKILLS[skill]["frentes"] if n not in ligadas]
+    return (f"pronta sem a frente {', '.join(desligadas)}",
+            f"modo reduzido (sem {', '.join(desligadas)}): roda a busca nativa e {', '.join(ligadas)}; "
+            "para o modo completo, configure as chaves em .env", falta)
+
+
 def copias_iguais() -> list[str]:
     base = RAIZ / "scripts/ambiente.py"
     erradas = []
@@ -251,7 +293,12 @@ def main(argv=None) -> int:
             print("Depois de configurar, rode de novo: python -X utf8 scripts/confere_ambiente.py --skill " + a.skill
                   + (" --upload" if a.upload else ""))
             return 1
-        print(f"[OK] a skill {a.skill} pode rodar.")
+        estado, aviso, falta_completo = estado_das_frentes(a.skill)
+        if aviso:
+            print(f"[AVISO] {aviso}")
+        print(f"[OK] a skill {a.skill} pode rodar" + (f" ({estado.removeprefix('pronta ')})." if estado else "."))
+        for linha in falta_completo:
+            print(f"  (para o modo completo) {linha}")
         achadas = encontradas(a.skill, a.upload)
         if achadas:
             print("  chaves encontradas: " + ", ".join(achadas))
@@ -265,13 +312,18 @@ def main(argv=None) -> int:
     print(cabecalho_origem(arq is not None) + "\n")
     for s in SKILLS:
         obrig, opc = faltas(s, False)
-        estado = "falta configurar" if obrig else ("pronta, com partes desligadas" if opc else "pronta")
+        est_frentes, _, falta_completo = estado_das_frentes(s)
+        estado = "falta configurar" if obrig else (est_frentes or ("pronta, com partes desligadas" if opc else "pronta"))
+        if est_frentes and opc and not obrig:
+            estado += ", com partes desligadas"
         print(f"{s:16} {estado}")
         achadas = encontradas(s, False)
         if achadas:
             print("    chaves: " + ", ".join(achadas))
         for linha in obrig:
             print(f"    falta: {linha}")
+        for linha in falta_completo:
+            print(f"    para o modo completo: {linha}")
         for linha in opc:
             print(f"    opcional: {linha}")
         if SKILLS[s].get("nota"):

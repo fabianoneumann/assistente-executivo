@@ -30,7 +30,7 @@ O arquivo da skill com o que é deste repositório: as pastas, as réguas, o por
 | Skill | Passo | Pede |
 |---|---|---|
 | `story-angle` | 3, e a primeira mesa da ideia crua | nada além do que a `research` pede |
-| `research` | 3 | a própria chave, conferida no passo 0 dela |
+| `research` | 3 | a própria chave, conferida no passo 0 dela; sem ela, o modo só busca nativa, sem parar |
 | `piece-script` | 4 | nada |
 | `review` | 4, e a revisão do briefing | nada |
 | `visual-form` | 5 | o navegador para as conferências; chama a `image-gen` (a própria chave) e a `object-anatomy` |

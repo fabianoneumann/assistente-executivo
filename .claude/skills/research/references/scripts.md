@@ -22,6 +22,6 @@ Cada script de busca imprime este JSON no stdout (uniforme entre fornecedores, p
 
 `answer` (aterrado) vem separado de `results` (fontes cruas) de propósito: use os dois. Se `error` não for nulo, houve falha de rede ou de API (ou, no Codex, a ferramenta não está instalada): trate e avise. O raso do Gemini acrescenta `endpoint` (`aistudio` ou `vertex`), e o profundo, `interaction_id`, para recuperar o relatório sem rodar de novo. O Codex deixa `results` vazio (ele não devolve a lista crua) e põe em `citations` as URLs que citou.
 
-**Sem a chave,** o script não imprime JSON: sai com o código 1 e a mensagem `[PARE]` no stderr (a variável, para que serve, onde se pega e como se põe). Repasse a mensagem à pessoa e não tente de novo sem a chave.
+**Sem a chave,** o script não imprime JSON: sai com o código 1 e a mensagem `[PARE]` no stderr (a variável, para que serve, onde se pega e como se põe). A pesquisa não para por isso: a frente dele fica de fora, a rodada segue no modo só busca nativa (ou no reduzido, com a frente que tem chave) e diz isso à pessoa, com a mensagem (`modo-nativo.md`). Não tente o script de novo sem a chave.
 
 **No limite de taxa (429),** o script do Perplexity tenta até três vezes, com espera crescente e variação aleatória (sem as tentativas internas do SDK, dentro de 90 s de espera no raso), e só então devolve o erro; o 429 de cota ou saldo volta na hora. Levas grandes em paralelo ainda podem esgotar as três; o que voltar com 429 depois das três tentativas roda de novo em sequência.
