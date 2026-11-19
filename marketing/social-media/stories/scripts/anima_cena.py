@@ -10,10 +10,16 @@ A página abre pelo arquivo (file://), com o caderno da série pelo caminho rela
 Render com --disable-lcd-text (sem a flag, o texto miúdo sai com franja de cor). Os quadros ficam numa pasta ao lado do vídeo, que pode ser apagada depois;
 no começo de cada gravação, os quadros dela (q0000.png...) saem, e o resto da pasta fica.
 O MP4 sai sem lista de edição (elst), que a Meta pede sem (-bf 0 -use_editlist 0, como o tela_em_video.py da
-slides-export), e o script confere depois de gravar, com a mesma função de lá.
+slides-export), e o script confere depois de gravar, com a mesma função de lá; com elst, o MP4 sai da pasta.
+Depois, o video_do_story.py ao lado confere o MP4 inteiro contra os limites do Story na API (3 a 60 s, 23 a 60 qps,
+H.264 ou HEVC, o moov no começo, a taxa, a proporção do Story) e, como leitura, mede o movimento (o saltos.py) e grava
+a folha de quadros a 0, 30, 60 e 90% na pasta dos quadros (folha.jpg); fora dos limites, o MP4 fica (pode ser um
+trecho a emendar) e o script sai com 1. Com o roteiro.md ao lado da página, o video_do_story.py confere também o
+tempo de leitura frase a frase da tabela de tempo e a legenda revisada do vídeo com voz, como AVISO.
 """
 import argparse, re, subprocess, sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))   # o video_do_story.py, ao lado
 from playwright.sync_api import sync_playwright
 
 SLIDES_EXPORT = Path(__file__).resolve().parents[4] / ".claude" / "skills" / "slides-export" / "scripts"
@@ -83,6 +89,12 @@ def main():
         saida.unlink()  # o MP4 com elst não fica onde a publicação o pegaria
         sys.exit(prob)
     print(f"[OK] {n} quadros, {a.segundos:g} s, {saida}")
+    import video_do_story as vs
+    roteiro = Path(a.pagina).resolve().parent / "roteiro.md"   # o da sequência, ao lado do stories.html
+    probs, avisos, leituras = vs.conferir(saida, quadros / "folha.jpg", roteiro if roteiro.is_file() else None)
+    vs.imprimir(saida, probs, avisos, leituras)
+    if probs:
+        sys.exit(1)
 
 
 if __name__ == "__main__":

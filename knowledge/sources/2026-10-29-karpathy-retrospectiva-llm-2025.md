@@ -87,10 +87,9 @@ Quais foram, para ele, as "mudanças de paradigma" dos LLMs em 2025: as coisas q
 
 - "We're not "evolving/growing animals", we are "summoning ghosts"."
 - "they are at the same time a genius polymath and a confused and cognitively challenged grade schooler"
-- "Training on the test set is a new art form."
-- "They provide an application-specific GUI for the human in the loop"
 - "code is suddenly free, ephemeral, malleable, discardable after single use."
-- "People actually dislike reading text - it is slow and effortful."
+
+No mesmo tom, sem as palavras dele: Karpathy ironiza que treinar no conjunto de teste virou uma arte em si; diz que, entre outras coisas, os apps de LLM oferecem ao humano no circuito uma interface própria da aplicação; e lembra que ler texto cansa e é lento, por isso as pessoas não gostam.
 
 ## O que o texto não trata
 

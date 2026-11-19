@@ -109,7 +109,7 @@ A página não traz o esquema de entrada (ele está nas páginas de cada fluxo, 
 
 **Para gerar um vídeo do zero.** O ponto de partida que a página dá é o Seedance 2.5: prompt ou referências, som gerado com a imagem, clipes de até 30 s, bom para cena com personagem, produto animado e planos encadeados. Para câmera de cinema, cena aberta e plano aéreo, o Veo (sem número de versão). Som sincronizado em clipe criativo: Grok Imagine. Imagens de personagem, referência de movimento e áudio num vídeo só, com diálogo e efeitos: MiniMax H3.
 
-**Para conduzir o plano por quadros.** O primeiro e o último quadro, pelo Wan: "Wan - shots where you want to guide both the first and last frame." Uma sequência guiada por quadros-chave, pelo Kling 4.0.
+**Para conduzir o plano por quadros.** Quando se quer fixar tanto o quadro de abertura quanto o de fechamento, o guia aponta o Wan. Uma sequência guiada por quadros-chave, pelo Kling 4.0.
 
 **Para levar o movimento de um vídeo a outro.** Duas indicações na mesma página: o Motion Transfer do Genjutsu, que aplica o movimento de um vídeo existente a outro personagem ou cena, e o Kling Motion Control: "Kling Motion Control remains the option for transferring movement from a reference video."
 
@@ -127,7 +127,7 @@ A página não traz o esquema de entrada (ele está nas páginas de cada fluxo, 
 
 **Proveniência.** https://higgsfield.ai/creator-hub/help-center/ai-models/which-ai-model-should-i-use, na central de ajuda do Creator Hub, baixada como HTML. A página mostra "Aug 1, 2026"; o JSON-LD dá `datePublished` 2026-08-01 e `dateModified` 2026-11-06. Assinado "Higgsfield". Fonte curta: organizada aqui pelo que é da Higgsfield e pelo tipo de exigência do plano, e não pela tabela do guia.
 
-**O que o guia diz que é da própria Higgsfield.** Três coisas: o Soul (família de imagem nativa, moda e cinema, com o Soul Cinema), o Popcorn (nativo, para storyboard e vários quadros encadeados) e o Higgsfield DOP, que o guia define assim: "Higgsfield DOP is Higgsfield's native cinematography layer" (efeitos visuais e movimento de câmera dirigido, por preset). O Cinema Studio o guia chama de ferramenta: "use Cinema Studio, which is a tool, not a model"; ele aceita várias famílias de vídeo, trocáveis conforme a cena, sem que o guia diga quais.
+**O que o guia diz que é da própria Higgsfield.** Três coisas: o Soul (família de imagem nativa, moda e cinema, com o Soul Cinema), o Popcorn (nativo, para storyboard e vários quadros encadeados) e o Higgsfield DOP, que o guia define assim: "Higgsfield DOP is Higgsfield's native cinematography layer" (efeitos visuais e movimento de câmera dirigido, por preset). O Cinema Studio, para o guia, é ferramenta, não modelo; ele aceita várias famílias de vídeo, trocáveis conforme a cena, sem que o guia diga quais.
 
 **Vídeo, pela exigência do plano.** Movimento: o de gente realista (expressão, dinâmica da cena) vai ao Seedance, que é também o começo mais tolerante para iniciante; o fisicamente coerente, e a transferência de movimento de um vídeo para outro, ao Kling; o de câmera, ao DOP. Duração e continuidade: clipe longo e vários planos encadeados, Kling; continuar uma cena ou chegar a um estado inicial ou final definido, Wan, pelo controle do primeiro e do último quadro. Som sincronizado: Grok Imagine. Muita dinâmica, gerada rápido: Minimax Hailuo. Do Veo, a linha do guia só diz que é o modelo do Google.
 

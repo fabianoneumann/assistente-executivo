@@ -196,11 +196,10 @@ As colunas do GPT-3.5 e do Reflexion na Tabela 2 são iguais nas três versões.
 ## Citações
 
 - "We attribute the advantage of LDB to the fine-grained debugging feedback and the runtime information as external supplements to the LLM self-correction." (seção 3.3)
-- "LLMs has limited self-correct reasoning abilities." (seção 3.3, com Huang et al., 2023c; a concordância é a do original)
-- "As for Reflexion, we utilize the corresponding generated programs published in the official Github repository" (seção 3.4)
-- "which is weaker than the code generators, GPT-4 and Reflexion." (seção 3.4, sobre o GPT-3.5 depurando)
 - "can be up to 98.2% on HumanEval with Reflexion as the seed generators and GPT-4o" (apêndice A)
 - "The correct test cases are mandatory in LDB so that LDB can execute the program and compare the execution flow against the task description." (Limitation)
+
+Em palavras próprias, o resto do que a ficha usava como citação: a premissa do ganho, apoiada em Huang et al. (2023c), é que o LLM sozinho corrige mal o próprio raciocínio (seção 3.3); as sementes do Reflexion são os programas gerados que o repositório oficial do método publicou (seção 3.4); e, quando o GPT-3.5 depura, ele é mais fraco que os geradores das sementes, o GPT-4 e o Reflexion (seção 3.4).
 
 ## Lacuna e estranhezas do texto
 
@@ -215,7 +214,7 @@ As colunas do GPT-3.5 e do Reflexion na Tabela 2 são iguais nas três versões.
 
 ## Detalhe da conferência lado a lado
 
-Total de 78 unidades: 56 frases de prosa (fora títulos e citações, com as notas abaixo das tabelas) e 22 células com texto corrido (6 no método, 5 na montagem, 5 nas condições da Tabela 2, 3 na amostragem da granularidade e 3 nas versões anteriores). Ficam fora as células de fato (números, modelos, nomes de conjunto, endereços, datas, rótulos de linha).
+Conta feita antes de 2026-11-19, quando três das seis citações viraram o parágrafo em palavras próprias depois da lista (três unidades novas, que não entraram na conta abaixo). Total de 78 unidades: 56 frases de prosa (fora títulos e citações, com as notas abaixo das tabelas) e 22 células com texto corrido (6 no método, 5 na montagem, 5 nas condições da Tabela 2, 3 na amostragem da granularidade e 3 nas versões anteriores). Ficam fora as células de fato (números, modelos, nomes de conjunto, endereços, datas, rótulos de linha).
 
 Seguem a fonte 63, contadas pelo lado mais severo (a unidade que condensa um grupo de frases seguidas conta, mesmo resumida): as 3 de "A ideia" (resumo e legenda da Figura 1); a da formulação; as 6 células do método e as 6 frases sobre bloco básico, depuração seletiva e em lote (seção 2 e apêndices B, E e F); as 5 células da montagem (seção 3.1 e a nota da Tabela 1); as 7 das linhas de base (3.2 e 3.5); a primeira nota da Tabela 1 (legenda); 3 das 4 de "Por que o ganho" (3.3); as 5 células de condição da Tabela 2 (3.4); as 3 das iterações (3.5 e apêndice G); as 3 células e as 3 frases da granularidade (3.6 e apêndice E); as 2 da dificuldade (3.7); as 3 do estudo de caso (3.8); a do apêndice A; as 2 do apêndice D; as 3 do apêndice H; as 3 de "Outros" (apêndices I e J); as 2 do limite declarado; e a célula da v1 sobre o Reflexion (que traduz a frase daquela versão). Não seguem 15: a frase do ganho máximo da Tabela 1, a frase que anuncia as duas razões em "Por que o ganho", as 2 células e as 2 frases das versões anteriores que registram a comparação entre versões, e as 9 de "Lacuna e estranhezas", que dizem o que falta ou não bate no texto.
 

@@ -47,7 +47,7 @@ Desde **22 de outubro de 2026** a Gemini API não tem mais Veo: os três IDs de 
 
 **Edição com estado.** Encadeados pelo `previous_interaction_id`, os turnos geram cada um um vídeo novo sobre o anterior, e o que o pedido não mencionou fica como estava (mudar a luz e trocar o fundo são os exemplos); vídeos gerados de até 15 s se editam assim sem reenvio.
 
-**Editar um vídeo próprio.** Vale para vídeo de até 15 s, enviado pela Files API (a página a prefere ao base64 por causa do tamanho), e a função "is not available in all regions".
+**Editar um vídeo próprio.** Vale para vídeo de até 15 s, enviado pela Files API (a página a prefere ao base64 por causa do tamanho), e a função não está disponível em todas as regiões.
 
 **Receber por URI.** Para vídeo acima de 4 MB, a página indica receber por endereço: `delivery="uri"` em `response_format` devolve um URI do Google, a consultar até o estado `ACTIVE`. Esse endereço só é garantido na resposta de criação ou no stream SSE; consultado depois por `GET /v1beta/interactions/{id}`, o vídeo volta em base64 no campo `data`.
 

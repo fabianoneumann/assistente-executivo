@@ -1,6 +1,6 @@
 # Stories: os narrativos (N2) e o ramo da resposta (N1)
 
-A unidade é o Story. O roteiro mora no `roteiro.md` da pasta da sequência (a pasta dos Stories, em `references/projeto.md`, com uma subpasta `AAAA-MM-DD-<tema>/` por sequência): esta skill escreve nele o frontmatter que o README dos Stories pede, a cabeça e a seção "Os Stories" (a escaleta, com os campos do contrato e, no fim, a tabela de plantas e pagamentos), e não toca nas seções da forma, do publicado e do resultado, nem no bloco "Briefing" logo depois do frontmatter, que é da `piece-creation` quando ela chama: a moldura vem dali, e o **Objetivo** e as **Regras conferidas** da cabeça apontam para o bloco em vez de repeti-lo. A linha da trava vai ao `refinamentos.md` da pasta. O que o README e a rubrica de Stories já fixam (a janela, as palavras proibidas, o aviso do post sem verbo no futuro, a área segura) vale como está e não se repete aqui.
+A unidade é o Story. O roteiro mora no `roteiro.md` da pasta da sequência (a pasta dos Stories, em `references/projeto.md`, com uma subpasta `AAAA-MM-DD-<tema>/` por sequência): esta skill escreve nele o frontmatter que o README dos Stories pede (e `destaque: true` quando a sequência pode ir para um Destaque, que faz o `conferir_telas.py` pedir a data em toda tela que diz quando; e `voz: true`, opcional, no Story em vídeo com voz, que faz o `video_do_story.py` pedir a legenda revisada), a cabeça e a seção "Os Stories" (a escaleta, com os campos do contrato e, no fim, a tabela de plantas e pagamentos), e não toca nas seções da forma, do publicado e do resultado, nem no bloco "Briefing" logo depois do frontmatter, que é da `piece-creation` quando ela chama: a moldura vem dali, e o **Objetivo** e as **Regras conferidas** da cabeça apontam para o bloco em vez de repeti-lo. A linha da trava vai ao `refinamentos.md` da pasta. O que o README e a rubrica de Stories já fixam (a janela, as palavras proibidas, o aviso do post sem verbo no futuro, a área segura) vale como está e não se repete aqui.
 
 ## Narrativos (N2)
 
@@ -13,6 +13,8 @@ A unidade é o Story. O roteiro mora no `roteiro.md` da pasta da sequência (a p
 4. **O resto da cabeça, sobre o arco escolhido** (o que está em jogo, o padrão de ordem), e daí os passos 2 a 5 e 7 a 9 da skill.
 
 **A abertura:** duas ou três aberturas para o Story 1, cada uma com o "falha quando" (o que faria a pessoa sair ali), e a escolhida com o porquê; cada uma passa pelo passo 5 da skill.
+
+**O Story em vídeo** (rubrica de Stories, "Story em vídeo"): a tabela de tempo do roteiro ("| Tempo | Na tela | ... |"), uma linha por trecho ("7–12,6 s"), com as frases da linha separadas por " / " e a que entra depois na linha dela, porque o `stories/scripts/video_do_story.py --roteiro` conta cada frase sozinha contra o trecho (`caracteres ÷ 17` s, piso de 0,3 s por palavra) e avisa a que fica abaixo: a frase se divide, não acelera. Com voz, o roteiro diz "legenda: adesivo, revisada" ou "legenda: queimada, revisada", e o texto da tela não repete a fala.
 
 **A véspera:** o arco da sequência que prepara uma resposta de véspera já diz o que a manhã seguinte faz com as respostas: o critério da resposta (abaixo) nasce aqui, antes de haver respostas.
 
@@ -39,5 +41,6 @@ A sequência que devolve as respostas da caixinha e o resultado da enquete. Não
 |---|---|
 | `knowledge/content-design/stories-o-que-evitar.md`, "3. Depender de ter visto outra tela" | a tela de entrada (a primeira, o resultado, a resposta repostada) que se entende sozinha |
 | `knowledge/content-design/tempo-de-leitura-em-video.md`, "A tela parada do Story" | as palavras por tela parada |
+| `knowledge/content-design/escrever-em-linguagem-simples.md` | o jargão e o termo interno, trocados ou explicados |
 | o README dos Stories (`references/projeto.md`): a mesa dos arcos, a provocação do dia e a resposta à caixinha | a mesa, a provocação com a origem e a fonte, e o caminho das respostas |
 | as lições das peças (`references/projeto.md`), "Ideia, pauta e texto" e "Forma" | as linhas de Stories e de "todas" |

@@ -201,6 +201,70 @@ with tempfile.TemporaryDirectory() as tmp:
     caso("Stories pela API: a tela com linha na tabela sai AVISO, a sem linha continua ERRO",
          tem(a, "area_segura", 1, "AVISO") and tem(a, "area_segura", 2, "ERRO"), a)
 
+    # Stories: os adesivos e a chamada, com o adesivos.css
+    # de verdade, para a caixa ser a que a prévia desenha
+    CSS_AD = (AQUI.parents[3] / "marketing/social-media/stories/adesivos.css").read_text(encoding="utf-8")
+    AD = [(' data-adesivo="enquete foto"', '<p style="top:900px">Texto que cai em cima da enquete</p>'),          # 1
+          (' data-adesivo="enquete"', '<p style="top:300px">A pergunta, acima da enquete</p>'),                   # 2
+          (' data-adesivo="reacao" style="--adesivo-left:800px"', '<p style="top:300px">Reação puxada para a direita</p>'),  # 3
+          (' data-adesivo="enquet"', '<p style="top:300px">Tipo escrito errado</p>'),                              # 4
+          ('', '<p style="top:300px">Arrasta pra cima e clica aqui</p>'),                                        # 5
+          ('', '<p style="top:300px">O link está no adesivo</p>'),                                               # 6
+          (' data-adesivo="link"', '<p style="top:300px">O link está no adesivo</p>'),                           # 7
+          ('', '<p style="top:300px">Terça, 18h, sai o post</p>'),                                               # 8
+          ('', '<p style="top:300px">Terça, 25/11, às 18h, sai o post</p>')]                                     # 9
+    html_ad = pagina(AD, h=1920, css=CSS_AD)
+    a = conferir(tmp, "stories-adesivos", html_ad)
+    caso("adesivos: o texto sob a enquete avisa, mesmo com dois tipos (o ~= do CSS)", tem(a, "texto_sob_adesivo", 1, "AVISO"),
+         [x for x in a if x["tela"] == 1])
+    caso("adesivos: o texto acima da enquete não avisa, e a enquete na posição padrão está na área segura",
+         not any(x["tela"] == 2 and x["conferencia"] in ("texto_sob_adesivo", "adesivo_na_borda") for x in a))
+    caso("adesivos: a reação puxada para a direita sai da área segura e avisa", tem(a, "adesivo_na_borda", 3, "AVISO"),
+         [x for x in a if x["tela"] == 3])
+    caso("adesivos: o tipo fora da lista única avisa", tem(a, "adesivo_desconhecido", 4, "AVISO"))
+    caso("chamada: \"arrasta pra cima\" e \"clica aqui\" avisam", sum(x["conferencia"] == "chamada_sem_caminho" and x["tela"] == 5
+                                                                   for x in a) == 2, [x for x in a if x["tela"] == 5])
+    caso("chamada: link sem o adesivo de link avisa; com ele, não", tem(a, "link_sem_adesivo", 6, "AVISO")
+         and not any(x["tela"] == 7 and x["conferencia"] == "link_sem_adesivo" for x in a))
+    caso("sem destaque no roteiro, o dia da semana sem data não acusa", not any(x["conferencia"] == "destaque_sem_data" for x in a))
+    caso("os adesivos e a chamada não dão ERRO", not any(x["nivel"] == "ERRO" and x["conferencia"] in (
+        "texto_sob_adesivo", "adesivo_na_borda", "adesivo_desconhecido", "chamada_sem_caminho", "link_sem_adesivo") for x in a))
+    dest = pathlib.Path(tmp) / "stories-destaque"
+    dest.mkdir()
+    (dest / "slides.html").write_bytes(html_ad.encode("utf-8"))
+    (dest / "roteiro.md").write_bytes("---\ndata: 2026-11-25\nestagio: pronto\ndestaque: true\n---\n\n# Roteiro\n".encode("utf-8"))
+    a = ct.conferir(dest, "slides.html")
+    caso("destaque: true: o dia da semana e a hora sem data dão ERRO; com a data, não", tem(a, "destaque_sem_data", 8)
+         and not any(x["tela"] == 9 and x["conferencia"] == "destaque_sem_data" for x in a), [x for x in a if x["tela"] in (8, 9)])
+    caso("destaque: a tela sem quando não pede data", not any(x["tela"] in (2, 6) and x["conferencia"] == "destaque_sem_data" for x in a))
+    a = ct.conferir(dest, "slides.html", publicada=frozenset({8}))
+    caso("destaque: na tela já publicada, o ERRO vira AVISO", tem(a, "destaque_sem_data", 8, "AVISO"))
+
+    # a cor fora dos tokens (D3) e os itens por grupo (D4), só nas telas da série (tipo-a, tipo-b)
+    TOK = ":root{--caneta:#1B3A8C;--papel:#fff}"
+    L5 = [(' class="tipo-a"', '<h2 class="titulo" style="top:100px">Limpa</h2><p class="corpo" style="top:300px">Só a caneta.</p>'),   # 1
+          (' class="tipo-a"', '<p class="corpo" style="top:300px;color:#ff00ff">Texto fora da paleta</p>'),                          # 2
+          (' class="tipo-a"', '<svg style="position:absolute;left:0;top:0" width="1080" height="1350"><path d="M 200 700 L 800 700" '
+                              'fill="none" stroke="#00aa00" stroke-width="4"/></svg><p class="corpo" style="top:300px">Traço verde.</p>'),  # 3
+          (' class="tipo-a"', '<ul class="corpo" style="position:absolute;left:126px;top:300px;margin:0"><li>um</li><li>dois</li>'
+                              '<li>três</li><li>quatro</li><li>cinco</li></ul>'),                                                       # 4
+          (' class="tipo-a"', '<ul class="pendentes corpo" style="position:absolute;left:126px;top:300px;margin:0"><li>um</li><li>dois</li>'
+                              '<li>três</li><li>quatro</li><li>cinco</li><li>seis</li></ul>'),                                       # 5
+          (' class="tipo-a"', '<ul class="corpo" style="position:absolute;left:126px;top:300px;margin:0"><li>um</li><li>dois</li>'
+                              '<li>três</li><li>quatro</li></ul>'),                                                                  # 6
+          (' class="tipo-a"', '<figure class="foto" style="position:absolute;left:300px;top:500px;width:200px;height:200px;margin:0;'
+                              'background:#fdfdf0;border:4px solid #c0c0a0"></figure><p class="corpo" style="top:300px">Foto colada.</p>')]  # 7
+    html5 = pagina(L5, css=TOK).replace('<section class="slide active" class="tipo-a"', '<section class="slide tipo-a active"')                                .replace('<section class="slide" class="tipo-a"', '<section class="slide tipo-a"')
+    a = conferir(tmp, "lote5", html5)
+    cor = lambda t: tem(a, "cor_fora_dos_tokens", t, "AVISO")
+    caso("cor_fora_dos_tokens: o texto e o traço fora da paleta avisam", cor(2) and cor(3), [x for x in a if x["tela"] in (2, 3)])
+    caso("cor_fora_dos_tokens: a tela só com os tokens e a foto colada não avisam", not cor(1) and not cor(7),
+         [x for x in a if x["tela"] in (1, 7) and x["conferencia"] == "cor_fora_dos_tokens"])
+    caso("itens_por_grupo: cinco itens avisam; quatro não; a lista de pendências fica de fora",
+         tem(a, "itens_por_grupo", 4, "AVISO") and not tem(a, "itens_por_grupo", 5, "AVISO") and not tem(a, "itens_por_grupo", 6, "AVISO"),
+         [x for x in a if x["conferencia"] == "itens_por_grupo"])
+    caso("D3 e D4: nenhum ERRO novo", not any(x["nivel"] == "ERRO" and x["conferencia"] in ("cor_fora_dos_tokens", "itens_por_grupo") for x in a))
+
     # a peça limpa: nenhum ERRO e nenhum dos AVISOs novos
     LIMPA = [("", '<h2 class="titulo" style="top:100px">Um título</h2><p class="bloco corpo" style="top:300px">Um parágrafo de corpo.</p>')] * 4
     a = conferir(tmp, "limpa", pagina(LIMPA))
@@ -355,6 +419,17 @@ caso("a série sai da página: a tabela, o acento e o caderno.js pelo caderno qu
 a = ct.conferir(EXEMPLO, "slides.html")
 caso("o post de exemplo da série de exemplo passa com 0 ERRO", not any(x["nivel"] == "ERRO" for x in a),
      [x for x in a if x["nivel"] == "ERRO"])
+
+# a lista única dos tipos de adesivo: o CSS usa ~= nos quatro que desenha, e eles estão na lista ADESIVOS do
+# conferir_telas.py
+css_ad = (AQUI.parents[3] / "marketing/social-media/stories/adesivos.css").read_text(encoding="utf-8")
+import re as _re
+desenhados = _re.findall(r'\[data-adesivo(~?=)"(\w+)"\]', css_ad)
+caso("adesivos.css: as regras por tipo usam ~= (vários tipos por tela)", desenhados and all(op == "~=" for op, _ in desenhados), desenhados)
+caso("adesivos.css: todo tipo desenhado está na lista ADESIVOS", all(t in ct.de_stories("ADESIVOS") for _, t in desenhados))
+caso("os padrões de dia e data dos Stories",
+     ct.destaque_sem_data("sexta, 18h") == ["sexta", "18h"] and ct.destaque_sem_data("sexta, 21/11, 18h") is None
+     and ct.destaque_sem_data("a segunda parte do texto") is None)
 
 if FALHAS:
     print(f"{len(FALHAS)} caso(s) falharam")

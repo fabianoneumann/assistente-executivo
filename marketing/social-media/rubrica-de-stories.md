@@ -1,5 +1,5 @@
 ---
-versao: 0.1
+versao: 0.2
 status: rascunho a testar; muda livremente até a primeira calibração com sequências reais da conta (não está sob a decisão 7 da rubrica de carrossel)
 ---
 
@@ -54,7 +54,7 @@ A medida é **conversa por pessoa alcançada**: respostas do Story somadas às m
 
 `marketing/social-media/stories/AAAA-MM-DD-<tema>/roteiro.md`: o objetivo, a linha narrativa numa página e um bloco por Story (o texto, o que aparece, o dispositivo, o pedido). As imagens saem de um `stories.html` no visual da série ou da marca, pela skill `slides-export`, e quem publica sobe pelo celular, pondo os adesivos. O adesivo vai no centro da tela, onde o editor encaixa com as duas linhas guia, e o texto se compõe acima dele. Ajuste de posição não troca palavra; imagem substituída no mesmo endereço do bucket, até a publicação, leva `?v=N` no link do roteiro, por causa do cache (depois de publicada, nada se sobrescreve: a mudança sobe como versão nova); o texto de experiência pessoal vem de quem publica, e o assistente só dá a forma. A avaliação roda no roteiro antes de produzir e nas imagens antes de publicar.
 
-Cada tela do `stories.html` declara o adesivo que vai receber no app (`data-adesivo="enquete"`; vários separados por espaço: enquete, caixinha, pergunta, quiz, reacao, foto). Com isso, a parte em código desta rubrica (quando o projeto a tiver) roda os testes [código] e, com o Jev, os [jev] antes da leitura de quem decide; o que é [modelo] fica com a leitura do assistente, porque nos Stories não há juiz nem ciclo de portão.
+Cada tela do `stories.html` declara o adesivo que vai receber no app (`data-adesivo="enquete"`; vários separados por espaço, dos tipos da lista única `ADESIVOS` do `conferir_telas.py` da `visual-form`: enquete, caixinha, pergunta, quiz, reacao, barra, foto, link, post, resposta, resultado). O `conferir_telas.py` já roda, sem o Jev, o tipo fora da lista, o texto sob o adesivo simulado, o adesivo fora da área segura, a chamada que o app não deixa cumprir e, com `destaque: true` no frontmatter do roteiro, a data em toda tela que diz quando. Com isso, a parte em código desta rubrica (quando o projeto a tiver) roda os testes [código] e, com o Jev, os [jev] antes da leitura de quem decide; o que é [modelo] fica com a leitura do assistente, porque nos Stories não há juiz nem ciclo de portão.
 
 ## Story avulso
 
@@ -74,10 +74,12 @@ A3 só vale com post ou resposta declarados; A4, só na antecipação; A5, só q
 
 ## Story em vídeo
 
-Um Story que é um vídeo inteiro (uma cena gravada por código), numa sequência ou avulso. Valem a sequência e o avulso acima, com três mudanças. **Os limiares são chute**, como o resto desta rubrica: vêm de legenda, não de Story, e se calibram pela navegação medida dos Stories em vídeo da conta.
+Um Story que é um vídeo inteiro (uma cena gravada por código, ou o vídeo falando para a câmera), numa sequência ou avulso. Valem a sequência e o avulso acima, com as mudanças abaixo. **Os limiares são chute**, como o resto desta rubrica: vêm de legenda, não de Story, e se calibram pela navegação medida dos Stories em vídeo da conta.
 
 - **S2 no primeiro segundo:** o primeiro segundo do vídeo conta como a capa, o primeiro Story: o que aparece e se lê nele vai direto ao ponto, sem saudação nem contexto [modelo, sobre a folha de quadros]. O pedido de interação segue o S2 do Story parado (o adesivo vai pelo app). O segundo é chute: a base só mede o gancho de vídeo em 3 s, no Reels (`knowledge/content-design/roteiro-em-formato-curto-o-que-e-medido.md`), e nada no Story.
-- **A2 pelo tempo de leitura,** no lugar das 40 palavras ([modelo] por ora, a conta à mão de quem lê o roteiro; passa a [código] quando a conta entrar na parte em código): cada frase fica na tela pelo menos `caracteres ÷ 17` segundos, e no mínimo 0,3 s por palavra, contados da primeira palavra até o começo da saída (17 caracteres por segundo da Netflix em português e o piso de 0,3 s por palavra da BBC, `knowledge/content-design/tempo-de-leitura-em-video.md`). A frase longa demais para a cena se divide em duas, em vez de acelerar.
+- **A2 pelo tempo de leitura,** no lugar das 40 palavras ([código], no `stories/scripts/video_do_story.py`, que o `anima_cena.py` chama depois de gravar e que roda sozinho sobre o roteiro com `--roteiro`, antes de gravar): cada frase fica na tela pelo menos `caracteres ÷ 17` segundos, e no mínimo 0,3 s por palavra, contados da primeira palavra até o começo da saída (17 caracteres por segundo da Netflix em português e o piso de 0,3 s por palavra da BBC, `knowledge/content-design/tempo-de-leitura-em-video.md`). A frase longa demais para a cena se divide em duas, em vez de acelerar. **A conta é frase a frase:** a tela com várias frases conta cada uma pelo seu tempo, e não a soma; o código lê a tabela de tempo do roteiro ("| Tempo | Na tela | ... |", uma linha por trecho), conta cada frase da célula sozinha (as frases de uma linha separadas por " / "; a que entra depois vai na linha dela) contra o trecho da linha, e avisa a que fica abaixo da régua.
+- **O vídeo com voz** (`stories-o-que-evitar.md`, item 8): [código] o roteiro declara a legenda revisada ("legenda: adesivo, revisada" ou "legenda: queimada, revisada"; o `video_do_story.py` avisa sem ela, com `voz: true` no frontmatter ou com "câmera" na `funcao`) [modelo] o texto escrito na tela não repete a fala.
+- **A forma da legenda no vídeo de câmera:** o roteiro declara a legenda queimada: quantas palavras por bloco, onde fica (na área segura, sem disputar com o rosto), o tamanho (acima do piso de 30 px do corpo, `rubrica-de-design.md`), a cor sobre o fundo real (o vídeo é o fundo, e o contraste do `conferir_telas.py` não o mede) e o tempo de cada bloco, pela mesma régua de 17 caracteres por segundo (a tabela de tempo com a coluna "Legenda", que o `video_do_story.py` lê). O tempo e a área segura são regra; **o estilo e o lugar da legenda são direção de arte**: vão a quem decide, com um quadro de cada opção (fontes em `knowledge/generative-media/edicao-de-video-gravado.md` e `reels-de-referencia-feitos-em-codigo.md`).
 - **Por referência, sem repetir aqui:** a conferência da voz contra a imagem, quando o vídeo tem voz (cada frase classificada de S a R, pela tipologia da `piece-script`, como em "Hipóteses a testar" da `rubrica-de-qualidade.md`, sem entrar na nota); e um estilo de desenho por peça (D7 da `rubrica-de-design.md`).
 
 ## Hipóteses a testar (não são critérios)
@@ -93,3 +95,4 @@ Um Story que é um vídeo inteiro (uma cena gravada por código), numa sequênci
 A versão nova registra aqui, numa linha, o que mudou e por quê.
 
 - **0.1:** a primeira versão do repositório.
+- **0.2:** as conferências em código dos adesivos, da chamada que o app não deixa cumprir e da data do Story de Destaque (`conferir_telas.py`); no Story em vídeo, o tempo de leitura em código, frase a frase, a legenda revisada do vídeo com voz (`video_do_story.py`) e a forma da legenda do vídeo falando para a câmera.

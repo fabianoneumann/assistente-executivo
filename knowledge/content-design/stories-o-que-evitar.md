@@ -68,13 +68,13 @@ Uma foto nos Stories fica cerca de 7 segundos na tela, e o Metricool recomenda d
 | Item | Vira | Já na base |
 |---|---|---|
 | 1. Referência ao momento | código (lista, horário), Jev (implícita), julgamento (fuso) | hoje, amanhã e ontem, no README de Stories |
-| 2. Destaque | julgamento; código com `destaque: true` | nada |
+| 2. Destaque | julgamento; código com `destaque: true` | o ERRO `destaque_sem_data` do `conferir_telas.py` |
 | 3. Depender de outra tela | Jev nas telas de entrada; julgamento no meio | resultado sem a pergunta; comentário do compartilhamento |
-| 4. Chamada impossível | código (lista, link sem adesivo), Jev (destino) | nada |
-| 5. Adesivo na borda ou no pé | código (área segura) | área segura em [[carrossel-instagram]] |
+| 4. Chamada impossível | código (lista, link sem adesivo), Jev (destino) | a lista e o link sem adesivo como AVISOs do `conferir_telas.py` |
+| 5. Adesivo na borda ou no pé | código (área segura) | área segura em [[carrossel-instagram]]; o texto sob o adesivo e a caixa fora da área segura como AVISOs do `conferir_telas.py` |
 | 6. Sem texto alternativo | julgamento (o que é crítico) | texto alternativo nos posts (na publicação pela API) |
 | 7. Contraste | código (cores sólidas), imagem (foto e degradê) | WCAG 1.4.3 |
-| 8. Vídeo sem legenda | julgamento e processo | nada |
+| 8. Vídeo sem legenda | julgamento e processo | o aviso do `video_do_story.py` para o vídeo com voz sem "legenda: ..., revisada" no roteiro |
 | 9. Tempo de tela | código (palavras), medida (voltar) | [[tempo-de-leitura-em-video]] |
 
 Tudo o mais que a página do Alabama pede e a base já pratica: frases curtas, o texto no mesmo lugar de uma tela para a outra, espaço para nada ficar cortado, e nada que pisque.

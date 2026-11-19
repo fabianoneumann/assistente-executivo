@@ -8,16 +8,21 @@
    (540, 1036), com a ponta do balão embaixo à direita (caixa toda de 386 a 693 por 884 a 1190). A barra de emoji: 727
    de largura (176 a 903), centrada em y 654, com 223 de altura sem texto, 338 com uma linha de pergunta, 401 com duas
    e 463 com três (cada linha a mais cresce ~62, para cima e para baixo; o centro não muda).
+   Os tipos que uma tela declara são os da lista única ADESIVOS do conferir_telas.py da visual-form; aqui se desenham
+   só os quatro medidos no app (a pergunta, o quiz e o link ainda não têm medida). As quatro regras usam ~=, porque
+   data-adesivo leva vários tipos separados por espaço ("enquete foto"); com dois tipos desenhados na mesma tela, vale
+   o último (o ::after é um só). O conferir_telas.py lê a caixa deste ::after para o texto sob o adesivo e o adesivo
+   fora da área segura.
    As medidas são de um aparelho e de uma versão do app: confira com um print quando o app mudar. */
 body.previa .slide[data-adesivo]::before,body.previa .slide[data-adesivo]::after{content:"";position:absolute;z-index:50;pointer-events:none}
 /* a linha branca do topo, de referência */
 body.previa .slide::before{left:0;right:0;top:140px;height:3px;background:rgba(255,255,255,.95);box-shadow:0 0 0 1px rgba(0,0,0,.08)}
 /* enquete: cartão branco com as duas opções em cinza */
-body.previa .slide[data-adesivo="enquete"]::after{left:195px;top:var(--adesivo-top,783px);width:690px;height:354px;border-radius:44px;
+body.previa .slide[data-adesivo~="enquete"]::after{left:195px;top:var(--adesivo-top,783px);width:690px;height:354px;border-radius:44px;
   background:linear-gradient(#ededed,#ededed) 36px 40px/618px 126px no-repeat,linear-gradient(#ededed,#ededed) 36px 188px/618px 126px no-repeat,#fff;
   box-shadow:0 6px 24px rgba(0,0,0,.18)}
 /* caixinha: a foto redonda no alto e o cartão com a pergunta e o campo de resposta */
-body.previa .slide[data-adesivo="caixinha"]::after{left:174px;top:var(--adesivo-top,744px);width:732px;height:432px;
+body.previa .slide[data-adesivo~="caixinha"]::after{left:174px;top:var(--adesivo-top,744px);width:732px;height:432px;
   background:radial-gradient(circle at 366px 56px,#9aa 0 50px,#fff 50px 56px,transparent 57px),
              linear-gradient(#e6e6e6,#e6e6e6) 42px 250px/648px 126px no-repeat,
              linear-gradient(#fff,#fff) 0 60px/732px 372px no-repeat;border-radius:40px;filter:drop-shadow(0 6px 18px rgba(0,0,0,.18))}

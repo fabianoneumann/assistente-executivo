@@ -29,7 +29,7 @@ python -X utf8 .claude/skills/slides-export/scripts/export_slides.py <pasta> --u
 python -X utf8 .claude/skills/slides-export/scripts/export_slides.py <pasta> --upload conteudo <prefixo> --motivo "<o que mudou>"   # peça já publicada: versão nova
 python -X utf8 .claude/skills/slides-export/scripts/export_slides.py <pasta-dos-stories> --html stories.html --height 1920 --previa --out-dir <dir>   # prévia com os adesivos do app simulados, só para conferir
 python -X utf8 .claude/skills/slides-export/scripts/export_slides.py <pasta> --sem-video --out-dir <scratchpad>   # a tela em vídeo em imagem (o quadro final), para a revisão e o portão
-python -X utf8 .claude/skills/slides-export/scripts/tela_em_video.py conferir <arquivo.mp4>   # um MP4 contra os limites da API
+python -X utf8 .claude/skills/slides-export/scripts/tela_em_video.py conferir <arquivo.mp4>   # um MP4 contra os limites da API (--story: o perfil do vídeo de Story)
 python -X utf8 .claude/skills/slides-export/scripts/teste_tela_em_video.py   # o teste da tela em vídeo, sem peça real nem bucket
 ```
 

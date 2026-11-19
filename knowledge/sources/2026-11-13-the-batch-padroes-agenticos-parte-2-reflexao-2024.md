@@ -64,7 +64,7 @@ Começar pela reflexão, que custa pouco a montar e, nas aplicações do autor, 
 ## Citações
 
 - "Check the code carefully for correctness, style, and efficiency, and give constructive criticism for how to improve it." (o prompt de crítica do exemplo, no terceiro parágrafo)
-- "What if you automate the step of delivering critical feedback, so the model automatically criticizes its own output and improves its response?" (o segundo parágrafo, logo antes de "This is the crux of Reflection.")
+- "What if you automate the step of delivering critical feedback, so the model automatically criticizes its own output and improves its response?" (o segundo parágrafo, logo antes da frase que apresenta essa pergunta como o cerne da reflexão)
 - "For a design pattern that’s relatively quick to implement, I've seen it lead to surprising performance gains." (o fim do primeiro parágrafo)
 
 ## Lacuna

@@ -10,7 +10,7 @@ areas: [agent-engineering]
 tags: [andrej-karpathy, software-3-0, human-in-the-loop, verification, verification-vs-generation, partial-autonomy, autonomy-slider, jagged-intelligence, agent-memory, prompt-injection, vibe-coding, llms-txt]
 ---
 
-**Ficha de estudo**, em palavras próprias: a estrutura da fala com as marcas de tempo, as regras ensinadas com a ressalva de quem fala, poucas citações curtas conferidas na transcrição e "Tudo o mais que ensina". A transcrição e o deck ficaram na cópia de trabalho, fora do git.
+**Ficha de estudo**, em palavras próprias: a estrutura da fala com as marcas de tempo, as regras ensinadas com a ressalva de quem fala, três citações curtas conferidas na transcrição (as das três expressões, na tabela abaixo) e "Tudo o mais que ensina". A transcrição e o deck ficaram na cópia de trabalho, fora do git.
 
 # Andrej Karpathy: Software Is Changing (Again)
 
@@ -48,9 +48,9 @@ As três aparecem, ditas por ele e escritas nos slides. A marca é o início do 
 
 | Expressão | Na fala | No deck |
 |---|---|---|
-| "generation-verification loop" | [28:43] "this is done so that the generation verification loop of the human is very very fast". Antes, a ideia sem o nome: [22:18] a IA faz a geração e "we as humans are doing the verification", e "it is in our interest to make this loop go as fast as possible" | "Fast Generation - Verification loop" (slide de fecho da parte de autonomia) e "speed up the full generation-verification flow" (slide de recapitulação) |
-| "keep (the) AI on the leash" | [22:56] "we have to keep the AI on the leash"; de novo em [23:30], [24:28], [25:09], [25:33] e [25:42] ("keeping the AI on leash") | "Keep AI "on a tight leash" to increase the probability of successful verification"; "Example: keeping agents on the leash" (programação assistida por IA e educação/LLM101n) |
-| "autonomy slider" | [20:25] "what I call the autonomy slider"; de novo em [20:46], [21:17], [26:09], [28:15], [28:51], [28:55]; e, sem a palavra "autonomy", [39:12] "take the slider from left to right" | "Autonomy slider: Tab → Cmd+K → Cmd+L → Cmd+I (agent mode)" e "Autonomy slider" nas listas de propriedades |
+| *generation-verification loop* | [28:43] "this is done so that the generation verification loop of the human is very very fast". Antes, a ideia sem o nome: em [22:18] ele divide o trabalho, com a IA gerando e a pessoa verificando, e diz que interessa a nós deixar esse ciclo o mais rápido possível | No slide de fecho da parte de autonomia, o ciclo aparece com o adjetivo "fast"; no de recapitulação, como o fluxo inteiro de geração e verificação a acelerar |
+| *keep (the) AI on the leash* | [22:56] "we have to keep the AI on the leash"; de novo em [23:30], [24:28], [25:09], [25:33] e [25:42] ("keeping the AI on leash") | Um slide pede a coleira curta ("on a tight leash") como meio de aumentar a chance de a verificação dar certo; outro traz os exemplos de agentes na coleira (programação assistida por IA e educação/LLM101n) |
+| *autonomy slider* | [20:25] "what I call the autonomy slider"; de novo em [20:46], [21:17], [26:09], [28:15], [28:51], [28:55]; e, sem a palavra "autonomy", em [39:12], quando fala em levar o controle da esquerda para a direita | O slide do Cursor gradua a autonomia pelos atalhos, de Tab a Cmd+K, Cmd+L e Cmd+I (o modo agente), e o termo volta nas listas de propriedades |
 
 A forma literal dita é "keep the AI on the leash"; "on a tight leash" está só no slide. "Generation verification loop" é dito uma vez, sem hífen na transcrição (o hífen está no slide de recapitulação).
 
@@ -83,7 +83,7 @@ A forma literal dita é "keep the AI on the leash"; "on a tight leash" está só
 - **Segundo: manter a IA na coleira.** Muita gente está empolgada demais com agentes; um diff de 10 mil linhas no repositório não serve, porque **a pessoa continua sendo o gargalo**: mesmo que as linhas saiam na hora, alguém tem de garantir que não há bug, que faz a coisa certa e que não há problema de segurança. A IA fica "reativa demais". [22:56–23:30]
 - O jeito dele de trabalhar: medo de diffs grandes, pedaços pequenos e incrementais, uma coisa concreta de cada vez, para garantir que tudo está bom e girar o laço bem rápido. [23:59–24:04]
 - **Prompt concreto aumenta a chance de a verificação passar.** Com prompt vago, a IA pode não fazer o que se queria, a verificação falha, você pede outra coisa e começa a girar em falso. Vale gastar um pouco mais de tempo sendo concreto no prompt. Ele tirou o exemplo de um post de boas práticas que leu (não diz qual). [24:28–25:00]
-- O slide desse trecho traz o fluxo de programação assistida: descrever a próxima mudança concreta e incremental; não pedir código, pedir abordagens; escolher uma abordagem e rascunhar o código; revisar e aprender (documentação da API, pedir explicações); voltar atrás e tentar outra abordagem; testar; fazer o commit; pedir sugestões do que implementar a seguir; repetir. Outro slide numera os dois jeitos: "1. Make this EASY, FAST to win" e "2. Keep AI "on a tight leash" to increase the probability of successful verification".
+- O slide desse trecho traz o fluxo de programação assistida: descrever a próxima mudança concreta e incremental; não pedir código, pedir abordagens; escolher uma abordagem e rascunhar o código; revisar e aprender (documentação da API, pedir explicações); voltar atrás e tentar outra abordagem; testar; fazer o commit; pedir sugestões do que implementar a seguir; repetir. Outro slide numera os dois jeitos: primeiro, tornar a verificação fácil e rápida de ganhar; segundo, manter a IA na coleira curta para aumentar a chance de a verificação dar certo.
 - **Coleira na educação:** pedir "me ensine física" ao chat não funciona, a IA "se perde no mato". Ele separa em dois apps, um para o professor criar cursos e outro que serve os cursos aos alunos; no meio fica um artefato, o curso, que dá para **auditar**, garantir que está bom e consistente, e que mantém a IA presa a um programa e a uma progressão de projetos. Tem chance muito maior de funcionar. [25:00–25:45]
 - Ressalva dele sobre a lista de técnicas: os fluxos de programação assistida estão "evoluindo muito rápido" (no slide) e cada um está desenvolvendo os seus jeitos. [24:04]
 
@@ -100,20 +100,14 @@ A forma literal dita é "keep the AI on the leash"; "on a tight leash" está só
 - Documentação: Markdown é o fácil; o difícil é mudar o conteúdo. Toda instrução "clique" é ruim para o agente; a Vercel troca cada "clique" pelo comando `curl` equivalente. O MCP da Anthropic é outro protocolo para falar com agentes. [34:30–36:31]
 - Ressalva dele: os LLMs já conseguem clicar, mas ainda é caro e mais difícil; vale encontrá-los no meio do caminho, e para a cauda longa de software que não vai se adaptar ferramentas de conversão continuam necessárias. Ele é otimista com as duas frentes. [37:30–38:14]
 
-## Citações curtas
+## Falas-chave, em palavras próprias
 
-- [3:19] "your prompts are now programs that program the LLM"
-- [14:50] "they're kind of like people spirits. Um they are [stochastic] simulations of people"
-- [20:15] "a [GUI] allows a human to audit the work of these fallible systems and to go faster"
-- [22:18] "usually they are doing the generation and we as humans are doing the verification"
-- [22:56] "we have to keep the AI on the leash"
-- [23:05] "I'm still the bottleneck, right?"
-- [23:59] "I always go in small incremental chunks. I want to make sure that everything is good."
-- [24:28] "spend a bit more time to be more concrete in your prompts which increases the probability of successful verification"
-- [27:31] "this is the decade of agents ... We need humans in the loop. We need to do this carefully."
-- [28:25] "it's less Iron Man robots and more Iron Man suits that you want to build"
-- [28:43] "this is done so that the generation verification loop of the human is very very fast"
-- [28:51] "there should be an autonomy slider in your product"
+As três citações literais estão na tabela acima; o resto das falas que sustentam a ficha vai aqui por tema, em palavras próprias, com a marca de tempo para voltar à transcrição.
+
+- **O que é o LLM e como se programa.** Para Karpathy, o prompt do software 3.0 já é programa, e o que ele programa é o próprio modelo [3:19]; os modelos, por sua vez, ele descreve como simulações estocásticas de pessoas, "espíritos" de gente [14:50].
+- **Quem gera e quem confere.** A divisão que ele descreve põe o modelo gerando e a pessoa verificando [22:18], e ele mesmo se coloca como o gargalo desse circuito [23:05]; a interface gráfica entra aí, porque deixa a pessoa auditar o que um sistema falível fez e, com isso, andar mais rápido [20:15].
+- **Como ele trabalha.** Pedaços pequenos, um de cada vez, cada um conferido antes do próximo [23:59]; e um pouco mais de tempo no prompt, para deixá-lo concreto, porque isso aumenta a chance de a verificação passar [24:28].
+- **O que construir.** Ele chama este período de década dos agentes, com gente no circuito e cuidado [27:31]; o produto que defende se parece mais com a armadura do Homem de Ferro do que com o robô do filme [28:25], e todo produto, diz, deveria ter um controle de quanta autonomia se dá ao agente [28:51].
 
 ## O que a fala não trata
 

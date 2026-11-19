@@ -190,7 +190,7 @@ Textos de quem licencia o conteúdo: o acordo de conteúdo da Epic deixa distrib
 |---|---|
 | Licença | parte da licença padrão da Unreal Engine |
 | Preço | grátis abaixo de US$ 1 milhão de receita; acima, os termos padrão da Unreal |
-| Outras ferramentas | "MetaHumans can be used with any engine or creative software", com remissão ao FAQ |
+| Outras ferramentas | uso liberado em qualquer engine ou software criativo (a citação está abaixo), com remissão ao FAQ |
 
 **O FAQ** (as respostas, dos dados estruturados do HTML):
 

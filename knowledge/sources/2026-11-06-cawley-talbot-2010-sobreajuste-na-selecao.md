@@ -82,7 +82,7 @@ Razão dada: o ARD tem bem mais hiperparâmetros, logo mais graus de liberdade p
 Seção 4.4, formulada como sugestão ("It seems reasonable to suggest") e sem medida própria. O raciocínio é por analogia com o treino: o risco existe sempre que se otimiza direto um critério medido numa amostra finita e cresce, como no treino, com poucos dados e muitos hiperparâmetros a ajustar; sem como conseguir mais dados, os remédios também seriam os do treino. A lista junta esses aos que fogem da seleção:
 
 - **Os remédios do treino:** regularizar o critério (Cawley e Talbot, 2007), parar cedo (Qi et al., 2004) e tirar a média de modelos ou de hiperparâmetros (Cawley, 2006; Hall e Robinson, 2009).
-- **Menos hiperparâmetros:** "one might minimise the number of hyper-parameters"; o exemplo é tratar os do kernel como parâmetros comuns, otimizados no primeiro nível, e deixar um só hiperparâmetro de regularização.
+- **Menos hiperparâmetros:** os autores sugerem reduzir quantos hiperparâmetros há; o exemplo é tratar os do kernel como parâmetros comuns, otimizados no primeiro nível, e deixar um só hiperparâmetro de regularização.
 - **Nenhuma seleção, por dois caminhos:** a via totalmente bayesiana, que integra os hiperparâmetros em vez de otimizá-los, preferida dos autores quando a amostra é muito pequena; ou ensembles como Random Forest, que não são panaceia, porque em modelos hierárquicos costuma ser mais fácil embutir conhecimento especializado.
 
 Os autores pedem mais análise teórica, porque a que existe ajuda pouco: os resultados assintóticos não tratam deste caso, Bengio e Grandvalet (2004) mostraram que não há estimador não enviesado da variância da validação cruzada em k dobras, e há só limites por estabilidade.

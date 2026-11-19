@@ -6,7 +6,7 @@ artefatos: [roteiro.md, stories.html]
 
 # Stories
 
-Uma pasta por sequência, `AAAA-MM-DD-<tema>/`, com o `roteiro.md` (objetivo, linha narrativa, os Stories, a avaliação, as imagens usadas e o resultado) e o `stories.html` de onde saem as imagens, com o adesivo de cada tela declarado em `data-adesivo`. A régua de juízo é a `../rubrica-de-stories.md`; a forma das telas é da skill `visual-form`, e a exportação, da `slides-export` (com `--height 1920`).
+Uma pasta por sequência, `AAAA-MM-DD-<tema>/`, com o `roteiro.md` (objetivo, linha narrativa, os Stories, a avaliação, as imagens usadas e o resultado) e o `stories.html` de onde saem as imagens, com o adesivo de cada tela declarado em `data-adesivo` (os tipos da lista única `ADESIVOS` do `conferir_telas.py` da `visual-form`: enquete, caixinha, pergunta, quiz, reacao, barra, foto, link, post, resposta, resultado; o tipo fora dela é AVISO). A régua de juízo é a `../rubrica-de-stories.md`; a forma das telas é da skill `visual-form`, e a exportação, da `slides-export` (com `--height 1920`).
 
 **Antes de criar:** ler no arquivo de lições das peças (`marketing/licoes.md`) as lições de cada etapa antes de fazê-la, e anotar no roteiro as que aplicou, ou "nenhuma lição registrada".
 
@@ -18,6 +18,7 @@ Uma pasta por sequência, `AAAA-MM-DD-<tema>/`, com o `roteiro.md` (objetivo, li
 | `adesivos.css` | os adesivos do app simulados por cima do Story, só na prévia (o export com `--previa`) |
 | `scripts/espacos.py` | põe os desenhos de enfeite de cada tela nos maiores vazios dela (abaixo, "Os desenhos de enfeite") |
 | `scripts/anima_cena.py` | grava em MP4 uma cena guiada por `window.quadro(t)`, para o Story em vídeo |
+| `scripts/video_do_story.py` | confere todo vídeo de Story contra os limites da API, mede o movimento e grava a folha de quadros; com o roteiro, o tempo de leitura frase a frase e a legenda do vídeo com voz (o teste é o `teste_video_do_story.py`) |
 | `animacoes.md` | o banco de animações dos Stories, com a técnica e o estado de cada uma |
 | `references/guias-do-editor.md` | as medidas das guias do editor do app, de onde sai a área segura, e a escala do texto |
 
@@ -25,7 +26,7 @@ Uma pasta por sequência, `AAAA-MM-DD-<tema>/`, com o `roteiro.md` (objetivo, li
 
 ## A forma dos Stories
 
-- **O topo e os adesivos:** a área segura do texto essencial é de y 192 a 1802 e de x 32 a 1048 (`references/guias-do-editor.md`); o `conferir_telas.py` da `visual-form` a confere, e o texto fora dela é ERRO. Os adesivos ficam na posição padrão do app: a enquete de duas opções, centrada, de y 783 a 1137; a caixinha, com a foto, de 744 a 1176; a reação, um círculo de cerca de 290 px centrado em (540, 1036); a barra de emoji, 727 px de largura, centrada em y 654, com a altura crescendo com as linhas de pergunta. Todos estão simulados no `adesivos.css`; quando o adesivo vai para outra posição, a tela declara `--adesivo-top`. O texto fica acima do adesivo.
+- **O topo e os adesivos:** a área segura do texto essencial é de y 192 a 1802 e de x 32 a 1048 (`references/guias-do-editor.md`); o `conferir_telas.py` da `visual-form` a confere, e o texto fora dela é ERRO. Os adesivos ficam na posição padrão do app: a enquete de duas opções, centrada, de y 783 a 1137; a caixinha, com a foto, de 744 a 1176; a reação, um círculo de cerca de 290 px centrado em (540, 1036); a barra de emoji, 727 px de largura, centrada em y 654, com a altura crescendo com as linhas de pergunta. Todos estão simulados no `adesivos.css`; quando o adesivo vai para outra posição, a tela declara `--adesivo-top`. A pergunta, o quiz e o link ainda não têm medida no app e não se desenham na prévia. O texto fica acima do adesivo: o `conferir_telas.py` avisa o texto que cai dentro da caixa do adesivo simulado (`texto_sob_adesivo`) e a caixa fora da área segura (`adesivo_na_borda`: um toque na metade direita avança o Story, e o pé tem a caixa de resposta), medidos na mesma caixa que a prévia desenha.
 - **A prévia:** o export com `--previa` desenha os adesivos simulados por cima e a linha branca do topo; é a imagem para quem valida conferir as posições e para a conferência pela imagem. A imagem que vai para o celular sai sem eles.
 - **Sequência nova nasce em flexbox,** do modelo `template/stories.html`: a `.coluna` começa em 192 px e termina a 118 px do pé, ou antes do adesivo. Posição fixa só para o que tem lugar fixo (desenho de enfeite, cartão, anotação em volta de um desenho).
 - **Corpo de 40 a 46 px,** título de 76 a 80 px; um tamanho por papel em cada tela. **Negrito nas palavras-chave** do texto denso; o **marca-texto só na frase para levar**, no máximo um por tela.
@@ -47,7 +48,7 @@ O que só decora custa atenção, e custa mais quanto mais: nada de valência ne
 ## O texto que atravessa o dia
 
 - **Sem "hoje", "amanhã" nem "ontem":** o Story fica no ar 24 horas e atravessa a virada do dia, então a referência relativa erra para quem vê no dia seguinte. Use o dia da semana ou a data ("terça, 18h"), ou uma referência que não depende do dia ("o post mais recente"). O `conferir_telas.py` avisa as palavras da lista dele (`PALAVRAS_DO_DIA`).
-- **Horário sempre com o dia;** o Story que pode ir para um Destaque leva a data, porque fica no perfil sem prazo; nenhuma tela depende de a pessoa ter visto a anterior; e fica de fora a chamada que o app não deixa cumprir ("arrasta pra cima", "link na bio" sem dizer qual, "clica aqui").
+- **Horário sempre com o dia;** o Story que pode ir para um Destaque leva a data, porque fica no perfil sem prazo; nenhuma tela depende de a pessoa ter visto a anterior; e fica de fora a chamada que o app não deixa cumprir ("arrasta pra cima", "link na bio" sem dizer qual, "clica aqui"). O `conferir_telas.py` avisa a chamada da lista dele (`CHAMADAS_SEM_CAMINHO`) e o texto que fala em link numa tela sem `data-adesivo="link"`; e, com `destaque: true` no frontmatter do `roteiro.md` (a sequência que pode ir para um Destaque), a tela que diz o dia da semana ou a hora sem a data é ERRO (`destaque_sem_data`).
 - **O aviso do post sem verbo no futuro:** o Story fica no ar antes e depois da hora do post, então "às 18h sai o post" fica errado para quem vê depois. Use um verbo que vale dos dois lados ("o post de sexta, às 18h, traz...") ou só o substantivo com o dia.
 
 ## O registro no roteiro
@@ -70,10 +71,17 @@ python -X utf8 marketing/social-media/stories/scripts/anima_cena.py <pasta>/<cen
 python -X utf8 marketing/social-media/stories/scripts/anima_cena.py <pasta>/stories.html <trabalho>/story-04.mp4 --slide 4 --segundos 12
 ```
 
+**Todo vídeo de Story passa pelo `scripts/video_do_story.py`:** os limites do Story na API (de 3 a 60 s, de 23 a 60 qps, H.264 ou HEVC, 4:2:0, o `moov` no começo e sem lista de edição, até 25 Mbps e 100 MB, a proporção do Story com AVISO fora do 9:16), como ERRO, e, como leitura, o movimento medido pelo `saltos.py` da `object-anatomy` e a folha de quadros a 0, 30, 60 e 90% da duração. O `anima_cena.py` o chama depois de gravar; o vídeo que vai pelo app (o de câmera, o de outra ferramenta) passa por ele à mão, e os limites ali são aviso de que a API não o aceitaria. **O roteiro do vídeo:** com o `roteiro.md` ao lado (o da página no `anima_cena.py`, o achado junto do MP4, ou `--roteiro`, que roda sozinho antes de gravar), o `video_do_story.py` avisa a frase da tabela de tempo abaixo da régua do tempo de leitura, contada frase a frase, e o vídeo com voz sem a legenda revisada declarada ("legenda: queimada, revisada"; o vídeo com voz se reconhece por `voz: true`, campo opcional do frontmatter do `roteiro.md`, ou por "câmera" na `funcao`); no vídeo de câmera, o roteiro declara também a forma da legenda (palavras por bloco, lugar, tamanho, cor e o tempo de cada bloco), e o estilo e o lugar dela vão a quem decide, com um quadro de cada opção (rubrica, "Story em vídeo").
+
+```
+python -X utf8 marketing/social-media/stories/scripts/video_do_story.py <trabalho>/story-04.mp4
+python -X utf8 marketing/social-media/stories/scripts/video_do_story.py --roteiro <pasta>/roteiro.md
+```
+
 O objeto que funciona, se monta ou se separa vem da skill `object-anatomy`, no mesmo contrato.
 
 ## O que esta versão não traz
 
-- **A parte em código da rubrica de Stories com o Jev** (o avaliador que lê a imagem com os adesivos simulados e pega a referência implícita a um dia): vem numa próxima versão. Até lá, o código confere a área segura, a sobreposição, o contraste e o dia relativo (pelo `conferir_telas.py`), e o resto da rubrica é leitura.
+- **A parte em código da rubrica de Stories com o Jev** (o avaliador que lê a imagem com os adesivos simulados e pega a referência implícita a um dia): vem numa próxima versão. Até lá, o código confere a área segura, a sobreposição, o contraste, o dia relativo, os adesivos, a chamada e a data do Destaque (pelo `conferir_telas.py`) e o vídeo (pelo `video_do_story.py`), e o resto da rubrica é leitura.
 - **A publicação dos Stories pela API e a ligação de cada Story ao id publicado:** não vêm. A sequência se publica pelo app; o `conferir_telas.py` já reconhece a tabela "Publicada pela API" no `roteiro.md`, se uma publicação pela API vier a gravá-la.
 - **A agenda da semana e a janela de horário:** são escolha de cada conta; decida e escreva aqui, com o porquê, antes da primeira sequência.

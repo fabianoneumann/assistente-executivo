@@ -24,7 +24,7 @@ Quanto tempo uma frase precisa ficar na tela de um vídeo curto, e se as palavra
 
 ## Como medir um vídeo pela régua (leitura do assistente)
 
-Para cada cena, contar os caracteres e as palavras da frase e calcular o tempo que ela pediria a 17 caracteres por segundo e a 0,33 segundo por palavra (o piso, 0,3 s por palavra), contra o tempo em que ela fica visível, da primeira palavra até o fim da cena. A frase que fica abaixo dos dois números é a que a avaliação vai apontar como sem tempo, e o problema piora quando a cena tem movimento grande competindo com a frase enquanto ela entra. A tela com várias frases é decisão em aberto: cada frase pelo seu tempo, contado de quando entra, ou a tela inteira pela soma (três frases de 50 a 60 caracteres somadas pedem perto de 10 s).
+Para cada cena, contar os caracteres e as palavras da frase e calcular o tempo que ela pediria a 17 caracteres por segundo e a 0,33 segundo por palavra (o piso, 0,3 s por palavra), contra o tempo em que ela fica visível, da primeira palavra até o fim da cena. A frase que fica abaixo dos dois números é a que a avaliação vai apontar como sem tempo, e o problema piora quando a cena tem movimento grande competindo com a frase enquanto ela entra. A tela com várias frases conta frase a frase, cada uma pelo seu tempo, contado de quando entra, e não a soma (três frases de 50 a 60 caracteres somadas pediriam perto de 10 s); a conta roda em código no `marketing/social-media/stories/scripts/video_do_story.py`, sobre a tabela de tempo do roteiro (rubrica de Stories, "Story em vídeo").
 
 ## A tela parada do Story (o item 9 de [[stories-o-que-evitar]])
 

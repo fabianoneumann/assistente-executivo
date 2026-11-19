@@ -14,7 +14,7 @@ tags: [plain-language, comprehension-testing, readability-formulas, sample-size,
 
 Dissertação de mestrado, 263 páginas, cerca de 79 mil palavras, Departamento de Artes e Design da PUC-Rio, bolsa Capes, parecer de ética 056/2020, protocolo 76/2020 (p. 145, 262). O Manual de Roedel a cita como "Fischer"; o nome completo é o da capa. PDF baixado com `curl`, texto extraído por programa; a numeração impressa coincide com a do PDF.
 
-**A nota de direitos (p. 3):** "Todos os direitos reservados. É proibida a reprodução total ou parcial do trabalho sem autorização da universidade, da autora e da orientadora."
+**A nota de direitos (p. 3):** reserva todos os direitos e só admite reproduzir o trabalho, no todo ou em parte, com autorização da universidade, da autora e da orientadora.
 
 **O que foi lido:** inteiros os capítulos 1, 6, 7 e 8, as seções 2.4.4, 2.5, 3.2.1, 3.3, 3.5, 4.3 a 4.6, 5.5 e 5.6, e os Apêndices 3 e 6; o Apêndice 4 só nas queixas de escolha de palavras. Não lidos: o restante dos capítulos 2 a 5 (da seção 5.3, só o trecho da TIC Domicílios, p. 109), os Apêndices 1, 2 e 5 e os anexos.
 
@@ -97,7 +97,7 @@ Quatro participantes do grupo simplificado acertaram tudo, nenhum do outro (p. 1
 - **Textos de governo em geral, de 1 a 7:** confusos, mediana 6 nos dois grupos; buscam no Google por sites independentes, 6 e 7.
 - **Dois adjetivos para a experiência recente em site de governo (40 pessoas, 80 adjetivos):** 79% negativos, mais citados "confusa" (14) e "estressante" (6). O grupo simplificado foi mais negativo (85% contra 72,5%); a pergunta é sobre a experiência recente em sites, não sobre o texto lido (p. 189, 190).
 
-**A conclusão da autora:** as três previsões se confirmam (p. 201), e a investigação "gerou evidências de que a linguagem característica do setor público segrega até mesmo leitores altamente proficientes" (p. 210). O texto simplificado também recebeu queixas e gerou dúvidas, e parte da dificuldade pode ser do próprio conteúdo: "O burocratês acrescenta dificuldade a um processo que já é bastante complexo e difícil de entender" (p. 194, 197, 199). Ela relaciona o resultado à TIC Domicílios 2019, em que 55% dos usuários de internet dizem não usar o autoatendimento porque acham complicado o contato com o governo, e diz que o estilo é apenas um dos fatores (p. 197).
+**A conclusão da autora:** as três previsões se confirmam (p. 201), e a investigação "gerou evidências de que a linguagem característica do setor público segrega até mesmo leitores altamente proficientes" (p. 210). O texto simplificado também recebeu queixas e gerou dúvidas, e parte da dificuldade pode ser do próprio conteúdo: segundo a autora, o burocratês só soma obstáculo a um processo que, por si, já é complicado e difícil de entender (p. 194, 197, 199). Ela relaciona o resultado à TIC Domicílios 2019, em que 55% dos usuários de internet dizem não usar o autoatendimento porque acham complicado o contato com o governo, e diz que o estilo é apenas um dos fatores (p. 197).
 
 ## Ressalvas que a própria autora faz (p. 197 a 199, 201 e 202)
 

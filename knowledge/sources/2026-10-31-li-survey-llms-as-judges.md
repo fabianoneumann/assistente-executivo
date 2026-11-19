@@ -143,7 +143,7 @@ A taxonomia divide os vieses em quatro grupos pela causa e manifestação, cada 
   - **Estruturais e semânticos:** reescrever a sintaxe mantendo o sentido; trocar tokens salientes.
   - **Por otimização:** gradiente; população em caixa-preta.
 - **Ataques a juízes LLM:**
-  - Zheng et al. [293] ("Cheating automatic LLM benchmarks: null models achieve high win rates", arXiv 2410.07137) e Doddapaneni et al. [51] ("Finding Blind Spots in Evaluator LLMs with Interpretable Checklists", arXiv 2406.13439) mostram que benchmarks automáticos como o MT-Bench podem ser enganados para dar notas artificialmente altas.
+  - Zheng et al. [293] (*"Cheating automatic LLM benchmarks: null models achieve high win rates"*, arXiv 2410.07137) e Doddapaneni et al. [51] (*"Finding Blind Spots in Evaluator LLMs with Interpretable Checklists"*, arXiv 2406.13439) mostram que benchmarks automáticos como o MT-Bench podem ser enganados para dar notas artificialmente altas.
   - Raina et al. [184] (arXiv 2402.14016): frases curtas anexadas ao texto levam a nota ao máximo independentemente da qualidade, e frases otimizadas num modelo substituto pequeno (FlanT5-xl) transferem para GPT-3.5 e Llama2.
   - JudgeDeceiver [196] (arXiv 2403.17710): injeção de prompt otimizada que leva o juiz a escolher a resposta errada entre as candidatas.
   - O campo é pouco explorado e precisa de defesas.
@@ -172,10 +172,10 @@ A taxonomia divide os vieses em quatro grupos pela causa e manifestação, cada 
 - **Vantagens declaradas do juiz LLM:** critérios ajustáveis ao contexto da tarefa, avaliações interpretativas, alternativa escalável e reprodutível à avaliação humana.
 - **Desafios declarados na introdução:** sensibilidade ao template do prompt, vieses implícitos herdados do corpus de treino, dificuldade de adaptar critérios a cada domínio.
 - **Referências-chave citadas, com o achado:**
-  - Wang et al. [230] ("Large language models are not fair evaluators", arXiv 2305.17926): calibração de posição.
+  - Wang et al. [230] (*"Large language models are not fair evaluators"*, arXiv 2305.17926): calibração de posição.
   - Koo et al. [112] (CoBBLEr, arXiv 2309.17012): vieses cognitivos, incluindo distração, manada e compaixão.
   - Chen et al. [25] (arXiv 2402.10669): vieses de autoridade, falácia e diversidade em juízes humanos e LLM.
-  - Panickssery et al. [172] ("LLM evaluators recognize and favor their own generations", arXiv 2404.13076): autopreferência.
+  - Panickssery et al. [172] (*"LLM evaluators recognize and favor their own generations"*, arXiv 2404.13076): autopreferência.
   - Li et al. [132] (PRD, arXiv 2307.02762): ranking e discussão entre pares.
   - Badshah e Sajjad [8] (arXiv 2408.09235): veredito guiado por referência.
   - Verga et al. [225] (PoLL): júri de modelos.

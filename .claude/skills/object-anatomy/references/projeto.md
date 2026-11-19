@@ -67,6 +67,6 @@ python -X utf8 .claude/skills/visual-form/scripts/conferir_telas.py <peça>/obje
 python -X utf8 marketing/social-media/stories/scripts/anima_cena.py <peça>/object/tela.html <trabalho>/video/cena.mp4 --segundos 6 --altura 1920
 ```
 
-O `--out-dir` fora da pasta da peça é o que impede o `export_slides.py` de gravar na `legenda.md` (ela é do roteiro e da exportação final, não desta skill). Nunca `--upload`. A pasta de trabalho (`<trabalho>`) é a que quem chama der; sem ela, uma pasta nova em `tempfile.gettempdir()`, fora do projeto.
+O `anima_cena.py` confere, depois de gravar, os limites do vídeo de Story na API (o `video_do_story.py` ao lado dele): a cena de menos de 3 s sai com código 1 e o ERRO, e o MP4 fica, para a leitura; o ERRO só pesa quando o vídeo vai publicado sozinho. O `--out-dir` fora da pasta da peça é o que impede o `export_slides.py` de gravar na `legenda.md` (ela é do roteiro e da exportação final, não desta skill). Nunca `--upload`. A pasta de trabalho (`<trabalho>`) é a que quem chama der; sem ela, uma pasta nova em `tempfile.gettempdir()`, fora do projeto.
 
 **Os testes da skill** (a cada edição dos scripts), na pasta `scripts/`: `python -X utf8 teste_intersecao.py` (sem rede nem navegador) e `node teste_iso.js`. O teste do `juntas.py` está no `teste_conferir_telas.py` da `visual-form`, e o do `saltos.py`, no `teste_tela_em_video.py` da `slides-export`.

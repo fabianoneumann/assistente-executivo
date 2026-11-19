@@ -2,7 +2,8 @@
 e a leitura (casos 1 a 8), a exportação de uma peça mínima (9 a 11: o --sem-video, a limpeza do formato velho e o PNG
 de revisão fora do registro), a fonte que não carregou (12, o fontes.py na gravação, e 15, o export de revisão que
 segue com o ERRO) e o saltos.py da object-anatomy (13 e 14: o movimento contínuo sem pico, a troca súbita com pico e o
-fim parado; pulados, com aviso, quando a object-anatomy não está no projeto). Sem rede, sem bucket e sem chave.
+fim parado; pulados, com aviso, quando a object-anatomy não está no projeto) e o perfil Story da conferência (17 a 20,
+com MP4 sintéticos do ffmpeg). Sem rede, sem bucket e sem chave.
 
   python -X utf8 teste_tela_em_video.py          (de qualquer pasta; sai com erro no primeiro caso que falhar)
 
@@ -113,6 +114,35 @@ for forma in ('data-video="6"', "data-video='6'", "data-video=6"):
     caso(f"7. {forma} é lido como tela 2 de 6 s", r == {2: 6.0})
 r = ex.telas_em_video('<section class="slide" data-video="6,5"></section>')
 caso("8. vírgula decimal", r == {1: 6.5})
+
+
+# 17 a 20. o perfil Story da conferência: MP4 sintéticos do ffmpeg, pequenos (108 x 192 é 9:16), sem gravar página
+def sintetico(pasta, nome, w, h, seg, fps=30, extra=()):
+    out = pasta / f"{nome}.mp4"
+    subprocess.run([tv.ffmpeg(), "-y", "-loglevel", "error", "-f", "lavfi", "-i", f"testsrc=size={w}x{h}:rate={fps}:duration={seg}",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", "-bf", "0", "-use_editlist", "0", *extra, str(out)], check=True)
+    return out
+
+
+with tempfile.TemporaryDirectory() as tmp:
+    pasta = pathlib.Path(tmp)
+    ok = sintetico(pasta, "story", 108, 192, 4, extra=("-movflags", "+faststart"))
+    probs, avisos = tv.conferir(ok, "story")
+    caso("17. Story 9:16 de 4 s: passa no perfil Story, sem o aviso dos 5 a 8 s", not probs and len(avisos) == 1, (probs, avisos))
+    probs, _ = tv.conferir(ok, "carrossel")
+    caso("18. o mesmo 9:16 reprova no perfil do carrossel (a proporção dele não vale nos Stories)",
+         any("proporcao" in p for p in probs), probs)
+    curto = sintetico(pasta, "curto", 108, 192, 2, extra=("-movflags", "+faststart"))
+    lento = sintetico(pasta, "lento", 108, 192, 4, fps=15, extra=("-movflags", "+faststart"))
+    sem_faststart = sintetico(pasta, "fim", 108, 192, 4)
+    largo = sintetico(pasta, "largo", 192, 108, 4, extra=("-movflags", "+faststart"))
+    caso("19. Story: menos de 3 s, 15 qps e o moov no fim barram",
+         any("fora de 3..60" in p for p in tv.conferir(curto, "story")[0])
+         and any("qps" in p for p in tv.conferir(lento, "story")[0])
+         and any("moov" in p for p in tv.conferir(sem_faststart, "story")[0]))
+    probs, avisos = tv.conferir(largo, "story")
+    caso("20. Story deitado (16:9): passa nos limites, com o aviso fora do 9:16", not probs and any("9:16" in a for a in avisos),
+         (probs, avisos))
 
 # a exportação de uma peça mínima (shot-scraper e gravação de verdade, sem conferências nem bucket)
 import sys  # noqa: E402

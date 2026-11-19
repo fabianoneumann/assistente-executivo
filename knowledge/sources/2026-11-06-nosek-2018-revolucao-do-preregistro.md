@@ -83,7 +83,7 @@ Os autores organizam a mudança em meios, motivo e oportunidade.
 
 ## Tudo o mais que ensina
 
-- "All models are wrong but some are useful" (Box): modelos são aproximações, melhoradas pela redução do erro de predição.
+- O aforismo de Box, de que nenhum modelo está certo e alguns ainda assim servem: modelos são aproximações, melhoradas pela redução do erro de predição.
 - O avanço científico costuma vir de descoberta inesperada: um padrão inexplicável muda o rumo da investigação.
 - Mesmo sem nenhuma relação real, muitos testes dão positivos por acaso, e relatar mais os positivos eleva a chance de falso positivo.
 - Numa base muito examinada, ainda dá para testar predição se a pessoa nova estiver totalmente cega ao que outros viram e relataram, mas há muitas formas diretas e indiretas de influência, como ler um resumo ou receber conselho de quem já analisou.

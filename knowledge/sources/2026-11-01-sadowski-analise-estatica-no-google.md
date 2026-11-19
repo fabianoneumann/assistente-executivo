@@ -14,7 +14,7 @@ Ficha de estudo, em palavras próprias. *Communications of the ACM* 61(4):58 a 6
 
 ## O resumo
 
-Para uma ferramenta de análise estática dar certo, os desenvolvedores precisam sentir que ganham com ela. O que o Google aprendeu: integrar ao fluxo de trabalho (no compilador e na revisão de código, nunca num painel à parte), mostrar só o que é acionável, medir o falso positivo **pelo que o desenvolvedor faz** e não pelo que o autor da ferramenta acha, e desligar o analisador que irrita. Desenvolvedores têm "a strong bias to ignore static analysis", e qualquer falso positivo vira justificativa para não agir.
+Para uma ferramenta de análise estática dar certo, os desenvolvedores precisam sentir que ganham com ela. O que o Google aprendeu: integrar ao fluxo de trabalho (no compilador e na revisão de código, nunca num painel à parte), mostrar só o que é acionável, medir o falso positivo **pelo que o desenvolvedor faz** e não pelo que o autor da ferramenta acha, e desligar o analisador que irrita. Desenvolvedores já chegam inclinados a ignorar a análise estática, e qualquer falso positivo vira justificativa para não agir.
 
 ## 1. Por que as ferramentas são ignoradas
 
@@ -43,8 +43,8 @@ Lista do artigo: não integradas ao fluxo (ou lentas); avisos não acionáveis; 
 ## 5. As lições, nas palavras dos autores
 
 - A maioria não vai sair do caminho para usar a ferramenta: integrar ao fluxo e ligar para todos por padrão.
-- A satisfação do desenvolvedor é chave: se a ferramenta desperdiça tempo com falsos positivos e questões de baixa prioridade, "developers will lose faith and ignore results".
-- Não só achar defeitos, corrigi-los: medir o sucesso por defeitos corrigidos, não por apontamentos mostrados. "in practice we did not find such a list motivates developers to fix the defects."
+- A satisfação do desenvolvedor é chave: se a ferramenta desperdiça tempo com falsos positivos e questões de baixa prioridade, eles perdem a confiança e passam a ignorar o que ela aponta.
+- Não só achar defeitos, corrigi-los: medir o sucesso por defeitos corrigidos, não por apontamentos mostrados. Quem faz a ferramenta pode imaginar que o desenvolvedor vai gostar de receber a lista de prováveis defeitos do próprio código, mas os autores contam que, na prática, essa lista não o levou a corrigi-los.
 - Para vencer a "cegueira de aviso", foi preciso reconquistar a confiança: vetar cada checagem contra os critérios antes de ligá-la, para que os desenvolvedores raramente fiquem "inundated, confused, or annoyed".
 
 ## Tudo o mais que ensina

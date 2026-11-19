@@ -31,6 +31,10 @@ nenhum barra o --upload. Cada limiar diz de onde saiu; os de partida se trocam p
   a calibrar. A fonte fala da primeira linha; o código mede a primeira frase (até o primeiro ponto ou a primeira
   quebra), no lugar dela.
 
+- cor_fora_dos_tokens (D3) e itens_por_grupo (D4), só nas telas da série: a cor computada (texto, fundo, borda, traço e
+  preenchimento do svg) fora das cores das propriedades --* da página, com a imagem e a foto colada (.foto) fora; e a
+  lista (ul, ol) com mais de quatro itens, fora a lista que o design system libera (a classe .pendentes).
+
 Fica de fora, com o motivo: tela_sem_dominante, porque nenhum limiar de altura absoluta separou a tela fraca das boas
 (a falta era o traço fino e o tamanho relativo à tela-par, que a I2 lê).
 """
@@ -324,6 +328,89 @@ def papel_fora(papeis, tipo, tela, tabela):
             out.append({"nivel": "AVISO", "conferencia": "papel_fora_da_tabela", "tela": tela,
                         "detalhe": f"{papel} em {len(ts)} tamanhos na mesma tela ({', '.join(map(str, sorted(ts)))} px): "
                                    "um tamanho por papel em cada tela"})
+    return out
+
+
+# ---- dois testes [código] da rubrica de design (D3 e D4), os dois AVISO provisório ----
+# a cor fora dos tokens e os itens por grupo
+ITENS_TETO = 4               # D4: "até quatro itens por grupo, salvo o que o design-system.md libera (a classe .pendentes)"
+CORES_MAX_DETALHE = 5
+
+MEDIR_LOTE5 = r"""(idx) => {
+  const sl = document.querySelectorAll('.slide')[idx];
+  const fora = e => !!e.closest('.sim,[data-adesivo-sim],img,picture,video,canvas,defs,mask,clipPath,pattern,filter,marker,symbol');
+  const vis = e => { const r = e.getBoundingClientRect(); const cs = getComputedStyle(e);
+                     return r.width > 0.5 && r.height > 0.5 && cs.visibility !== 'hidden' && cs.display !== 'none'; };
+  // os tokens: toda propriedade --* das folhas da página que é uma cor (o caderno.css e o <style> da peça)
+  const probe = document.createElement('span'); probe.style.display = 'none'; sl.appendChild(probe);
+  const norm = v => { probe.style.color = ''; probe.style.color = v; return probe.style.color ? getComputedStyle(probe).color : null; };
+  const tokens = new Set(['rgba(0, 0, 0, 0)']);
+  const varre = regras => { for (const r of regras) {
+    if (r.cssRules) varre(r.cssRules);
+    if (r.style) for (const p of r.style) if (p.startsWith('--')) { const c = norm(r.style.getPropertyValue(p).trim()); if (c) tokens.add(c); } } };
+  for (const s of document.styleSheets) { try { varre(s.cssRules); } catch (e) {} }
+  // a folha local (file://) não deixa ler as regras no Chromium: os tokens vêm então do estilo computado, que traz as
+  // propriedades --* herdadas pela tela (as do :root e as do papel da tela, .tipo-a e .tipo-b)
+  // (as da tela e as dos descendentes: um token definido num seletor de dentro da tela também vale)
+  for (const e of [document.documentElement, document.body, sl, ...sl.querySelectorAll('*')]) { const cs = getComputedStyle(e);
+    for (const p of cs) if (p.startsWith('--')) { const c = norm(cs.getPropertyValue(p).trim()); if (c) tokens.add(c); } }
+  // o elemento com opacidade acumulada zero não aparece: a cor dele não conta
+  const apagado = e => { for (let x = e; x && x !== document.documentElement; x = x.parentElement) if (parseFloat(getComputedStyle(x).opacity) === 0) return true; return false; };
+  const cores = {};
+  const anota = (cor, e, onde) => {
+    if (!cor || !cor.startsWith('rgb') || tokens.has(cor)) return;
+    const k = cor; if (!cores[k]) cores[k] = {cor, n: 0, exemplo: ''};
+    cores[k].n++;
+    if (!cores[k].exemplo) cores[k].exemplo = onde + ' em ' + e.tagName.toLowerCase() + (e.getAttribute('class') ? '.' + e.getAttribute('class').trim().split(/\s+/).join('.') : '')
+      + ((e.textContent || '').trim() ? ' ("' + e.textContent.replace(/\s+/g, ' ').trim().slice(0, 30) + '")' : '');
+  };
+  const FORMAS = new Set(['path','rect','circle','ellipse','line','polyline','polygon','text','tspan']);
+  for (const e of [sl, ...sl.querySelectorAll('*')]) {
+    if (fora(e) || e.closest('.foto')) continue;   // a foto colada com a fita é imagem, não cor do sistema
+    const cs = getComputedStyle(e);
+    // a linha reta do svg tem caixa de altura (ou largura) zero: basta um dos lados
+    const r = e.getBoundingClientRect();
+    if (cs.visibility === 'hidden' || cs.display === 'none' || (e instanceof SVGElement ? (r.width <= 0.5 && r.height <= 0.5) : !vis(e)) || apagado(e)) continue;
+    // o degradê e a url() do fundo e o traço ou preenchimento em url(#...) (gradiente e padrão do svg) não se conferem: ficam com a leitura
+    if (e instanceof SVGElement) {
+      const tag = e.tagName.toLowerCase(); if (!FORMAS.has(tag)) continue;
+      if (cs.stroke && cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0 && parseFloat(cs.strokeOpacity) > 0) anota(cs.stroke, e, 'traço');
+      if (tag !== 'line' && cs.fill && cs.fill !== 'none' && parseFloat(cs.fillOpacity) > 0) anota(cs.fill, e, 'preenchimento');
+      continue;
+    }
+    if ([...e.childNodes].some(c => c.nodeType === 3 && c.textContent.trim())) anota(cs.color, e, 'texto');
+    if (cs.backgroundColor !== 'rgba(0, 0, 0, 0)') anota(cs.backgroundColor, e, 'fundo');
+    for (const lado of ['Top','Right','Bottom','Left'])
+      if (parseFloat(cs['border' + lado + 'Width']) > 0 && cs['border' + lado + 'Style'] !== 'none') anota(cs['border' + lado + 'Color'], e, 'borda');
+  }
+  probe.remove();
+  // as listas: os itens de cada ul ou ol fora do svg; a lista de pendências (.pendentes) o design system libera
+  const listas = [];
+  for (const l of sl.querySelectorAll('ul,ol')) {
+    if (fora(l) || l.closest('svg') || !vis(l) || l.closest('.pendentes')) continue;
+    const itens = [...l.children].filter(c => c.tagName === 'LI' && vis(c)).length;
+    listas.push({itens, texto: l.textContent.replace(/\s+/g, ' ').trim().slice(0, 40)});
+  }
+  return {cores: Object.values(cores), tokens: tokens.size, listas};
+}"""
+
+
+def lote5(l5, tela):
+    """Os AVISOs de cor e de lista numa tela da série: cor_fora_dos_tokens (D3) e itens_por_grupo (D4). Provisórios,
+    a calibrar com o uso; nenhum barra o --upload."""
+    out = []
+    if l5["cores"]:
+        cs = sorted(l5["cores"], key=lambda c: -c["n"])
+        out.append({"nivel": "AVISO", "conferencia": "cor_fora_dos_tokens", "tela": tela,
+                    "texto": "; ".join(f"{c['cor']} ({c['exemplo']})" for c in cs[:CORES_MAX_DETALHE]),
+                    "detalhe": f"{len(cs)} cor(es) computada(s) fora das {l5['tokens']} cores dos tokens da página "
+                               "(D3: \"nenhuma cor fora dos tokens?\", rubrica de design); a imagem e a foto ficam de fora; "
+                               "provisório, a calibrar com o uso"})
+    for li in l5["listas"]:
+        if li["itens"] > ITENS_TETO:
+            out.append({"nivel": "AVISO", "conferencia": "itens_por_grupo", "tela": tela, "texto": li["texto"],
+                        "detalhe": f"lista com {li['itens']} itens, acima de {ITENS_TETO} por grupo (D4, rubrica de design; "
+                                   "a lista que o design system libera, .pendentes, fica de fora); provisório, a calibrar com o uso"})
     return out
 
 

@@ -133,9 +133,10 @@ O que o caminho 1 diz das skills, das chaves e das conferências vale aqui: é o
 
 **Acompanhar pelo celular:** o app desktop tem o Remote Control, que permite acompanhar pelo celular uma sessão aberta no computador. Ainda não testamos esse uso aqui: conte com ele como possibilidade.
 
+**Aviso para quem usa o assistente no e-mail e na agenda:** o Gmail e a Agenda pelos conectores da conta (Customize > Connectors) foram testados dentro do Code em 19/11: enviaram e-mail, criaram e apagaram evento. No modo de permissão "Auto", que é o padrão, essas ações aconteceram sem pedir confirmação: o agente enviou o e-mail e criou ou apagou o evento sem perguntar antes. Para exigir a confirmação, ligue "Always ask" nas ferramentas do conector (a de enviar, a de criar e a de apagar), ou use um modo de permissão que pergunte antes de agir. Se um plugin instalado trouxer um conector próprio de agenda ou de e-mail que falha, reconectar o conector da conta (Customize > Connectors) resolveu no teste.
+
 **Ainda por testar, antes de contar com isso:**
-- o caminho pela conversa do app (o chat), sem pasta, com as skills instaladas na sua conta pelo ZIP do `scripts/empacota_skills.py` (Customize > Skills): fica para depois;
-- o Gmail e a Agenda pelos conectores da conta (Customize > Connectors) dentro do Code: se leem, se enviam e respondem, se criam evento.
+- o caminho pela conversa do app (o chat), sem pasta, com as skills instaladas na sua conta pelo ZIP do `scripts/empacota_skills.py` (Customize > Skills): fica para depois.
 
 ## A vida pessoal
 

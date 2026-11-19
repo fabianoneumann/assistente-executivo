@@ -2,7 +2,12 @@
 """Tela em video dentro do carrossel: grava em MP4 a tela com data-video do slides.html e confere o MP4 contra os
 limites da API de publicacao do Instagram. Usado pelo export_slides.py; roda sozinho para conferir um MP4:
 
-  python tela_em_video.py conferir <arquivo.mp4>
+  python tela_em_video.py conferir <arquivo.mp4> [--story]
+
+Com --story, os limites sao os do video de Story (a mesma pagina da Meta): a proporcao de 0,1:1 a 10:1, com AVISO fora do
+9:16 recomendado, a largura ate 1920 e sem o aviso dos 5 a 8 s da tela; o resto (moov, elst, codec, 4:2:0, 23 a 60 qps,
+3 a 60 s, 25 Mbps, 100 MB, audio) e o mesmo. Quem chama no caminho dos Stories e o video_do_story.py, em
+marketing/social-media/stories/scripts/ (o anima_cena.py depois de gravar, o publicar_stories.py antes de subir).
 
 O contrato da pagina:
 - a tela em video leva data-video="<segundos>" na <section class="slide"> (3 a 60 s aceitos; 5 a 8, a duracao recomendada);
@@ -46,6 +51,12 @@ MIN_RATIO, MAX_RATIO = 0.8, 1.91
 MIN_FPS, MAX_FPS = 23, 60
 MAX_BITRATE = 25_000_000
 CODECS = ("h264", "hevc")
+# O video de Story (a mesma referencia IG User Media, lida em 2026-11-13; knowledge/sources/2026-11-13-meta-ig-user-media-
+# reference.md, "Video: as duas especificacoes"): proporcao de 0,1:1 a 10:1, recomendado 9:16, largura ate 1920 px; a
+# duracao (3 a 60 s), o tamanho (100 MB), os quadros, o codec, o croma, a taxa e o audio sao os de cima. A proporcao do
+# carrossel (4:5 a 1,91:1) nao vale aqui: reprovaria todo 9:16 (passada de enriquecimento dos Stories, 2026-11-19, F3)
+STORY_MIN_RATIO, STORY_MAX_RATIO, STORY_MAX_W = 0.1, 10.0, 1920
+STORY_RATIO = 9 / 16
 
 QUADRO = """([t, idx]) => { window.quadro(t, idx);
   return document.getAnimations().filter(a => a.playState === 'running').length; }"""
@@ -187,8 +198,12 @@ def _listas_de_edicao(f: Path) -> int:
     return achados
 
 
-def conferir(f: Path) -> tuple[list[str], list[str]]:
-    """Confere o MP4 contra os limites; devolve (problemas que barram o upload, avisos)."""
+def conferir(f: Path, perfil: str = "carrossel") -> tuple[list[str], list[str]]:
+    """Confere o MP4 contra os limites; devolve (problemas que barram o upload, avisos). perfil "carrossel" (a tela em
+    video) ou "story" (o video de Story, com a proporcao e a largura dele, sem o aviso dos 5 a 8 s)."""
+    if perfil not in ("carrossel", "story"):
+        raise ValueError(f"perfil {perfil!r}: carrossel ou story")
+    story = perfil == "story"
     probs, avisos = [], []
     size = f.stat().st_size
     if size > MAX_BYTES:
@@ -221,11 +236,19 @@ def conferir(f: Path) -> tuple[list[str], list[str]]:
     if v.get("field_order") not in (None, "progressive", "unknown"):
         probs.append(f"varredura {v.get('field_order')}, esperada progressiva")
     w, h = int(v.get("width", 0)), int(v.get("height", 1))
-    if not (MIN_W <= w <= MAX_W):
-        probs.append(f"largura {w}px fora de {MIN_W}..{MAX_W}")
     ratio = w / h if h else 0
-    if not (MIN_RATIO - 0.005 <= ratio <= MAX_RATIO + 0.005):
-        probs.append(f"proporcao {ratio:.3f} fora de 4:5..1.91:1")
+    if story:
+        if not (0 < w <= STORY_MAX_W):
+            probs.append(f"largura {w}px acima de {STORY_MAX_W} (Story)")
+        if not (STORY_MIN_RATIO <= ratio <= STORY_MAX_RATIO):
+            probs.append(f"proporcao {ratio:.3f} fora de 0,1:1..10:1 (Story)")
+        elif abs(ratio - STORY_RATIO) > 0.01:
+            avisos.append(f"proporcao {ratio:.3f}, fora do 9:16 recomendado para o Story")
+    else:
+        if not (MIN_W <= w <= MAX_W):
+            probs.append(f"largura {w}px fora de {MIN_W}..{MAX_W}")
+        if not (MIN_RATIO - 0.005 <= ratio <= MAX_RATIO + 0.005):
+            probs.append(f"proporcao {ratio:.3f} fora de 4:5..1.91:1")
     num, _, den = (v.get("avg_frame_rate") or "0/1").partition("/")
     fps = float(num) / float(den or 1) if float(den or 1) else 0
     if not (MIN_FPS <= fps <= MAX_FPS):
@@ -233,7 +256,7 @@ def conferir(f: Path) -> tuple[list[str], list[str]]:
     dur = float(info.get("format", {}).get("duration") or v.get("duration") or 0)
     if not (MIN_S <= dur <= MAX_S):
         probs.append(f"{dur:.2f} s fora de {MIN_S:g}..{MAX_S:g} s")
-    elif not (REC_MIN_S <= dur <= REC_MAX_S):
+    elif not story and not (REC_MIN_S <= dur <= REC_MAX_S):
         avisos.append(f"{dur:.2f} s, fora dos 5 a 8 s pedidos para a tela")
     br = int(info.get("format", {}).get("bit_rate") or 0)
     if br > MAX_BITRATE:
@@ -241,20 +264,23 @@ def conferir(f: Path) -> tuple[list[str], list[str]]:
     for a in aus:
         if a.get("codec_name") != "aac" or int(a.get("sample_rate", 0)) > 48000:
             probs.append(f"audio {a.get('codec_name')} {a.get('sample_rate')} Hz, esperado AAC ate 48 kHz")
-    resumo = f"{w}x{h}, {v.get('codec_name')}, {fps:g} qps, {dur:.2f} s, {'com audio mudo' if aus else 'sem audio'}"
+    resumo = f"{w}x{h}, {v.get('codec_name')}, {fps:g} qps, {dur:.2f} s, {('com audio' if story else 'com audio mudo') if aus else 'sem audio'}"
     avisos.insert(0, resumo)
     return probs, avisos
 
 
 def main() -> None:
-    if len(sys.argv) != 3 or sys.argv[1] != "conferir":
+    args = sys.argv[1:]
+    story = "--story" in args
+    args = [a for a in args if a != "--story"]
+    if len(args) != 2 or args[0] != "conferir":
         print(__doc__, file=sys.stderr)
         sys.exit(2)
-    f = Path(sys.argv[2])
+    f = Path(args[1])
     if not f.is_file():
         print(f"[ERRO] nao encontrei {f}", file=sys.stderr)
         sys.exit(2)
-    probs, avisos = conferir(f)
+    probs, avisos = conferir(f, "story" if story else "carrossel")
     print(f"[..] {f.name}: {avisos[0] if avisos else ''}")
     for x in avisos[1:]:
         print(f"[AVISO] {x}")

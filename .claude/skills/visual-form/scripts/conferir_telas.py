@@ -59,6 +59,14 @@ está em ../references/conferencias.md. Conferências:
   como estão.
 - dia_relativo (AVISO): as palavras de PALAVRAS_DO_DIA, a regra "sem hoje, amanhã nem ontem", na tela ou na legenda.
   É aviso porque a palavra não decide sozinha ("que hoje vê até 20%" é "atualmente").
+- Os adesivos e a chamada dos Stories, só nas telas de 1920: adesivo_desconhecido (AVISO), o tipo do data-adesivo fora
+  da lista única ADESIVOS (aqui, em "As listas dos Stories"); texto_sob_adesivo (AVISO), linha de texto (fora o que é
+  de propósito) dentro da caixa do adesivo simulado, lida do ::after que o adesivos.css desenha com body.previa (a
+  mesma da imagem da prévia; o tipo sem medida no app não tem caixa); adesivo_na_borda (AVISO), a caixa fora da área
+  segura (a metade direita avança o Story, o pé tem a caixa de resposta); chamada_sem_caminho (AVISO), a lista
+  CHAMADAS_SEM_CAMINHO ("arrasta pra cima", "link na bio", "clica aqui"); link_sem_adesivo (AVISO), o texto que fala em
+  link numa tela sem data-adesivo="link"; e destaque_sem_data (ERRO; AVISO na tela publicada), com `destaque: true` no
+  frontmatter do roteiro.md, a tela que diz o dia da semana ou a hora sem uma data (DIA_DA_SEMANA, HORA e DATA).
 - palavra_sozinha (AVISO): bloco de texto (título, destaque, citação, corpo, apoio, nota, item de lista) com duas
   linhas ou mais e uma palavra só na última. Acabamento.
 - palavra_curta_no_fim (AVISO): linha de título, destaque ou citação, fora a última do bloco, que termina numa
@@ -99,7 +107,7 @@ da área segura, da zona proibida e do travessão (PUBLICADA_AVISA) que já foi 
 nova, como as hashtags. A sobreposição de texto com traço ou com texto e a fonte que não carregou continuam ERRO
 também na publicada.
 """
-import functools, io, json, os, re, sys
+import functools, io, json, os, re, sys, unicodedata
 from pathlib import Path
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))   # medidas_forma.py, ao lado
@@ -137,7 +145,9 @@ FORA_MIN = 1.0              # px: transbordo ou corte abaixo disso é arredondam
 # hashtags
 PUBLICADA_AVISA = {"contraste", "contraste_parcial", "transbordo", "corte", "alinhamento_titulo", "cor_anulada",
                    # e a área segura, a zona proibida e o travessão: na publicada, viram AVISO como as regras da casa
-                   "area_segura", "zona_proibida", "travessao"}
+                   "area_segura", "zona_proibida", "travessao",
+                   # e a data do Story de Destaque: a tela que já foi ao ar fica como está
+                   "destaque_sem_data"}
 # zona_proibida: o papel que a rubrica de qualidade nomeia (manchete, ponte, chamada) barra; o resto avisa
 ZONA_ESSENCIAL = "h1,h2,.titulo,.destaque,.chamada,.ponte"
 # As medidas da rubrica de design ("Medidas (sempre em código)") que ainda não tinham código (a parte 3 do
@@ -180,6 +190,101 @@ PALAVRAS_DO_DIA = ("hoje à noite", "agora há pouco", "daqui a pouco", "mais ta
 def palavras_do_dia():
     """A lista da regra do dia relativo (PALAVRAS_DO_DIA)."""
     return PALAVRAS_DO_DIA
+
+
+# As listas dos Stories, uma fonte só: a rubrica de Stories, o README dos Stories e o modelo stories.html apontam para
+# cá. Os tipos de adesivo que uma tela pode declarar em data-adesivo (o tipo fora da lista é AVISO); o adesivos.css
+# desenha na prévia os que já têm medida no app (enquete, caixinha, reacao, barra). O link é o adesivo de link do app.
+ADESIVOS = ("enquete", "caixinha", "pergunta", "quiz", "reacao", "barra", "foto", "link", "post", "resposta", "resultado")
+# O dia da semana e a data, para o Story de Destaque, que pede a data, e não só o dia da semana (stories-o-que-evitar.md,
+# item 2). Buscam no texto sem acento ("terca", "sabado"); o dia da semana que é ordinal ("segunda parte", "pela
+# segunda vez") não conta. Os marcadores __ORDINAL__ e __MESES__ se trocam pelas listas, em padrao_de_stories().
+ORDINAL = r"parte|vez|etapa|fase|tela|dica|pergunta|opcao|edicao|aula|temporada|chance|serie|versao|rodada|metade"
+MESES = r"janeiro|fevereiro|marco|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro"
+DIA_DA_SEMANA = r"\b(?:sabado|domingo)\b|\b(?:segunda|terca|quarta|quinta|sexta)(?:-feira\b|\b(?![ \t]+(?:__ORDINAL__)\b))"
+DATA = r"\b\d{1,2}/\d{1,2}\b|\b\d{1,2} de (?:__MESES__)\b|\bdia \d{1,2}\b"
+HORA = r"\b\d{1,2}h(?:\d{2})?\b|\b\d{1,2}:\d{2}\b"  # "18h", "18h30", "18:30"
+# A chamada que o app não deixa cumprir (stories/README.md, "No mesmo espírito"; stories-o-que-evitar.md, item 4), com
+# as variantes do imperativo
+CHAMADAS_SEM_CAMINHO = ("arrasta pra cima", "arrasta para cima", "arraste pra cima", "arraste para cima", "link na bio",
+                        "clica aqui", "clique aqui")
+_STORIES = {"ADESIVOS": ADESIVOS, "ORDINAL": ORDINAL, "MESES": MESES, "DIA_DA_SEMANA": DIA_DA_SEMANA, "DATA": DATA,
+            "HORA": HORA, "CHAMADAS_SEM_CAMINHO": CHAMADAS_SEM_CAMINHO, "PALAVRAS_DO_DIA": PALAVRAS_DO_DIA}
+
+
+def de_stories(nome):
+    """Uma das listas dos Stories, pelo nome."""
+    return _STORIES[nome]
+
+
+@functools.lru_cache(maxsize=None)
+def padrao_de_stories(nome):
+    """DIA_DA_SEMANA, DATA ou HORA, com os marcadores trocados pelas listas ORDINAL e MESES."""
+    p = de_stories(nome).replace("__ORDINAL__", de_stories("ORDINAL")).replace("__MESES__", de_stories("MESES"))
+    return re.compile(p, re.I)
+
+
+def sem_acento(texto):
+    return "".join(c for c in unicodedata.normalize("NFD", texto) if unicodedata.category(c) != "Mn")
+
+
+def destaque_do_roteiro(pasta):
+    """O roteiro.md declara `destaque: true` no frontmatter: a sequência pode ir para um Destaque (stories/README.md,
+    "No mesmo espírito"), e a tela que diz quando leva a data (stories-o-que-evitar.md, item 2)."""
+    p = Path(pasta) / "roteiro.md"
+    if not p.is_file():
+        return False
+    fm = re.match(r"---\n(.*?)\n---", p.read_text(encoding="utf-8").replace("\r\n", "\n"), re.S)
+    m = re.search(r"""^destaque:[ \t]*["']?(\w+)""", fm.group(1), re.M) if fm else None
+    return bool(m and m.group(1).lower() in ("true", "sim", "yes"))
+
+
+def chamadas_da_tela(texto, tipos):
+    """A chamada que o app não deixa cumprir (stories/README.md, "No mesmo espírito"; stories-o-que-evitar.md, item 4):
+    as da lista CHAMADAS_SEM_CAMINHO, e o texto que fala em link numa tela sem o adesivo de link. AVISOs: "link na bio"
+    pode dizer qual link logo depois, e "o link" pode ser o que vai por mensagem a quem responder."""
+    t, out = (texto or "").lower(), []
+    for c in de_stories("CHAMADAS_SEM_CAMINHO"):
+        rx = rf"(?<![\wà-ú]){re.escape(c)}(?![\wà-ú])"
+        if re.search(rx, t):
+            out.append({"nivel": "AVISO", "conferencia": "chamada_sem_caminho", "texto": c,
+                        "detalhe": "chamada que o app não deixa cumprir: o gesto de arrastar saiu do app, \"link na bio\" "
+                                   "diz qual link, e \"clica aqui\" diz para onde vai (stories/README.md)"})
+            t = re.sub(rx, " ", t)
+    if "link" not in tipos and re.search(r"(?<![\wà-ú])links?(?![\wà-ú])", t):
+        out.append({"nivel": "AVISO", "conferencia": "link_sem_adesivo", "texto": "link",
+                    "detalhe": "o texto fala em link e a tela não declara data-adesivo=\"link\": no Story, o link vai "
+                               "pelo adesivo de link; se é o link mandado por mensagem a quem responder, fica como está"})
+    return out
+
+
+def destaque_sem_data(texto):
+    """No Story de Destaque, o dia da semana ou a hora sem a data (o "terça, 18h" vira uma terça qualquer): a lista do
+    que a tela diz de quando, sem data absoluta na mesma tela, ou None."""
+    t = sem_acento((texto or "").lower())
+    if padrao_de_stories("DATA").search(t):
+        return None
+    achados = [m.group(0) for nome in ("DIA_DA_SEMANA", "HORA") for m in padrao_de_stories(nome).finditer(t)]
+    return achados or None
+
+
+# A caixa do adesivo simulado da tela, como o adesivos.css a desenha na prévia (o ::after com body.previa): a mesma
+# medida que a imagem da prévia mostra, uma fonte só. O tipo sem regra no CSS (pergunta, quiz, link, post, resposta,
+# foto) sai sem caixa: o tamanho dele não está medido no app
+ADESIVO = r"""(idx) => {
+  const sl = document.querySelectorAll('.slide')[idx];
+  const tipos = (sl.getAttribute('data-adesivo') || '').split(/\s+/).filter(Boolean);
+  const tinha = document.body.classList.contains('previa');
+  document.body.classList.add('previa');
+  const cs = getComputedStyle(sl, '::after');
+  let caixa = null;
+  if (cs.content !== 'none' && cs.position === 'absolute') {
+    const l = parseFloat(cs.left), t = parseFloat(cs.top), w = parseFloat(cs.width), h = parseFloat(cs.height);
+    if ([l, t, w, h].every(Number.isFinite) && w > 1 && h > 1) caixa = [l, t, l + w, t + h].map(v => Math.round(v * 10) / 10);
+  }
+  if (!tinha) document.body.classList.remove('previa');
+  return {tipos, caixa};
+}"""
 
 
 # Prepara a tela idx como a exportação e devolve {faltam, setas}. As fontes se pedem antes do prepararSlide (o
@@ -633,6 +738,7 @@ def conferir(pasta, html, legenda=None, janela=(1280, 1560), publicada=False, ex
     da_serie = []  # {tela, unidades, acento} das telas da série, para os AVISOs de peça (medidas_forma.py)
     isencoes = {}  # as isenções usadas, para a linha de NOTA
     travado = mf.telas_travadas(pasta)
+    destaque = destaque_do_roteiro(pasta)   # o Story de Destaque leva a data (só nos Stories; o carrossel não tem roteiro.md)
     serie = mf.carregar_serie(pasta, html)     # o design/papeis.json da série, None sem ele
     tabela = mf.papeis_de(serie)               # a tabela "Letra" da série, None sem ela
     nivel_trav = mf.nivel_travessao(serie)     # ERRO se context/sobre-mim.md pede sem travessão, senão AVISO
@@ -848,6 +954,8 @@ def conferir(pasta, html, legenda=None, janela=(1280, 1560), publicada=False, ex
             if fm["tipo"] and not stories:
                 if tabela:
                     achados.extend(mf.papel_fora(fm["papeis"], fm["tipo"], n, tabela))
+                # a cor fora dos tokens (D3) e os itens por grupo (D4)
+                achados.extend(mf.lote5(page.evaluate(mf.MEDIR_LOTE5, i), n))
                 page.evaluate(PAPEL_FORA, i)
                 sem_fig = page.add_style_tag(content=mf.ESCONDER_FIGURAS)
                 pct = mf.acento_pct(np.asarray(foto()), cor_acento) if cor_acento else None
@@ -881,6 +989,49 @@ def conferir(pasta, html, legenda=None, janela=(1280, 1560), publicada=False, ex
                         if fim in curtas(pasta, html):
                             achados.append({"nivel": "AVISO", "conferencia": "palavra_curta_no_fim", "tela": n,
                                             "texto": b["texto"], "linha": k, "fim": " ".join(linha[-3:])})
+            # os adesivos e a chamada dos Stories: o tipo
+            # fora da lista única (ADESIVOS, acima), o texto sob a caixa do adesivo simulado e a caixa fora
+            # da área segura (a metade direita avança, o pé tem a caixa de resposta; rubrica de Stories, "Onde vive uma
+            # sequência", e stories-o-que-evitar.md, item 5), a chamada que o app não deixa cumprir e, no Story de
+            # Destaque, o quando sem a data. Os quatro primeiros são AVISO; o último, ERRO
+            if stories:
+                ad = page.evaluate(ADESIVO, i)
+                fora_da_lista = [t for t in ad["tipos"] if t not in de_stories("ADESIVOS")]
+                if fora_da_lista:
+                    achados.append({"nivel": "AVISO", "conferencia": "adesivo_desconhecido", "tela": n,
+                                    "texto": " ".join(fora_da_lista),
+                                    "detalhe": "fora da lista de tipos (ADESIVOS, no conferir_telas.py da visual-form): "
+                                               "a prévia não o reconhece"})
+                cx = ad["caixa"]
+                if cx:
+                    sob = {}
+                    for l in ls:
+                        if l["proposito"] or l["bloco"] in sob:
+                            continue
+                        c = cruza(miolo(l["rect"]), cx)
+                        if c and c[0] * c[1] > AREA_TEXTO_TEXTO:
+                            sob[l["bloco"]] = {"nivel": "AVISO", "conferencia": "texto_sob_adesivo", "tela": n, "texto": l["texto"],
+                                               "adesivo": " ".join(ad["tipos"]), "caixa": cx,
+                                               "detalhe": "o texto se compõe acima do adesivo (rubrica de Stories); se o "
+                                                          "adesivo vai em outro lugar no app, declare --adesivo-top na tela"}
+                    achados.extend(sob.values())
+                    fora = [nome for nome, d in (("esquerda", STORIES_LADO - cx[0]), ("topo", STORIES_TOPO - cx[1]),
+                                                 ("direita", cx[2] - (W - STORIES_LADO)), ("base", cx[3] - (H - STORIES_BASE)))
+                            if d > FORA_MIN]
+                    if fora:
+                        achados.append({"nivel": "AVISO", "conferencia": "adesivo_na_borda", "tela": n,
+                                        "adesivo": " ".join(ad["tipos"]), "caixa": cx, "faixa": ", ".join(fora),
+                                        "detalhe": "a caixa do adesivo sai da área segura (x 32 a 1048, y 192 a 1802): um "
+                                                   "toque na metade direita avança o Story, e o pé tem a caixa de resposta"})
+                for a in chamadas_da_tela(m["texto"], ad["tipos"]):
+                    achados.append(dict(a, tela=n))
+                if destaque:
+                    quando = destaque_sem_data(m["texto"])
+                    if quando:
+                        achados.append({"nivel": "ERRO", "conferencia": "destaque_sem_data", "tela": n, "texto": ", ".join(quando),
+                                        "detalhe": "o roteiro.md declara destaque: true, e no Destaque o dia da semana e a "
+                                                   "hora viram um dia qualquer: a tela que diz quando leva a data "
+                                                   "(\"terça, 25/11, 18h\"), ou não diz quando (stories/README.md)"})
             # referência relativa de dia, na tela
             for w in achar_dia(m["texto"]):
                 achados.append({"nivel": "AVISO", "conferencia": "dia_relativo", "tela": n, "texto": w})

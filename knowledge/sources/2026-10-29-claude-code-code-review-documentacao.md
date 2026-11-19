@@ -24,7 +24,7 @@ Ficha de estudo, em palavras próprias, das páginas oficiais sobre revisão de 
 - [comandos] https://code.claude.com/docs/en/commands.md (linhas de `/code-review`, `/review`, `/simplify`, `/ultrareview`)
 - [desktop] https://code.claude.com/docs/en/desktop.md, seção "Review your code"
 - [changelog] https://code.claude.com/docs/en/changelog.md, com a versão de cada entrada
-- [blog] "Bringing Code Review to Claude Code", https://claude.com/blog/code-review, 09/03/2026
+- [blog] *"Bringing Code Review to Claude Code"*, https://claude.com/blog/code-review, 09/03/2026
 - [plugin v1] comando `plugins/code-review/commands/code-review.md` no repositório `anthropics/claude-code`, versão de 12/11/2025 (commit b85cc44), sem licença aberta
 - [plugin] o mesmo comando, versão atual em `anthropics/claude-plugins-official` (commit c905cd8, 26/10/2026, "bring in the newer command from anthropics/claude-code"), Apache 2.0, e o README da pasta
 
