@@ -57,9 +57,13 @@ Não vêm nesta versão: a publicação no Instagram e as métricas (dependem de
 3. **Ver o que falta:** `python -X utf8 scripts/confere_ambiente.py`. Ele mostra, skill por skill, o que já funciona e o que falta, sem nunca mostrar o valor de uma chave.
 4. **Pôr as suas chaves** (só as das skills que você vai usar):
    ```
-   cp .env.example .env
+   python -X utf8 scripts/prepara_chaves.py --skill research
    ```
-   Abra o `.env` no seu editor e preencha as linhas. Cada linha do `.env.example` diz para que serve a chave e onde se pega. O `.env` nunca vai ao git (`.gitignore`). O `.claude/settings.json` nega à ferramenta de leitura do Claude o `.env`, o `.env.local` e o `.claude/settings.local.json`, mas um comando de terminal não é barrado por isso: não peça ao Claude para abrir, mostrar ou procurar dentro desses arquivos, e não cole chave na conversa, nem em nenhum arquivo versionado. Quem lê as chaves são os scripts das skills. (As mesmas variáveis também funcionam no bloco `"env"` do `.claude/settings.local.json`, que fica fora do git; o `.env` é o recomendado.) Depois, reinicie a sessão e rode o passo 3 de novo.
+   Ele cria o `.env` a partir do `.env.example`, só se o `.env` ainda não existir (nunca sobrescreve, e não lê nem mostra um que já existe), e diz em que linha fica cada variável da skill que você passou (sem `--skill`, só cria). Abra o `.env` no seu editor e troque o marcador `COLE_...` pelo valor. Cada linha do `.env.example` diz para que serve a chave e onde se pega; linha que fica com o marcador conta como não configurada. O `.env` nunca vai ao git (`.gitignore`). O `.claude/settings.json` nega à ferramenta de leitura do Claude o `.env`, o `.env.local` e o `.claude/settings.local.json`, mas um comando de terminal não é barrado por isso: não peça ao Claude para abrir, mostrar ou procurar dentro desses arquivos, e não cole chave na conversa, nem em nenhum arquivo versionado. Quem lê as chaves são os scripts das skills.
+
+   O `.env` é o caminho recomendado. A alternativa é o bloco `"env"` do `.claude/settings.local.json`, que também fica fora do git e que o Claude Code carrega como variáveis de ambiente da sessão: `python -X utf8 scripts/prepara_chaves.py --settings --skill research` o cria a partir do `.claude/settings.local.example.json`, com as mesmas variáveis e os mesmos marcadores do `.env.example`. Se o `settings.local.json` já existir (o Claude Code o cria ao guardar uma permissão que você aceitou), o script não mexe nele: copie o bloco `"env"` do exemplo para dentro dele, no seu editor. O JSON não aceita comentário, e o exemplo não leva campo de explicação, porque não confirmamos que o Claude Code aceita chave fora do esquema dele: a explicação fica aqui e no `.env.example`. Os dois caminhos funcionam no terminal e no Code do app desktop (testado em 19/11), e o `.claude/settings.json` nega a leitura dos dois ao Claude. Quando a mesma variável está nos dois, vale a do `settings.local.json`.
+
+   Depois, reinicie a sessão e rode o passo 3 de novo.
 5. **Instalar os pacotes Python** das skills que você vai usar (o `confere_ambiente.py` diz quais faltam):
    ```
    python -m pip install -r .claude/skills/research/requirements.txt
@@ -87,6 +91,7 @@ Da raiz do repositório, no começo e depois de instalar os pacotes. Nenhum dest
 | `python -X utf8 scripts/confere_dados.py` | chave, dado pessoal e conteúdo de terceiro no que iria num commit | `-- 0 achado(s)` e código 0; o seu e-mail real nos commits sai como achado (ver "Antes de commitar", acima) |
 | `python -X utf8 scripts/teste_confere_dados.py` | os casos do `confere_dados.py` | `TODOS OK` |
 | `python -X utf8 scripts/teste_medir_disparo.py` | os casos do `medir_disparo.py` | `TODOS OK` |
+| `python -X utf8 scripts/teste_prepara_chaves.py` | os casos do `prepara_chaves.py`, numa pasta temporária | `TODOS OK` |
 | `python -X utf8 .claude/skills/research/scripts/teste_conferidores.py` | as conferências das rodadas de pesquisa, sem chamar as APIs | `0 falha(s)`, com as lacunas conhecidas listadas, que não derrubam o teste |
 | `python -X utf8 .claude/skills/review/scripts/teste_registro.py` | a contagem do registro da `review`, sem o `gh` | `0 falha(s)` |
 | `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` | a montagem e a conferência de um projeto novo, nas três stacks (pede o `requirements.txt` da `project-kit`) | `Ran 8 tests` e `OK` (as linhas "Montado em ...", que podem vir antes ou depois, são da montagem) |

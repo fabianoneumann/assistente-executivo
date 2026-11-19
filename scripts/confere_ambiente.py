@@ -30,9 +30,10 @@ RAIZ = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(RAIZ / "scripts"))
 import ambiente  # noqa: E402
 
-COMO_POR = ("Como pôr: copie o `.env.example` para `.env` na raiz do repositório (o `.env` nunca vai ao git) "
-            "e preencha a linha da variável no seu editor, não pela conversa com o Claude (ou ponha no bloco \"env\" "
-            "do seu `.claude/settings.local.json`). Depois, reinicie a sessão do Claude Code.")
+COMO_POR = ("Como pôr: rode `python -X utf8 scripts/prepara_chaves.py --skill <skill>`, que cria o `.env` a partir do "
+            "`.env.example` (o `.env` nunca vai ao git) e diz em que linha fica cada variável (com `--settings`, cria o "
+            "`.claude/settings.local.json` no lugar); depois preencha a linha no seu editor, não pela conversa com o "
+            "Claude. Depois, reinicie a sessão do Claude Code.")
 
 # variável: (para que serve, onde se pega)
 CHAVES = {
@@ -289,7 +290,7 @@ def main(argv=None) -> int:
             print(f"[PARE] a skill {a.skill} não roda ainda. Falta configurar:")
             for linha in obrig:
                 print(f"  - {linha}")
-            print(COMO_POR)
+            print(COMO_POR.replace("<skill>", a.skill))
             print("Depois de configurar, rode de novo: python -X utf8 scripts/confere_ambiente.py --skill " + a.skill
                   + (" --upload" if a.upload else ""))
             return 1
