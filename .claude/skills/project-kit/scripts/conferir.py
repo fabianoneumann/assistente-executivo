@@ -7,7 +7,9 @@ e os JSON são válidos; o `CLAUDE.md` tem até 150 linhas; nenhum caminho absol
 veio; as ações do CI fixadas por hash; o Dependabot só de segurança; o `.gitattributes` com `eol=lf` e o log em
 `merge=union`; o `settings.json` com o `deny` e sem `ask`; as cascas em LF; os arquivos que o fluxo cita existem; e,
 no projeto com imagem, que as peças dela vieram juntas (o `Dockerfile` não nasce sem o vigia, nem o vigia sem ele) e
-que o Trivy do vigia está fixado pelo hash.
+que o Trivy do vigia está fixado pelo hash; e, pelo mesmo `conferir_base.py` que o CI do projeto roda depois do
+nascimento, que os caminhos e os comandos do `CLAUDE.md` existem, que os passos do CI são os que ele lista e que as
+páginas do índice da base existem.
 Código 0 sem ERRO, 1 com ERRO.
 """
 
@@ -28,6 +30,7 @@ OBRIGATORIOS = [
     "knowledge/README.md", "knowledge/index.md", "knowledge/log.md", "knowledge/processo.md", "knowledge/metadados.md",
     "knowledge/travas.md", "knowledge/versao-e-dependencias.md", "knowledge/plano.md", "knowledge/arquitetura.md",
     "knowledge/decisions/000-modelo.md", "onboarding/index.html",
+    ".github/scripts/conferir_base.py", ".github/scripts/test_conferir_base.py",
     "onboarding/diagramas/travas.html", "onboarding/diagramas/prioridade.html", "onboarding/diagramas/sequencia.html", "onboarding/diagramas/elk.bundled.js",
     "onboarding/diagramas/elk-LICENSE.md", "onboarding/diagramas/tokens.css", "onboarding/diagramas/esquema.py",
 ]
@@ -43,6 +46,8 @@ _MODELOS_DOCKER = Path(__file__).resolve().parents[1] / "assets" / "docker" / "c
 DOCKER = ["Dockerfile"] + sorted(
     "/".join(("." + p[4:]) if p.startswith("dot-") else p for p in arq.relative_to(_MODELOS_DOCKER).parts)
     for arq in _MODELOS_DOCKER.rglob("*") if arq.is_file() and "__pycache__" not in arq.parts)
+# O conferir_base.py do próprio kit (o mesmo que o projeto recebe e o CI dele roda): o roteador e a base sem deriva.
+_BASE = Path(__file__).resolve().parents[1] / "assets" / "projeto" / "dot-github" / "scripts"
 SEM_TETO = {"knowledge/log.md", "knowledge/index.md", "onboarding/diagramas/elk-LICENSE.md"}  # a licença é texto de terceiro
 
 
@@ -100,6 +105,7 @@ def conferir(pasta: Path) -> tuple[list[str], list[str]]:
     conferir_json(pasta, erros)
     conferir_ci(pasta, erros, avisos)
     conferir_docker(pasta, erros)
+    conferir_roteador(pasta, erros, avisos)
     attrs = texto_de(pasta / ".gitattributes") or ""
     if "eol=lf" not in attrs:
         erros.append(".gitattributes sem eol=lf")
@@ -166,6 +172,26 @@ def conferir_ci(pasta: Path, erros: list[str], avisos: list[str]) -> None:
         avisos.append("ci.yml sem timeout-minutes (o teto do CI é de 3 minutos)")
     elif int(teto.group(1)) > 3:
         avisos.append(f"ci.yml com teto de {teto.group(1)} minutos, acima dos 3 de partida")
+
+
+def conferir_roteador(pasta: Path, erros: list[str], avisos: list[str]) -> None:
+    """O roteador e a base contra o repositório montado, pela mesma conferência que o CI do projeto roda depois: a
+    cópia do próprio projeto, quando ele a tem (é a que o CI dele roda), e a do kit quando falta (o `falta` acima já
+    acusa). Carregada do arquivo a cada chamada, sem mexer no sys.path, para nunca rodar uma versão em cache."""
+    import importlib.util
+    arquivo = pasta / ".github/scripts/conferir_base.py"
+    if not arquivo.is_file():
+        arquivo = _BASE / "conferir_base.py"
+    spec = importlib.util.spec_from_file_location(f"conferir_base_{abs(hash(str(arquivo)))}", arquivo)
+    modulo = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(modulo)
+        e, a = modulo.conferir(pasta)
+    except Exception as erro:  # a cópia do projeto quebrada não derruba o resto da conferência
+        erros.append(f"roteador ou base: o {arquivo.name} não rodou ({type(erro).__name__}: {erro})")
+        return
+    erros.extend(f"roteador ou base: {x}" for x in e)
+    avisos.extend(f"roteador ou base: {x}" for x in a)
 
 
 def conferir_docker(pasta: Path, erros: list[str]) -> None:

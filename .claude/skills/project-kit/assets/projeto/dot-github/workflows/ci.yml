@@ -36,10 +36,12 @@ jobs:
         run: python3 .githooks/hooks.py log
       - name: Os diagramas do onboarding no esquema
         run: python3 onboarding/diagramas/esquema.py onboarding/diagramas/*.html
-      # [kit:docker=sim]
-      - name: O vigia da imagem base (os testes)
+      - name: Os scripts do CI (os testes)
         run: python3 -m unittest discover -s .github/scripts -p "test_*.py"
-      # [kit:fim]
+      # O roteador e a base contra o repositório: os caminhos e os comandos do CLAUDE.md existem, os passos daqui são os
+      # que ele lista, as páginas do índice existem. A página órfã e o código que a base cita e saiu são só aviso.
+      - name: O roteador e a base sem deriva
+        run: python3 .github/scripts/conferir_base.py
       # [kit:stack=python-fastapi]
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:

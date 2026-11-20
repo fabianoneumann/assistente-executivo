@@ -1,6 +1,6 @@
 # A versão e as dependências
 
-Como se corta uma versão e como se trata a atualização de dependência. **Ler quando:** for cortar uma versão, ou quando chegar um PR do Dependabot.
+Como se corta uma versão e como se trata a atualização de dependência. **Ler quando:** for cortar ou instalar uma versão, ou quando chegar um PR do Dependabot.
 
 ## A versão é uma tag anotada no `{{BASE}}`
 
@@ -20,6 +20,14 @@ Como se corta uma versão e como se trata a atualização de dependência. **Ler
 6. Uma entrada `versao` no `knowledge/log.md`.
 
 Um passo precisa estar no roteiro que se executa: o passo que mora só na memória de alguém para de acontecer de uma versão à outra.
+
+## A volta, escrita antes de instalar
+
+Antes de instalar uma versão onde alguém usa, três coisas ficam escritas nas notas dela ou na issue da versão:
+
+- **Os gatilhos da volta:** o que, visto depois da instalação, faz voltar à versão anterior (o `/health` fora, a taxa de erro acima de um número, a rotina que não rodou), decididos antes, e não no calor da hora.
+- **A migração testada nos dois sentidos,** numa cópia do dado; a que não tem volta (apaga coluna, transforma dado) diz isso, e diz como se recupera (o backup de antes, conferido).
+- **A observação depois:** quem olha, o quê e por quanto tempo (de partida, 15 minutos) antes de dar a versão por instalada.
 
 ## Os testes
 

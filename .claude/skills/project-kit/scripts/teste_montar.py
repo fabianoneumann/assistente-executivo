@@ -154,6 +154,32 @@ class Montar(unittest.TestCase):
                                    cwd=self.projetos[chave], capture_output=True, text=True, env={**os.environ, "PYTHONUTF8": "1"})
                 self.assertEqual(r.returncode, 0, r.stderr[-2000:])
 
+    def test_o_roteador_e_a_base_conferidos_dentro_do_projeto(self):
+        # o conferir_base.py e os testes dele vão com todo projeto, com ou sem imagem, e o CI os roda depois do nascimento
+        for chave, pasta in self.projetos.items():
+            with self.subTest(chave):
+                env = {**os.environ, "PYTHONUTF8": "1"}
+                r = subprocess.run([sys.executable, ".github/scripts/conferir_base.py"], cwd=pasta, capture_output=True, text=True, env=env)
+                self.assertEqual(r.returncode, 0, r.stdout[-2000:])
+                self.assertIn("0 ERRO, 0 AVISO", r.stdout)
+                r = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", ".github/scripts", "-p", "test_*.py"],
+                                   cwd=pasta, capture_output=True, text=True, env=env)
+                self.assertEqual(r.returncode, 0, r.stderr[-2000:])
+                ci = (pasta / ".github/workflows/ci.yml").read_text(encoding="utf-8")
+                self.assertIn("python3 .github/scripts/conferir_base.py", ci)
+
+    def test_os_itens_antigos_da_282_nos_modelos(self):
+        pasta = self.projetos["python-fastapi"]
+        texto = lambda rel: (pasta / rel).read_text(encoding="utf-8")  # noqa: E731
+        spec = texto(".github/ISSUE_TEMPLATE/spec.md")
+        for trecho in ("O teste do essencial", "se bloqueia", "o que não pode acontecer", "Dado / Quando / Então", "a descartada", "tira outro daqui"):
+            self.assertIn(trecho, spec)
+        self.assertIn("O que ficou de fora e o risco", texto(".github/PULL_REQUEST_TEMPLATE.md"))
+        self.assertIn("## A passagem entre sessões", texto("knowledge/processo.md"))
+        self.assertIn("a interação acessível", texto("knowledge/processo.md"))
+        self.assertIn("## A volta, escrita antes de instalar", texto("knowledge/versao-e-dependencias.md"))
+        self.assertIn("o comando exato, o resultado esperado", texto("knowledge/README.md"))
+
     def test_comando_com_cerquilha_sobrevive_no_yaml(self):
         import yaml
         ci = yaml.safe_load((self.projetos["outra"] / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
@@ -214,6 +240,9 @@ class Montar(unittest.TestCase):
             ("casca em crlf", ".githooks/pre-commit", lambda t: t.replace("\n", "\r\n"), "CRLF"),
             ("trivy sem hash", ".github/workflows/vigiar-imagem.yml", lambda t: t.replace("TRIVY_SHA256: c6e6", "TRIVY_SHA256: c6e"), "TRIVY_SHA256"),
             ("publicar sem hash", ".github/workflows/publicar-imagem.yml", lambda t: t.replace("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1", "actions/checkout@v7"), "publicar-imagem.yml: a ação"),
+            ("claude cita o que sumiu", "CLAUDE.md", lambda t: t + "\nVer `knowledge/sumiu.md`.\n", "knowledge/sumiu.md`, que não existe"),
+            ("ci derivou do claude", ".github/workflows/ci.yml", lambda t: t.replace('run: "python -m pytest -q -m smoke"', 'run: "python -m pytest -q -m fumaca"'), "derivou"),
+            ("indice com pagina que nao existe", "knowledge/index.md", lambda t: t + "| `sumiu.md` | nunca |\n", "lista `sumiu.md`"),
             ("ci sem build", ".github/workflows/ci.yml", lambda t: t.replace("docker build --pull", "docker build"), "docker build --pull"),
         ]
         for nome, rel, mudar, trecho in plantados:

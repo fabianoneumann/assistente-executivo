@@ -12,7 +12,8 @@ Closes #
 
 - [ ] **Discussão inicial** feita, com as dúvidas fechadas antes do plano
 - [ ] **Plano aceito** antes de implementar
-- [ ] **`/code-review`** rodado sobre a branch, e os achados confirmados corrigidos
+- [ ] **`/code-review`** rodado sobre a branch, e os achados confirmados corrigidos (o que ficou sem corrigir, abaixo, com o que acontece se for ignorado)
+- [ ] **Tela revista**, no projeto com interface: a interação acessível, o texto de interface e os tokens do design system (`knowledge/processo.md`, passo 5)
 - [ ] **Validação da entrega** contra o "Pronto quando" da issue
 - [ ] **Validação exploratória** feita, com o resultado abaixo
 - [ ] **Branch sincronizada** com o `{{BASE}}` (`git merge origin/{{BASE}}`) depois do último commit
@@ -28,3 +29,7 @@ Closes #
 ## Divergências
 
 <!-- O que saiu diferente da spec, e por quê. Se a spec mudou, editar o corpo da issue. -->
+
+## O que ficou de fora e o risco
+
+<!-- O que se pulou (o teste que não rodou, o caso que não se validou, o achado da revisão que não se corrigiu, a parte deixada para outra issue) e o que pode dar errado por isso. Nada pulado: "nada". -->

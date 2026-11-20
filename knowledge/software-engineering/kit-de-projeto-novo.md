@@ -21,6 +21,8 @@ O processo vem pronto, a tecnologia se escolhe. O processo do CRM foi inventaria
 | O esqueleto da stack | o `/health` (com a versão e o commit), um teste e o smoke que sobe o servidor de verdade, para o CI nascer verde | novo: o CRM nasceu antes do processo |
 | A vigia e o método | "como se sabe que parou" na discussão e na arquitetura; o ADR vivo e o "O que ficou sem prova"; o spike; as regras de teste; o `concurrency` do CI; as armadilhas do Dependabot | a segunda leitura do processo do CRM |
 | A imagem, opcional (`--docker`) | o `Dockerfile` da stack, o build no CI, a publicação imutável na tag e o vigia semanal da imagem base, com `knowledge/imagem-base.md` | o padrão de imagem do CRM, com uma imagem só e o vigia em Python |
+| A spec, a revisão e a passagem | na spec, o teste do essencial, o bloqueio de cada pergunta, o que não pode acontecer e a alternativa descartada; o escopo que entra tira outro; o achado com a consequência, o PR com o que se pulou e o risco, a lente de tela; a passagem entre sessões como estado; a volta escrita antes de instalar; o passo de procedimento de `docs/` | leituras de plugins e de referências de mercado, e não o CRM |
+| O roteador e a base sem deriva | o `.github/scripts/conferir_base.py` no CI: os caminhos e os comandos do `CLAUDE.md`, os passos do CI contra eles, as páginas do índice; aviso da órfã e do código que a base cita e saiu | o `claude-md-management` da Anthropic (a atualidade do `CLAUDE.md`), e não o CRM |
 
 ## As travas: uma versão só, em Python
 

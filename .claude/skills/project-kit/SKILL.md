@@ -35,7 +35,7 @@ Um projeto de software novo, do zero até a primeira milestone com as specs: a a
 
 ### 1. A discussão inicial: perguntar antes de propor, e nada escrito
 
-**Leia [`references/discussao-inicial.md`](./references/discussao-inicial.md) antes.** Pergunte o que muda o desenho (o resultado, quem usa, onde roda, o dado, as integrações, o relógio, a equipe, a stack, os limites), em blocos de até cinco, cada pergunta aberta ou de escolha. Antes de cada uma, confira o que a conversa, os documentos dele ou o sistema que já existe respondem. Depois, a proposta na própria resposta: a arquitetura (com duas ou três opções quando há mais de uma forma razoável, e a sugestão com o porquê), os arcos, a stack e o ferramental, a primeira milestone e o que fica em aberto. **Nesta etapa não se escreve nenhum arquivo, pasta ou repositório.** Fica pronta quando dá para escrever a arquitetura, o plano e os dois ADRs sem adivinhar.
+**Leia [`references/discussao-inicial.md`](./references/discussao-inicial.md) antes.** Pergunte o que muda o desenho (o resultado, a premissa que mata a ideia, quem usa, onde roda, a vigia, o dado e, se houver, o dado de fora, as integrações, o relógio, a equipe, a stack, os limites), em blocos de até cinco, cada pergunta aberta ou de escolha. Antes de cada uma, confira o que a conversa, os documentos dele ou o sistema que já existe respondem. Depois, a proposta na própria resposta: a arquitetura (com duas ou três opções quando há mais de uma forma razoável, e a sugestão com o porquê), os arcos, a stack e o ferramental, a primeira milestone, o que fica em aberto e as automações que o projeto pede e o kit não traz (a lista de [`references/automacoes.md`](./references/automacoes.md), pelo sinal do projeto; nada se liga sem a pessoa pedir). **Nesta etapa não se escreve nenhum arquivo, pasta ou repositório.** Fica pronta quando dá para escrever a arquitetura, o plano e os dois ADRs sem adivinhar.
 
 ### 2. A arquitetura e o plano macro
 
@@ -74,9 +74,14 @@ Pelo `projeto.md`, "O ponteiro de mão única": o registro do projeto do lado do
 
 - O `conferir.py` em 0 ERRO antes do primeiro commit (etapa 4) e depois de cada mudança nos modelos do kit.
 - Os testes do kit: `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` (as três stacks montadas e conferidas, os testes das travas dentro do projeto, e cada erro plantado acusado). Rodam a cada mudança no kit. Os dos diagramas rodam cada um por si (`python -X utf8 .claude/skills/project-kit/scripts/teste_diagrama_conferir.py` e `teste_diagrama_regressao.py`). Os testes e as conferências pedem o PyYAML e o Playwright com o Chromium, do `requirements.txt` da skill (`python -m pip install -r .claude/skills/project-kit/requirements.txt`, depois `python -m playwright install chromium`).
-- Os testes das travas vão junto com o projeto e rodam no CI dele.
+- Os testes das travas vão junto com o projeto e rodam no CI dele, com o `conferir_base.py`, que confere depois do nascimento o que o `conferir.py` confere ao montar: os caminhos e os comandos do `CLAUDE.md`, os passos do CI contra os que ele lista e as páginas do índice da base (e avisa a página órfã e o código que a base cita e saiu).
 - Ao mexer no esqueleto de uma stack, ou num modelo que cai no formato ou no lint dela (um script em `.github/`, um YAML), o `scripts/ci_local.py` num projeto montado de cada stack, com as dependências instaladas: os testes do kit não rodam o formato, o lint nem os testes da stack (lição de 19/11).
+
+## Como o kit evolui
+
+- **O que sobe do projeto ao kit passa por uma pergunta: isto é genérico ou é deste projeto?** É genérico o que valeria num projeto de outra stack e de outro domínio (uma regra do fluxo, uma trava, uma conferência); sobe ao kit pelo `licoes.md` e pela edição da skill, com as revisões. O que só vale para o domínio, a stack ou a equipe daquele projeto fica nele.
+- **A lição pode se comprimir ou se fundir a outra** para o `licoes.md` caber no teto, desde que a lição, a evidência do incidente e a data sobrevivam: sem a evidência, a regra perde o porquê, e sem a data, não se sabe se ela ainda vale.
 
 ## Ao terminar
 
-Diga à pessoa: a pasta e o repositório, o resultado do `conferir.py` e do CI, se a regra de tag existe ou ficou na regra escrita, a milestone e as specs criadas (com os links), e o que ficou em aberto. Registre no `licoes.md` desta skill o que o uso ensinou.
+Diga à pessoa: a pasta e o repositório, o resultado do `conferir.py` e do CI, se a regra de tag existe ou ficou na regra escrita, a milestone e as specs criadas (com os links), e o que ficou em aberto. Registre no `licoes.md` desta skill o que o uso ensinou, passando pela pergunta do genérico ("Como o kit evolui").

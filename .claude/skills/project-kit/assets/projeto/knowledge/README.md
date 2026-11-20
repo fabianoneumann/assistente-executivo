@@ -14,6 +14,7 @@ A base guarda o **porquê** do projeto: o desenho, a arquitetura, o plano, as de
 
 - **Citar, não inventar.** Toda afirmação sobre o sistema vem do código ou do que está registrado aqui. Sem fonte, é dúvida, e vai ao "A decidir" da issue.
 - **O que não mora aqui.** O como-fazer-agora fica junto do artefato: a operação em `docs/`, o roteiro do script ao lado dele. Assim o ADR não vira manual, e o manual não vira fonte de decisão.
+- **O procedimento em `docs/` é feito de passos,** e cada passo tem três partes: o comando exato, o resultado esperado (o que aparece quando deu certo) e o que fazer se falhar. O passo que só diz "configure o servidor" não se executa igual duas vezes.
 - **Sem credencial e sem informação comercial.** A base é técnica e se compartilha com quem entra no projeto.
 - **O texto da base passa pela pessoa** antes do commit do agente (`CLAUDE.md`, "A base validada antes do commit").
 - **Teto de ~150 linhas por arquivo;** passou, divide-se num arquivo mais específico. Ficam de fora o `log.md` e o `index.md`, que são os dois arquivos especiais do padrão.

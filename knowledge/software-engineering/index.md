@@ -4,4 +4,4 @@ Como se desenvolve e se mantém um sistema de software: o processo de issues, o 
 
 | Página | Ler quando | Termos-chave | Fontes |
 |---|---|---|---|
-| `software-engineering/kit-de-projeto-novo.md` | Ao criar um projeto de software novo, mudar um modelo da skill `project-kit`, ou explicar de onde veio uma regra do processo de um projeto | kit, project-kit, modelos, CLAUDE.md roteador, travas em Python, hook do fluxo, deny, sem ask, fronteira das perguntas, smoke, ações fixadas por hash, conta pessoal e organização, Type, Priority | o processo de um CRM de atendimento em produção (sem ficha) |
+| `software-engineering/kit-de-projeto-novo.md` | Ao criar um projeto de software novo, mudar um modelo da skill `project-kit`, ou explicar de onde veio uma regra do processo de um projeto | kit, project-kit, modelos, CLAUDE.md roteador, travas em Python, hook do fluxo, deny, sem ask, fronteira das perguntas, smoke, ações fixadas por hash, conta pessoal e organização, Type, Priority, teste do essencial, passagem entre sessões, volta antes de instalar, conferir_base | o processo de um CRM de atendimento em produção (sem ficha) |

@@ -19,24 +19,25 @@ labels: []
 
 ## Decisões travadas
 
-<!-- Só o que alguém já decidiu: "- AAAA-MM-DD, quem: a decisão (link)". Sugestão de quem escreve não é decisão. -->
+<!-- Só o que alguém já decidiu: "- AAAA-MM-DD, quem: a decisão (link)". Sugestão de quem escreve não é decisão. Quando havia alternativa, a mesma linha diz a descartada, quem a descartou e por quê, para a pergunta não voltar. -->
 
 ## A decidir
 
-<!-- A decisão em aberto, as perguntas e as ideias: "- o que se decide, quem decide". Antes de pôr um item, conferir se o código, os dados ou a base já respondem. Tomada, sai daqui e vai às decisões travadas, com a data. -->
+<!-- A decisão em aberto, as perguntas e as ideias: "- o que se decide, quem decide". Antes de pôr um item, conferir se o código, os dados ou a base já respondem. Tomada, sai daqui e vai às decisões travadas, com a data. Cada item diz se bloqueia (a entrega não fecha sem a resposta) ou não (dá para seguir e decidir depois). -->
 
 ## Requisitos
 
-<!-- O que a entrega precisa ter e respeitar: a regra, a base, o limite. Só o quê; o como fica para o plano da sessão. -->
+<!-- O que a entrega precisa ter e respeitar: a regra, a base, o limite. Só o quê; o como fica para o plano da sessão.
+     O teste do essencial: se cortarmos este requisito, a entrega ainda resolve o problema? Se resolve, ele não é essencial: vai marcado como desejável, ou sai. -->
 
 ## Pronto quando
 
-<!-- A lista que se confere para fechar, cada item verificável. Se a entrega contraria a base, a correção da base entra aqui. -->
+<!-- A lista que se confere para fechar, cada item verificável, sem palavra vaga ("rápido", "fácil"). Entra também o que não pode acontecer (o efeito proibido, o dado que não pode vazar), verificável como o resto; quando ajuda, em cenário "Dado / Quando / Então". Se a entrega contraria a base, a correção da base entra aqui. -->
 - [ ] 
 
 ## Fora de escopo
 
-<!-- O que não entra, com o porquê e, se houver, a issue que fica com ele. -->
+<!-- O que não entra, com o porquê e, se houver, a issue que fica com ele. O escopo que entra depois de a issue começar tira outro daqui, ou estende o prazo da milestone (knowledge/processo.md). -->
 
 ## Dependências
 
