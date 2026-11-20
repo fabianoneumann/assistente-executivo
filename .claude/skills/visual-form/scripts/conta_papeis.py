@@ -1,6 +1,8 @@
 """Conta os papéis tipográficos de conteúdo por tela nas peças da série (a medida de uma regra como "até 3 papéis
 tipográficos de conteúdo por tela, rótulo incluído; moldura fora"), para quem cuida da série decidir o teto antes de
-pôr a regra na rubrica de design. Só mede: não é conferência e não entra na exportação.
+pôr a regra na rubrica de design. Só mede: não é conferência e não entra na exportação. A rubrica hoje diz "até 4,
+com o rótulo e a fonte fora" (`--sem-fonte --teto 4`, o padrão do teto agora), e a conferência é o AVISO
+papeis_por_tela do conferir_telas.py (medidas_forma.papeis_por_tela).
 
 O papel de um elemento vem da classe, pela tabela CLASSE_PAPEL do medidas_forma.py (citação, título, destaque, nota e
 margem como nota, fila, link, apoio, fonte, corpo), com o mesmo filtro de visibilidade das conferências (fora do svg e do
@@ -8,7 +10,7 @@ adesivo simulado, visível, com texto). Opções: --rotulo conta também o rótu
 pede ("rótulo incluído"); --sem-fonte tira a .fonte, que o design system trata como metadado.
 
 Uso: python -X utf8 conta_papeis.py [pasta da série] [--rotulo] [--sem-fonte] [--teto N] [--json saida.json]
-Sai com a distribuição (quantas telas com 1, 2, 3... papéis) e as telas acima do teto (padrão 3).
+Sai com a distribuição (quantas telas com 1, 2, 3... papéis) e as telas acima do teto (padrão 4, o PAPEIS_TETO).
 """
 import argparse, json, sys
 from collections import Counter
@@ -63,7 +65,7 @@ def main():
     ap.add_argument("serie", nargs="?", default=str(SERIE))
     ap.add_argument("--rotulo", action="store_true", help="conta o rótulo (.rot, .leg) como papel")
     ap.add_argument("--sem-fonte", action="store_true", help="tira a .fonte (metadado no design system)")
-    ap.add_argument("--teto", type=int, default=3)
+    ap.add_argument("--teto", type=int, default=mf.PAPEIS_TETO)
     ap.add_argument("--json")
     a = ap.parse_args()
     telas = contar(Path(a.serie), a.rotulo, a.sem_fonte)

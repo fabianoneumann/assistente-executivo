@@ -33,7 +33,10 @@ nenhum barra o --upload. Cada limiar diz de onde saiu; os de partida se trocam p
 
 - cor_fora_dos_tokens (D3) e itens_por_grupo (D4), só nas telas da série: a cor computada (texto, fundo, borda, traço e
   preenchimento do svg) fora das cores das propriedades --* da página, com a imagem e a foto colada (.foto) fora; e a
-  lista (ul, ol) com mais de quatro itens, fora a lista que o design system libera (a classe .pendentes).
+  lista (ul, ol) com mais de quatro itens, fora as listas que o design system libera (a lista de pendências,
+  .pendentes, e a linha do tempo, .linha-tempo).
+- papeis_por_tela, só nas telas da série: mais de 4 papéis tipográficos de conteúdo na tela (PAPEIS_TETO), pela classe
+  (CLASSE_PAPEL), com o rótulo (.rot, .leg, a anotação de diagrama), a fonte (.fonte, metadado) e a moldura fora.
 
 Fica de fora, com o motivo: tela_sem_dominante, porque nenhum limiar de altura absoluta separou a tela fraca das boas
 (a falta era o traço fino e o tamanho relativo à tela-par, que a I2 lê).
@@ -157,7 +160,8 @@ MEDIR_FORMA = r"""(idx) => {
   if (tipo) for (const el of sl.querySelectorAll(PAPEL.map(x => '.' + x[0]).join(','))) {
     if (fora(el) || !vis(el) || !el.textContent.trim()) continue;
     const par = PAPEL.find(x => el.classList.contains(x[0])); const cs = getComputedStyle(el);
-    papeis.push({papel: par[1], classe: par[0], tamanho: parseFloat(cs.fontSize), entrelinha: parseFloat(cs.lineHeight) || null,
+    // a moldura não conta na contagem de papéis (rubrica de design; o mesmo filtro do conta_papeis.py)
+    papeis.push({papel: par[1], classe: par[0], moldura: !!el.closest('.moldura,.pagina,.arroba'), tamanho: parseFloat(cs.fontSize), entrelinha: parseFloat(cs.lineHeight) || null,
                  peso: cs.fontWeight === 'bold' ? 700 : parseInt(cs.fontWeight) || 400, texto: el.textContent.replace(/\s+/g, ' ').trim().slice(0, 40)});
   }
   // negrito: cada .corpo sem li dentro e cada li
@@ -333,8 +337,26 @@ def papel_fora(papeis, tipo, tela, tabela):
 
 # ---- dois testes [código] da rubrica de design (D3 e D4), os dois AVISO provisório ----
 # a cor fora dos tokens e os itens por grupo
-ITENS_TETO = 4               # D4: "até quatro itens por grupo, salvo o que o design-system.md libera (a classe .pendentes)"
+ITENS_TETO = 4               # D4: "até quatro itens por grupo, salvo o que o design-system.md libera (a lista
+                             # de pendências e a linha do tempo)"
+LISTAS_LIBERADAS = ".pendentes,.linha-tempo"   # as listas que o design system da série deixa passar de quatro itens
 CORES_MAX_DETALHE = 5
+
+# "Papéis tipográficos de conteúdo por tela: até 4; rótulo, fonte e moldura fora" (rubrica de design, "Medidas").
+# Com "até 3, rótulo incluído", a maior parte das telas de uma série passava do teto (título, corpo, destaque e nota
+# são o padrão do design system); o conta_papeis.py mede a distribuição numa série.
+PAPEIS_TETO = 4
+PAPEIS_FORA_DA_CONTA = ("fonte",)   # o rótulo (.rot, .leg) nem entra na CLASSE_PAPEL; a moldura sai pelo filtro
+
+
+def papeis_por_tela(papeis, tela):
+    """O AVISO papeis_por_tela de uma tela da série, sobre os papéis do MEDIR_FORMA (provisório; não barra o --upload)."""
+    conta = sorted({p["papel"] for p in papeis if not p.get("moldura") and p["papel"] not in PAPEIS_FORA_DA_CONTA})
+    if len(conta) <= PAPEIS_TETO:
+        return []
+    return [{"nivel": "AVISO", "conferencia": "papeis_por_tela", "tela": tela, "texto": ", ".join(conta),
+             "detalhe": f"{len(conta)} papéis tipográficos de conteúdo na tela, acima de {PAPEIS_TETO} (rubrica de design, "
+                        "\"Medidas\"; o rótulo, a fonte e a moldura ficam fora); provisório, a calibrar com o uso"}]
 
 MEDIR_LOTE5 = r"""(idx) => {
   const sl = document.querySelectorAll('.slide')[idx];
@@ -384,15 +406,16 @@ MEDIR_LOTE5 = r"""(idx) => {
       if (parseFloat(cs['border' + lado + 'Width']) > 0 && cs['border' + lado + 'Style'] !== 'none') anota(cs['border' + lado + 'Color'], e, 'borda');
   }
   probe.remove();
-  // as listas: os itens de cada ul ou ol fora do svg; a lista de pendências (.pendentes) o design system libera
+  // as listas: os itens de cada ul ou ol fora do svg; a lista de pendências (.pendentes) e a linha do tempo
+  // (.linha-tempo) o design system libera
   const listas = [];
   for (const l of sl.querySelectorAll('ul,ol')) {
-    if (fora(l) || l.closest('svg') || !vis(l) || l.closest('.pendentes')) continue;
+    if (fora(l) || l.closest('svg') || !vis(l) || l.closest('__LIBERADAS__')) continue;
     const itens = [...l.children].filter(c => c.tagName === 'LI' && vis(c)).length;
     listas.push({itens, texto: l.textContent.replace(/\s+/g, ' ').trim().slice(0, 40)});
   }
   return {cores: Object.values(cores), tokens: tokens.size, listas};
-}"""
+}""".replace("__LIBERADAS__", LISTAS_LIBERADAS)
 
 
 def lote5(l5, tela):
@@ -410,7 +433,7 @@ def lote5(l5, tela):
         if li["itens"] > ITENS_TETO:
             out.append({"nivel": "AVISO", "conferencia": "itens_por_grupo", "tela": tela, "texto": li["texto"],
                         "detalhe": f"lista com {li['itens']} itens, acima de {ITENS_TETO} por grupo (D4, rubrica de design; "
-                                   "a lista que o design system libera, .pendentes, fica de fora); provisório, a calibrar com o uso"})
+                                   "as listas que o design system libera, .pendentes e .linha-tempo, ficam de fora); provisório, a calibrar com o uso"})
     return out
 
 

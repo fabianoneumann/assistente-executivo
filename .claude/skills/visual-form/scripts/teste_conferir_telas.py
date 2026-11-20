@@ -253,7 +253,19 @@ with tempfile.TemporaryDirectory() as tmp:
           (' class="tipo-a"', '<ul class="corpo" style="position:absolute;left:126px;top:300px;margin:0"><li>um</li><li>dois</li>'
                               '<li>três</li><li>quatro</li></ul>'),                                                                  # 6
           (' class="tipo-a"', '<figure class="foto" style="position:absolute;left:300px;top:500px;width:200px;height:200px;margin:0;'
-                              'background:#fdfdf0;border:4px solid #c0c0a0"></figure><p class="corpo" style="top:300px">Foto colada.</p>')]  # 7
+                              'background:#fdfdf0;border:4px solid #c0c0a0"></figure><p class="corpo" style="top:300px">Foto colada.</p>'),  # 7
+          # a linha do tempo (.linha-tempo, que o design system libera) com seis marcos não avisa
+          (' class="tipo-a"', '<ul class="bloco corpo linha-tempo" style="position:absolute;left:126px;top:300px;margin:0"><li>1956</li>'
+                              '<li>1966</li><li>1976</li><li>1986</li><li>1996</li><li>2006</li></ul>'),                              # 8
+          # o teto de papéis por tela: cinco papéis de conteúdo avisam
+          (' class="tipo-a"', '<h2 class="titulo" style="top:100px">Título</h2><p class="corpo" style="top:300px">Corpo.</p>'
+                              '<p class="destaque" style="top:400px">Destaque.</p><p class="nota" style="top:500px">Nota.</p>'
+                              '<p class="apoio" style="top:600px">Apoio.</p>'),                                                     # 9
+          # quatro papéis de conteúdo, mais o rótulo, a fonte e um papel na moldura, não avisam
+          (' class="tipo-a"', '<h2 class="titulo" style="top:100px">Título</h2><p class="corpo" style="top:300px">Corpo.</p>'
+                              '<p class="destaque" style="top:400px">Destaque.</p><p class="nota" style="top:500px">Nota.</p>'
+                              '<p class="rot" style="top:600px">Rótulo.</p><p class="fonte" style="top:700px">Fonte: alguém, 2020.</p>'
+                              '<div class="moldura"><p class="apoio" style="top:1250px">Série</p></div>')]                        # 10
     html5 = pagina(L5, css=TOK).replace('<section class="slide active" class="tipo-a"', '<section class="slide tipo-a active"')                                .replace('<section class="slide" class="tipo-a"', '<section class="slide tipo-a"')
     a = conferir(tmp, "lote5", html5)
     cor = lambda t: tem(a, "cor_fora_dos_tokens", t, "AVISO")
@@ -263,7 +275,13 @@ with tempfile.TemporaryDirectory() as tmp:
     caso("itens_por_grupo: cinco itens avisam; quatro não; a lista de pendências fica de fora",
          tem(a, "itens_por_grupo", 4, "AVISO") and not tem(a, "itens_por_grupo", 5, "AVISO") and not tem(a, "itens_por_grupo", 6, "AVISO"),
          [x for x in a if x["conferencia"] == "itens_por_grupo"])
-    caso("D3 e D4: nenhum ERRO novo", not any(x["nivel"] == "ERRO" and x["conferencia"] in ("cor_fora_dos_tokens", "itens_por_grupo") for x in a))
+    caso("itens_por_grupo: a linha do tempo com seis marcos não avisa (e a lista comum de cinco, tela 4, sim)",
+         not tem(a, "itens_por_grupo", 8, "AVISO") and tem(a, "itens_por_grupo", 4, "AVISO"),
+         [x for x in a if x["conferencia"] == "itens_por_grupo"])
+    caso("papeis_por_tela: cinco papéis avisam; quatro com rótulo, fonte e moldura não; as telas de dois papéis não",
+         tem(a, "papeis_por_tela", 9, "AVISO") and not tem(a, "papeis_por_tela", 10, "AVISO") and not tem(a, "papeis_por_tela", 1, "AVISO"),
+         [x for x in a if x["conferencia"] == "papeis_por_tela"])
+    caso("D3, D4 e papéis: nenhum ERRO novo", not any(x["nivel"] == "ERRO" and x["conferencia"] in ("cor_fora_dos_tokens", "itens_por_grupo", "papeis_por_tela") for x in a))
 
     # a peça limpa: nenhum ERRO e nenhum dos AVISOs novos
     LIMPA = [("", '<h2 class="titulo" style="top:100px">Um título</h2><p class="bloco corpo" style="top:300px">Um parágrafo de corpo.</p>')] * 4

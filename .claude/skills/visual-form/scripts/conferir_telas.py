@@ -76,7 +76,7 @@ está em ../references/conferencias.md. Conferências:
 - video (ERRO): a tela com data-video sem window.quadro(t, idx), ou com a duração fora de 3 a 60 s.
 
 Os AVISOs de forma estão em medidas_forma.py (papel fora da tabela, imagem já publicada, texto fora do travado, corpo
-sem negrito, área do acento, ponta da seta, legenda); a linha de NOTA das isenções usadas na peça fecha o relatório.
+sem negrito, área do acento, ponta da seta, legenda, cor fora dos tokens, itens por grupo e papéis por tela); a linha de NOTA das isenções usadas na peça fecha o relatório.
 
 As regras da casa (os limites que o código aplica, que o design system de cada série repete):
 - alinhamento_titulo (ERRO, só no carrossel): o primeiro título de cada tela (h1, h2 ou .titulo em bloco), fora a
@@ -954,6 +954,8 @@ def conferir(pasta, html, legenda=None, janela=(1280, 1560), publicada=False, ex
             if fm["tipo"] and not stories:
                 if tabela:
                     achados.extend(mf.papel_fora(fm["papeis"], fm["tipo"], n, tabela))
+                # o teto de papéis por tela (rubrica de design, "Medidas"): até 4, sem rótulo, fonte e moldura
+                achados.extend(mf.papeis_por_tela(fm["papeis"], n))
                 # a cor fora dos tokens (D3) e os itens por grupo (D4)
                 achados.extend(mf.lote5(page.evaluate(mf.MEDIR_LOTE5, i), n))
                 page.evaluate(PAPEL_FORA, i)

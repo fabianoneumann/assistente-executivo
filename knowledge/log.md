@@ -27,3 +27,7 @@ As fichas de obra protegida passaram pelo `conta_citacoes.py` novo da `research`
 ## [2026-11-19] ingest | o método de Stories na base e a sequência de consciência e de venda
 
 Entram `content-design/metodos-de-mercado-stories.md` e `content-design/stories-10x-dispositivos.md`, do material que o autor do método publica de graça (a página e o vídeo de vendas, podcasts e aulas abertas), em palavras próprias e com a fonte em citação simples, porque as fichas delas passam de três citações; `content-design/stories-o-que-evitar.md` volta inteiro, com as ligações ao método. Três fichas que cabem na régua (até três citações, sem integral) entram e voltam a ser ligação nas sínteses: a matéria sobre o Mosseri e o compartilhamento do próprio post nos Stories, o post de acessibilidade do Instagram e a página de acessibilidade em Stories da Universidade do Alabama. A rubrica de Stories passa à v0.3, com a sequência de consciência e de venda a testar.
+
+## [2026-11-19] lint | o Claude Design dentro do Claude
+
+O estado do Claude Design revisto nas páginas oficiais: dentro das conversas, do Claude Code e da aba Artifacts desde 16/09/2026, fora do beta em todos os planos desde 08/10/2026, e o site separado `claude.ai/design` fecha em 14/12/2026. A mudança está em `content-design/claude-design-vs-nano-banana.md` e na linha dela no índice da área.

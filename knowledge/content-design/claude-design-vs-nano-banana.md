@@ -3,10 +3,11 @@
 Mapa de decisão: dado um ativo, gerar no **Claude Design** (artefato em código/layout on-brand) ou no **Nano Banana** (imagem raster)? No fluxo deste ambiente, **o Claude Code gera o prompt** (primeiro do design system, depois de cada artefato) e o Nano Banana entra como **complemento de imagem**. Síntese analítica, ancorada em docs oficiais.
 
 > Fontes (oficiais, só citação): *Introducing Claude Design by Anthropic Labs*, de Anthropic, https://www.anthropic.com/news/claude-design-anthropic-labs; *Claude Design now stays on brand for daily work*, de Anthropic (claude.com/blog), https://claude.com/blog/claude-design-stays-on-brand-for-daily-work; *Nano Banana Pro: Gemini 3 Pro Image model from Google DeepMind*, de Google (blog.google), https://blog.google/innovation-and-ai/products/nano-banana-pro/; *Gemini 3 Pro Image (Nano Banana Pro) — model page*, de Google DeepMind, https://deepmind.google/models/gemini-image/pro/. Técnica de prompt de imagem em [[nano-banana-imagens-prompt]].
+> O estado do Claude Design foi revisto em 2026-11-19 nas páginas oficiais da Anthropic (a central de ajuda, a página do produto e as notas de versão); o resto da página segue com o estado de 2026-08-04.
 
 ## A distinção de fundo
 São **camadas diferentes**, não concorrentes:
-- **Claude Design** (Opus 4.7, research preview) = camada de **layout/interface/documento em código** (HTML/SVG/interativo), **on-brand via design system**: lê codebase/repo/arquivos de design, **constrói com seus componentes e valida a saída contra o design system antes do preview**. Exporta PPTX/PDF/HTML/Canva. **Não gera imagem raster.**
+- **Claude Design** (lançado em 17/04/2026 com o Opus 4.7, modelo que as páginas de hoje não confirmam; dentro das conversas do Claude, no Claude Code e na aba Artifacts desde 16/09/2026, e fora do beta, em todos os planos, desde 08/10/2026; o site separado `claude.ai/design` fecha em 14/12/2026) = camada de **layout/interface/documento em código** (HTML/SVG/interativo), **on-brand via design system**: lê codebase/repo/arquivos de design, **constrói com seus componentes e valida a saída contra o design system antes do preview**. Exporta PPTX/PDF/HTML/Canva. **Não gera imagem raster.**
 - **Nano Banana Pro** (Gemini 3 Pro Image) = camada de **imagem raster rica** (1K–4K), consistência por até 14 referências, e — oficialmente posicionado para — **infográfico/diagrama/mapa com fatos corretos** (grounding) + **melhor renderização de texto na imagem**.
 
 Quase não se sobrepõem — **exceto no infográfico**.

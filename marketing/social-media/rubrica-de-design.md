@@ -56,7 +56,7 @@ Sem `design-system.md`, a peça não passa do nível 1 em D3. Na calibração, c
 | Contraste de texto grande (52 px ou mais em negrito, ou 66 px ou mais regular, numa tela de 1080: o "texto grande" do WCAG convertido para a escala do celular) | pelo menos 3:1 |
 | Margem lateral numa tela de 1080 | pelo menos 80 px |
 | Corpo de texto (papéis corpo e destaque) | pelo menos 30 px (o ideal fica em 34 a 42 px; a nota em letra manuscrita, pelo menos 38 px); rótulo pelo menos 28 px; moldura fora (pela conta de 1080 px para a tela de um celular comum, cerca de 2,6 px por ponto; `knowledge/content-design/texto-que-cabe-e-legibilidade.md`) |
-| Papéis tipográficos de conteúdo por tela | até 3, rótulo incluído; moldura fora |
+| Papéis tipográficos de conteúdo por tela | até 4; o rótulo (anotação de diagrama), a fonte (metadado) e a moldura ficam fora (o AVISO `papeis_por_tela` do `conferir_telas.py`) |
 | Cores com função | as do sistema, cada uma com uma só função; a cor computada é igual à declarada (cor anulada pelo CSS é sempre defeito) |
 | Alinhamento do título entre telas irmãs | o código acusa acima de 2 px (ruído de render); 12 px já é defeito; acima de 100 px deixa de ser erro e vira escolha, que precisa estar declarada |
 | Contraste parcial de texto sobre traço, carimbo ou desenho | p10 (os 10% piores pixels sob o texto) no mínimo do papel do texto (4,5:1 corrido, 3:1 grande); diferença menor que 0,1 é aviso |
