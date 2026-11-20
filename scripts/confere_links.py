@@ -33,6 +33,16 @@ FORA_DO_GIT = {".claude/settings.local.json"}  # existe só na máquina de cada 
 PROPOSTO = re.compile(r"(?i)quando houver|a criar|propost|propõe|precisa ter|não existe|ainda não|segunda versão|se houver|crie|criar")
 
 
+KIT = RAIZ / ".claude/skills/project-kit/assets"
+
+
+def do_projeto_do_kit(alvo: str) -> bool:
+    """O caminho de um arquivo que o project-kit monta no projeto novo (o `knowledge/imagem-base.md` do --docker):
+    existe nos modelos do kit, com o ponto do nome guardado como `dot-`, e não neste repositório."""
+    modelo = alvo.replace(".claude/", "dot-claude/").replace(".github/", "dot-github/")
+    return KIT.is_dir() and any(KIT.glob("**/" + modelo))
+
+
 def main(argv: list[str]) -> int:
     bases = [RAIZ / a for a in argv] or [RAIZ]
     nomes_base = {p.stem for p in (RAIZ / "knowledge").rglob("*.md")}
@@ -67,7 +77,7 @@ def main(argv: list[str]) -> int:
                     if (alvo in FORA_DO_GIT or (skill and (RAIZ / skill.group(1) / alvo).exists())
                             or (p.parent / alvo).exists() or (RAIZ / "knowledge" / alvo).exists()):
                         continue
-                    if not (RAIZ / alvo).exists():
+                    if not (RAIZ / alvo).exists() and not do_projeto_do_kit(alvo):
                         quebrados.append((rel, n, "caminho", alvo))
     # os agentes têm duas cópias: .claude/agents/ (o clone) e agents/ (o plugin); as duas têm de ser iguais
     for ag in sorted((RAIZ / ".claude/agents").glob("*.md")):

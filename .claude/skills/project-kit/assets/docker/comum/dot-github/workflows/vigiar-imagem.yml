@@ -1,0 +1,50 @@
+name: Vigiar imagem
+
+# Vigia a imagem base da imagem que se instala (knowledge/imagem-base.md). O Dependabot não cobre esta camada: no
+# contêiner, ele só propõe versão, sem alerta de segurança. A lógica está em .github/scripts/vigiar_imagem.py (roda
+# também à mão, com --previa); aqui só o ambiente:
+# - toda segunda de manhã, e por disparo manual;
+# - o Trivy é o binário de uma versão fixa, com o sha256 escrito aqui, e não uma ação de terceiro: o checksum que vem
+#   no próprio release não protegeria de um release adulterado. Subir a versão é trocar as duas linhas, com o hash
+#   conferido contra o checksums.txt do release e contra o tarball baixado, numa versão com algumas semanas;
+# - quem recebe a issue: o RESPONSAVEL, se houver; sem ele, quem acompanha o repositório;
+# - só leitura em tudo, menos issues: o job não publica imagem nem mexe no repositório.
+on:
+  schedule:
+    # 12h UTC = 9h em Brasília.
+    - cron: "0 12 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+  issues: write
+
+concurrency:
+  group: vigiar-imagem
+
+jobs:
+  vigiar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TRIVY_VERSAO: 0.75.0
+      TRIVY_SHA256: c6e65abddb348e25f10549df887045629cf28cc72453cd1c63acb717316b3f3f
+      RESPONSAVEL: "{{RESPONSAVEL}}"
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: O Trivy, na versão fixa e conferido
+        shell: bash
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/trivy.tar.gz" \
+            "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSAO}/trivy_${TRIVY_VERSAO}_Linux-64bit.tar.gz"
+          echo "$TRIVY_SHA256  $RUNNER_TEMP/trivy.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: O login no ghcr.io
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Varrer e avisar
+        run: python3 .github/scripts/vigiar_imagem.py

@@ -18,7 +18,9 @@ O processo vem pronto, a tecnologia se escolhe. O processo do CRM foi inventaria
 | O Dependabot e as notas | só segurança, um PR por pacote; as notas em duas seções | a manutenção do CRM (D6) |
 | As travas | o hook do agente (`fluxo.py`), os hooks do git (`hooks.py`) e o `deny`, com os testes em tabela | as travas em camadas do CRM (D1) |
 | O onboarding | `onboarding/index.html`, com os diagramas em SVG e a busca "o que pegar agora" | o onboarding do CRM (q8b, q9b, q4b) |
-| O esqueleto da stack | o `/health`, um teste e o smoke que sobe o servidor de verdade, para o CI nascer verde | novo: o CRM nasceu antes do processo |
+| O esqueleto da stack | o `/health` (com a versão e o commit), um teste e o smoke que sobe o servidor de verdade, para o CI nascer verde | novo: o CRM nasceu antes do processo |
+| A vigia e o método | "como se sabe que parou" na discussão e na arquitetura; o ADR vivo e o "O que ficou sem prova"; o spike; as regras de teste; o `concurrency` do CI; as armadilhas do Dependabot | a segunda leitura do processo do CRM |
+| A imagem, opcional (`--docker`) | o `Dockerfile` da stack, o build no CI, a publicação imutável na tag e o vigia semanal da imagem base, com `knowledge/imagem-base.md` | o padrão de imagem do CRM, com uma imagem só e o vigia em Python |
 
 ## As travas: uma versão só, em Python
 
@@ -41,6 +43,7 @@ O CRM tem as travas em TypeScript (o hook do fluxo tem cerca de mil linhas, e o 
 - O `deny` lê o comando como texto: as flags curtas depois de outra (`git commit -m x -n`) escapam, e o `deny` do `.env` não barra um `grep -r` na pasta.
 - O log não confere a ordem das datas, só que a entrada nova vai no fim (no `pre-commit`, fora do merge): com o `merge=union`, duas branches juntam as entradas na ordem do merge.
 - Sem Python 3.9 ou mais novo, as travas avisam e deixam passar; o CI confere de novo.
+- O `Dockerfile`, o job `imagem` e o vigia não rodaram contra um daemon nem um registro de verdade na entrega: o build se prova no CI do primeiro projeto com `--docker`; a lógica do aviso do vigia tem testes sem rede.
 - A regra de tag pede o GitHub Pro em repositório privado de conta pessoal: num teste de 18/11, a criação devolveu 403 ("Upgrade to GitHub Pro or make this repository public"). Por isso, na conta pessoal com o repositório privado, o kit nem tenta: a tag fica protegida pela regra escrita no `CLAUDE.md` do projeto. No repositório público ou na organização, o `github.py` tenta criá-la e, se o plano não a oferece, avisa e segue.
 
 ## O que vem depois

@@ -1,0 +1,74 @@
+name: Publicar imagem
+
+# Publica a imagem de uma versão no registro do GitHub (ghcr.io), para instalar e voltar à anterior baixando um
+# artefato guardado, e não reconstruindo um commit antigo (knowledge/imagem-base.md).
+# - Gatilho: o push da tag de versão (vX.Y.Z), e à mão, com a tag como parâmetro.
+# - A tag chega ao shell por variável de ambiente e é conferida inteira antes de tudo; só se publica tag anotada e
+#   que esteja no {{BASE}}.
+# - Imutável: a imagem que já existe no registro não se reconstrói nem se sobrescreve. "Existe?" falha fechado: só
+#   o "manifest unknown" conta como ausente; outro erro para o workflow.
+# - Só o CLI do docker, sem ação de terceiros. O label org.opencontainers.image.source liga o pacote a este
+#   repositório: ele nasce privado e herda o acesso do repositório.
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "A tag da versão a publicar (vX.Y.Z)"
+        required: true
+
+permissions:
+  contents: read
+  packages: write
+
+# Um grupo por tag: com um grupo só, a terceira tag empurrada em sequência cancelaria a segunda, ainda na fila, e a
+# versão dela ficaria sem imagem.
+concurrency:
+  group: publicar-imagem-${{ github.event.inputs.tag || github.ref_name }}
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - name: A tag tem a forma de versão
+        shell: bash
+        run: |
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::o parâmetro não é uma tag de versão (vX.Y.Z)"
+            exit 1
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: A tag é anotada e está no {{BASE}}
+        shell: bash
+        run: |
+          git fetch --force origin "refs/tags/$TAG:refs/tags/$TAG"
+          [ "$(git cat-file -t "refs/tags/$TAG")" = tag ] || { echo "::error::a $TAG não é uma tag anotada"; exit 1; }
+          git merge-base --is-ancestor "refs/tags/$TAG^{commit}" origin/{{BASE}} \
+            || { echo "::error::a $TAG não está no {{BASE}}"; exit 1; }
+          git checkout -q "refs/tags/$TAG"
+      - name: O login no ghcr.io
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: printf '%s' "$TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+      - name: Construir e publicar, se ainda não existe
+        shell: bash
+        run: |
+          IMAGEM="ghcr.io/${GITHUB_REPOSITORY,,}:$TAG"
+          if saida="$(docker manifest inspect "$IMAGEM" 2>&1)"; then
+            echo "::notice::a $IMAGEM já está publicada; não se reconstrói"
+            exit 0
+          elif ! grep -qi "manifest unknown" <<<"$saida"; then
+            echo "::error::não deu para saber se a $IMAGEM existe: $saida"
+            exit 1
+          fi
+          docker build --pull \
+            --build-arg VERSAO="$TAG" --build-arg COMMIT="$(git rev-parse --short HEAD)" \
+            --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
+            -t "$IMAGEM" .
+          docker push "$IMAGEM"

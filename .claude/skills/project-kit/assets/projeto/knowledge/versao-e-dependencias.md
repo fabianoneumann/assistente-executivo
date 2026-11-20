@@ -21,6 +21,13 @@ Como se corta uma versão e como se trata a atualização de dependência. **Ler
 
 Um passo precisa estar no roteiro que se executa: o passo que mora só na memória de alguém para de acontecer de uma versão à outra.
 
+## Os testes
+
+- **Testar o modo de falha, e não a porcentagem.** A cobertura alta vai às superfícies de risco, com o teste negativo explícito (afirma o que não pode acontecer); o buraco clássico é o caminho feliz verde com a autorização quebrada.
+- **A verificação de um artefato transformado roda antes da transformação.** Depois de empacotar, ofuscar ou compilar, a conferência pode dizer "limpo" sobre o que já não consegue ler.
+- **O teste negativo entra pela mesma porta que o defeito real.** O teste que planta o problema direto no resultado prova uma trava que, pelo caminho de verdade, pode não funcionar; e confere-se que ele falha sem o conserto.
+- **A verificação que mora no build precisa do build no CI,** senão é decoração.
+
 ## As dependências: o Dependabot só de segurança
 
 - **Só as atualizações de segurança.** O `.github/dependabot.yml` tem `open-pull-requests-limit: 0`, que desliga as de versão; as de segurança não contam nesse limite. A opção "Dependabot security updates" do repositório precisa estar ligada (o kit a liga ao criar o repositório).
@@ -28,4 +35,9 @@ Um passo precisa estar no roteiro que se executa: o passo que mora só na memór
 - **O PR do Dependabot é uma trilha à parte:** nasce de um alerta, sem issue e sem modelo, e passa pelo mesmo CI.
 - **A dependência compilada se prova rodando.** Na dependência que vem pronta para executar (uma imagem de contêiner, um binário de terceiro), o alerta de segurança só fecha com a versão nova, e a troca se prova rodando o que ela faz (o serviço sobe e responde, a ferramenta executa a tarefa dela), e não só com o build verde.
 - **A triagem é pelo alcance,** e não pelo `dev` ou `runtime` do arquivo de dependências. A pergunta é "isto chega a quem usa?": o pacote que só roda na máquina de quem desenvolve ou no CI não é a mesma urgência que o que vai no artefato instalado. O resultado da triagem vai no corpo do PR, numa frase.
+- **As armadilhas do PR do Dependabot:** o PR pode corrigir só parte das cópias do pacote no arquivo travado (conferir todas antes do merge); o rebase dele regera o PR, e o commit à mão em cima se perde; o alerta dispensado não reabre sozinho e o motivo não se edita depois (a triagem seguinte começa pelos dispensados "sem correção ainda").
+- **A imagem base, se o projeto publica imagem.** O Dependabot não a vigia: no contêiner, ele só propõe versão, sem alerta de segurança. O projeto que publica imagem ganha uma vigilância à parte, com o próprio workflow semanal.
+<!-- [kit:docker=sim] -->
+  Aqui ela existe: `imagem-base.md`. O push da tag (o passo 4 do roteiro acima) também publica a imagem, pelo `publicar-imagem.yml`, e a versão só está pronta com ela no registro.
+<!-- [kit:fim] -->
 - **As ações do CI** são só as oficiais (`actions/*`), fixadas pelo hash do commit, com a versão no comentário; o Dependabot de segurança avisa quando uma delas tem alerta. Ação de terceiros não entra: o passo que precisaria dela vai como comando, que se lê no próprio `ci.yml`.

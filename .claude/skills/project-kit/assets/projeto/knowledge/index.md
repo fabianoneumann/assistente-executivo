@@ -11,5 +11,8 @@ Abrir só o que o "ler quando" casa com a tarefa. A regra de operação está no
 | `metadados.md` | Ao abrir uma issue e preencher a lateral, ou para achar o que pegar agora |
 | `travas.md` | Quando uma trava recusar um comando, ou ao mudar o fluxo, o CI ou um hook |
 | `versao-e-dependencias.md` | Ao cortar uma versão, ou quando chegar um PR do Dependabot |
+<!-- [kit:docker=sim] -->
+| `imagem-base.md` | Ao mexer no `Dockerfile`, cortar uma versão, ou quando a vigilância abrir uma issue `[imagem-base]` |
+<!-- [kit:fim] -->
 | `decisions/` | Antes de decidir algo de arquitetura ou de ferramental; o `000-modelo.md` é o modelo do ADR |
 | `log.md` | Para saber o que aconteceu e quando (as últimas entradas, pelo fim) |

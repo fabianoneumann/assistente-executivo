@@ -43,6 +43,17 @@ Como um projeto de software novo nasce estruturado: a skill `project-kit`, o que
 
 **Motivo:** a regra 3 de [`organizacao-das-skills.md`](./organizacao-das-skills.md): o método separado do que é do projeto, para a skill ir a outro ambiente trocando um arquivo só. Quem leva a skill a uma organização troca a seção "O dono no GitHub" do `projeto.md` (o `--conta org` já existe no `montar.py`).
 
+**2026-11-19:** as propostas K1 a K7 de uma segunda leitura do processo do CRM entram no kit, e a K8 vira um modelo de Docker no kit, com o que o CRM tem. Entrou, nos modelos:
+- **K1:** a pergunta "quando ele parar, quem fica sabendo, por onde e em quanto tempo?" na discussão inicial, e a seção "Como se sabe que parou" na arquitetura (as três falhas silenciosas, a checagem de fora e o heartbeat, e as três regras da pilha, quando houver);
+- **K2:** o `/health` das duas stacks devolve a versão e o commit (`VERSAO` e `COMMIT`, null fora da imagem);
+- **K3:** a linha "O que ficou sem prova" no modelo de ADR, e o ADR vivo ("alterado pelo ADR N", "feito na #N") no README da base;
+- **K4:** a seção do spike no `processo.md`, com a pasta `spike/` nascendo no primeiro;
+- **K5 e K7:** as quatro regras de teste e as armadilhas do Dependabot no `versao-e-dependencias.md`;
+- **K6:** o `concurrency` do CI, que cancela o run superado só no PR, e o comentário de que o filtro por caminho não vai no gatilho do check obrigatório;
+- **K8:** a frase condicional no `versao-e-dependencias.md` (o projeto que publica imagem ganha a vigilância à parte) e o `--docker` do `montar.py`, que traz o `Dockerfile` das duas stacks (a base flutuante com `--pull`, o runtime sem o gerenciador de pacote, a procedência, sem root), o `.dockerignore`, o job `imagem` no CI (o build, o contêiner de pé e o `/health` conferido), a publicação imutável no ghcr.io no push da tag, o vigia semanal da imagem base (o runtime atrás de versão nova da linha e o Trivy fixado pelo hash, uma issue por imagem que só comenta quando muda) e a página `knowledge/imagem-base.md`. Sem `--docker`, nada disso nasce; na stack `outra`, o `--docker` recusa.
+
+O vigia do kit é em Python, com a biblioteca padrão e testes sem rede, e não em shell como o do CRM: é a regra das travas do kit (uma versão só, em Python), e deixa a lógica do aviso testável no CI do projeto. Diferente do CRM, ele vigia uma imagem só (a do serviço) e não traz a lista de quem avisar: quem recebe é o responsável, se houver, ou quem acompanha o repositório. No caminho, o esqueleto `node-ts` passou a sair formatado pelo Prettier dele (o `format:check` do CI recusava o `package.json` e o teste), e o `requirements.txt` de produção nasceu separado do de desenvolvimento na `python-fastapi`.
+
 ## Proposto, sem decisão: o teste às cegas dos diagramas
 
 Na q8, a observação foi que os diagramas do CRM poderiam ser ainda mais bem desenhados, e que talvez os do Codex saiam melhores. O roteiro, para decidir se roda:

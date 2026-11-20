@@ -7,9 +7,9 @@ requires-python = ">=3.12"
 [tool.ruff]
 line-length = 100
 target-version = "py312"
-# As travas do fluxo (.claude/, .githooks/) e o onboarding (onboarding/, com o esquema dos diagramas) vêm do kit, com as
-# conferências deles; o ruff cuida do código do sistema.
-extend-exclude = [".claude", ".githooks", "onboarding"]
+# As travas do fluxo (.claude/, .githooks/), o onboarding (onboarding/, com o esquema dos diagramas) e, no projeto com
+# imagem, o vigia dela (.github/scripts/) vêm do kit, com as conferências deles; o ruff cuida do código do sistema.
+extend-exclude = [".claude", ".githooks", ".github", "onboarding"]
 force-exclude = true
 
 [tool.ruff.lint]

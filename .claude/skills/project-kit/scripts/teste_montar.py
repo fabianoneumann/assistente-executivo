@@ -2,8 +2,9 @@
 
   python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"
 
-Monta as duas variantes de partida e a `outra` numa pasta temporária, confere com 0 ERRO, roda os testes das travas
-que vão junto com o projeto, e planta um erro de cada tipo para ver o `conferir.py` acusá-lo.
+Monta as duas variantes de partida e a `outra` numa pasta temporária, e as duas variantes de novo com a imagem
+(`--docker`), confere com 0 ERRO, roda os testes das travas e do vigia da imagem que vão junto com o projeto, e planta
+um erro de cada tipo para ver o `conferir.py` acusá-lo.
 """
 
 from __future__ import annotations
@@ -45,16 +46,20 @@ class Montar(unittest.TestCase):
         cls.comandos = cls.raiz / "comandos.json"
         cls.comandos.write_text(json.dumps(comandos), encoding="utf-8")
         cls.projetos = {}
-        for stack, conta in (("python-fastapi", "user"), ("node-ts", "org"), ("outra", "user")):
-            destino = cls.raiz / f"p-{stack}"
-            args = ["--destino", str(destino), "--nome", f"teste-{stack}", "--descricao", 'Um "teste" do kit.',
+        for chave, stack, conta in (("python-fastapi", "python-fastapi", "user"), ("node-ts", "node-ts", "org"),
+                                    ("outra", "outra", "user"), ("docker-python", "python-fastapi", "user"),
+                                    ("docker-node", "node-ts", "org")):
+            destino = cls.raiz / f"p-{chave}"
+            args = ["--destino", str(destino), "--nome", f"teste-{chave}", "--descricao", 'Um "teste" do kit.',
                     "--stack", stack, "--dono", "alguem", "--base", str(cls.base), "--conta", conta, "--data", "2026-11-17"]
-            if stack == "node-ts":
-                args += ["--responsavel", "pessoa"]  # o responsável é opcional: só um projeto o recebe
+            if chave in ("node-ts", "docker-node"):
+                args += ["--responsavel", "pessoa"]  # o responsável é opcional: só alguns projetos o recebem
             if stack == "outra":
                 args += ["--comandos", str(cls.comandos)]
-            assert montar.main(args) == 0, stack
-            cls.projetos[stack] = destino
+            if chave.startswith("docker-"):
+                args += ["--docker"]
+            assert montar.main(args) == 0, chave
+            cls.projetos[chave] = destino
 
     @classmethod
     def tearDownClass(cls):
@@ -67,7 +72,7 @@ class Montar(unittest.TestCase):
         self.assertTrue(all("assignees" not in u for u in sem["updates"]))
         self.assertTrue(all(u.get("assignees") == ["pessoa"] for u in com["updates"]))
 
-    def test_conferir_sai_sem_erro_nas_tres(self):
+    def test_conferir_sai_sem_erro_nas_cinco(self):
         for stack, pasta in self.projetos.items():
             with self.subTest(stack):
                 erros, _ = conferir.conferir(pasta)
@@ -93,6 +98,61 @@ class Montar(unittest.TestCase):
         self.assertTrue((py / "pyproject.toml").is_file() and (node / "package.json").is_file())
         self.assertFalse((py / "CLAUDE.md.modelo").exists())
         self.assertEqual(json.loads((node / "package.json").read_text(encoding="utf-8"))["description"], 'Um "teste" do kit.')
+
+    def test_a_imagem_so_nasce_com_o_docker(self):
+        import yaml
+        for chave in ("python-fastapi", "node-ts", "outra"):
+            with self.subTest(chave):
+                pasta = self.projetos[chave]
+                self.assertEqual([rel for rel in conferir.DOCKER if (pasta / rel).exists()], [])
+                ci = yaml.safe_load((pasta / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
+                self.assertEqual(list(ci["jobs"]), ["ci"])
+                self.assertNotIn("imagem-base.md", (pasta / "knowledge/index.md").read_text(encoding="utf-8"))
+                self.assertIn("ganha uma vigilância à parte", (pasta / "knowledge/versao-e-dependencias.md").read_text(encoding="utf-8"))
+        for chave, porta, runtime in (("docker-python", "8000", "python"), ("docker-node", "3000", "node")):
+            with self.subTest(chave):
+                pasta = self.projetos[chave]
+                self.assertEqual([rel for rel in conferir.DOCKER if not (pasta / rel).exists()], [])
+                ci = yaml.safe_load((pasta / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
+                self.assertEqual(list(ci["jobs"]), ["ci", "imagem"])
+                passos = " ".join(str(p.get("run", "")) for p in ci["jobs"]["imagem"]["steps"])
+                self.assertIn("docker build --pull", passos)
+                self.assertIn(f"127.0.0.1:{porta}/health", passos)
+                vigia = (pasta / ".github/scripts/vigiar_imagem.py").read_text(encoding="utf-8")
+                self.assertIn(f'RUNTIME = "{runtime}"', vigia)
+                self.assertEqual(vigia.count("RUNTIME = "), 1)
+                self.assertIn("imagem-base.md", (pasta / "knowledge/index.md").read_text(encoding="utf-8"))
+                self.assertIn("vigiar-imagem.yml", (pasta / "knowledge/imagem-base.md").read_text(encoding="utf-8"))
+        resp = yaml.safe_load((self.projetos["docker-node"] / ".github/workflows/vigiar-imagem.yml").read_text(encoding="utf-8"))
+        self.assertEqual(resp["jobs"]["vigiar"]["env"]["RESPONSAVEL"], "pessoa")
+        sem = yaml.safe_load((self.projetos["docker-python"] / ".github/workflows/vigiar-imagem.yml").read_text(encoding="utf-8"))
+        self.assertEqual(sem["jobs"]["vigiar"]["env"]["RESPONSAVEL"], "")
+        ignorar = (self.projetos["docker-python"] / ".dockerignore").read_text(encoding="utf-8")
+        self.assertIn(".env", ignorar)
+        self.assertNotIn("node_modules", ignorar)
+
+    def test_as_propostas_da_segunda_leitura_nos_modelos(self):
+        pasta = self.projetos["python-fastapi"]
+        import yaml
+        ci = yaml.safe_load((pasta / ".github/workflows/ci.yml").read_text(encoding="utf-8"))
+        self.assertEqual(ci["concurrency"]["cancel-in-progress"], "${{ github.event_name == 'pull_request' }}")
+        self.assertNotIn("paths", ci[True])  # o PyYAML lê o "on:" como True; filtro por caminho não vai no gatilho
+        texto = lambda rel: (pasta / rel).read_text(encoding="utf-8")  # noqa: E731
+        self.assertIn("O que ficou sem prova", texto("knowledge/decisions/000-modelo.md"))
+        self.assertIn("alterado pelo ADR N", texto("knowledge/README.md"))
+        self.assertIn("## O spike", texto("knowledge/processo.md"))
+        self.assertIn("## Os testes", texto("knowledge/versao-e-dependencias.md"))
+        self.assertIn("rebase", texto("knowledge/versao-e-dependencias.md"))
+        self.assertIn('"versao"', texto("app/main.py"))
+        self.assertIn("versao:", (self.projetos["node-ts"] / "src/servidor.ts").read_text(encoding="utf-8"))
+        self.assertIn("-r requirements.txt", texto("requirements-dev.txt"))
+
+    def test_o_vigia_passa_nos_testes_dentro_do_projeto(self):
+        for chave in ("docker-python", "docker-node"):
+            with self.subTest(chave):
+                r = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", ".github/scripts", "-p", "test_*.py"],
+                                   cwd=self.projetos[chave], capture_output=True, text=True, env={**os.environ, "PYTHONUTF8": "1"})
+                self.assertEqual(r.returncode, 0, r.stderr[-2000:])
 
     def test_comando_com_cerquilha_sobrevive_no_yaml(self):
         import yaml
@@ -124,14 +184,17 @@ class Montar(unittest.TestCase):
             ("outra sem comandos", ["--stack", "outra"], "--comandos"),
             ("nome ruim", ["--nome", "Meu Projeto"], "não serve"),
             ("base sem ADR", ["--base", str(self.raiz)], "decisions/001"),
+            ("docker na outra", ["--stack", "outra", "--comandos", str(self.comandos), "--docker", True], "--docker não tem modelo"),
         ]
         for nome, troca, trecho in casos:
             with self.subTest(nome):
                 args = {"--destino": str(self.raiz / f"novo-{nome.replace(' ', '-')}"), "--nome": "x", "--descricao": "d",
                         "--stack": "python-fastapi", "--dono": "a", "--base": str(self.base)}
                 args.update(dict(zip(troca[::2], troca[1::2])))
-                ns = montar.argparse.Namespace(**{k[2:].replace("-", "_"): v for k, v in args.items()},
-                                               conta="user", responsavel=None, comandos=None, data="2026-11-17", ramo="main", sem_git=True)
+                padrao = {"conta": "user", "responsavel": None, "comandos": None, "docker": False, "data": "2026-11-17",
+                          "ramo": "main", "sem_git": True}
+                padrao.update({k[2:].replace("-", "_"): v for k, v in args.items()})
+                ns = montar.argparse.Namespace(**padrao)
                 with self.assertRaises(montar.Falta) as ctx:
                     montar.montar(ns)
                 self.assertIn(trecho, str(ctx.exception))
@@ -149,15 +212,27 @@ class Montar(unittest.TestCase):
             ("sem union", ".gitattributes", lambda t: t.replace("merge=union", ""), "merge=union"),
             ("claude longo", "CLAUDE.md", lambda t: t + "linha\n" * 160, "acima de 150"),
             ("casca em crlf", ".githooks/pre-commit", lambda t: t.replace("\n", "\r\n"), "CRLF"),
+            ("trivy sem hash", ".github/workflows/vigiar-imagem.yml", lambda t: t.replace("TRIVY_SHA256: c6e6", "TRIVY_SHA256: c6e"), "TRIVY_SHA256"),
+            ("publicar sem hash", ".github/workflows/publicar-imagem.yml", lambda t: t.replace("actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1", "actions/checkout@v7"), "publicar-imagem.yml: a ação"),
+            ("ci sem build", ".github/workflows/ci.yml", lambda t: t.replace("docker build --pull", "docker build"), "docker build --pull"),
         ]
         for nome, rel, mudar, trecho in plantados:
             with self.subTest(nome):
                 copia = self.raiz / f"plantado-{nome.replace(' ', '-')}"
-                shutil.copytree(self.projetos["python-fastapi"], copia, ignore=shutil.ignore_patterns(".git"))
+                shutil.copytree(self.projetos["docker-python"], copia, ignore=shutil.ignore_patterns(".git"))
                 arq = copia / rel
                 arq.write_bytes(mudar(arq.read_bytes().decode("utf-8")).encode("utf-8"))
                 erros, _ = conferir.conferir(copia)
                 self.assertTrue(any(trecho in e for e in erros), f"{nome}: {erros}")
+
+    def test_conferir_acusa_a_imagem_pela_metade(self):
+        for rel in ("Dockerfile", ".github/workflows/vigiar-imagem.yml"):
+            with self.subTest(rel):
+                copia = self.raiz / f"metade-{Path(rel).name}"
+                shutil.copytree(self.projetos["docker-node"], copia, ignore=shutil.ignore_patterns(".git"))
+                (copia / rel).unlink()
+                erros, _ = conferir.conferir(copia)
+                self.assertTrue(any(f"falta {rel}" in e for e in erros), erros)
 
 
 if __name__ == "__main__":

@@ -5,12 +5,14 @@ Copia `assets/projeto/` (o `dot-x` vira `.x`, e o sufixo `.modelo` sai), põe po
 ADRs 001 e 002 em `decisions/`), troca os marcadores `{{X}}`, mantém só os blocos `[kit:chave=valor]...[kit:fim]`
 que casam, grava os diagramas do onboarding em `onboarding/diagramas/` (as travas em camadas, a prioridade e a sequência, cada
 um com o modelo de `assets/diagramas/` e os dados embutidos), grava tudo em LF, faz o `git init`, liga o
-`core.hooksPath` e prepara os arquivos (sem commitar).
+`core.hooksPath` e prepara os arquivos (sem commitar). Com `--docker`, o projeto ganha também a imagem (o `Dockerfile` da
+stack, o `.dockerignore`, o job `imagem` no CI, a publicação na tag e o vigia semanal da imagem base, com a página
+`knowledge/imagem-base.md`); sem ele, nada de Docker nasce.
 
 Uso:
   python -X utf8 montar.py --destino <pasta> --nome <nome> --descricao "<frase>" --stack python-fastapi|node-ts|outra
          --dono <usuário ou organização> --base <pasta> [--conta user|org] [--responsavel <usuário>]
-         [--comandos <arquivo.json>] [--data AAAA-MM-DD] [--ramo main] [--sem-git]
+         [--comandos <arquivo.json>] [--docker] [--data AAAA-MM-DD] [--ramo main] [--sem-git]
 
 Para `--stack outra`, o `--comandos` traz os mesmos campos de `assets/stacks.json` (references/stacks.md).
 Código 0 quando montou; 2 quando faltou ou sobrou algo (a mensagem diz o quê), sem deixar a pasta pela metade.
@@ -32,6 +34,7 @@ from pathlib import Path
 SKILL = Path(__file__).resolve().parents[1]
 MODELOS = SKILL / "assets" / "projeto"
 STACKS = SKILL / "assets" / "stacks"
+DOCKER = SKILL / "assets" / "docker"
 CAMPOS = ["STACK_DESCRICAO", "CMD_INSTALAR", "CMD_CI_INSTALAR", "CMD_FORMATAR", "CMD_FORMATAR_CHECK", "CMD_LINT",
           "CMD_TESTES", "CMD_SMOKE", "CMD_E2E", "FORMATADOR", "EXTENSOES", "ECOSSISTEMA"]
 EXECUTAVEIS = [".claude/hooks/fluxo.sh", ".githooks/pre-commit", ".githooks/pre-push"]
@@ -77,6 +80,7 @@ def valores_de(args, comandos: dict) -> dict[str, str]:
     v = {
         "NOME": args.nome, "DESCRICAO": args.descricao, "DONO": args.dono, "REPO": f"{args.dono}/{args.nome}",
         "ASSIGNEES": (f"    assignees:\n      - {args.responsavel}\n" if args.responsavel else ""), "DATA": args.data, "STACK": args.stack, "BASE": args.ramo,
+        "RESPONSAVEL": args.responsavel or "", "PORTA": str(comandos.get("PORTA", "")),
     }
     for campo in CAMPOS:
         if campo not in comandos:
@@ -147,16 +151,22 @@ def montar(args) -> Path:
         comandos = json.loads(Path(args.comandos).read_text(encoding="utf-8"))
     else:
         comandos = json.loads((SKILL / "assets" / "stacks.json").read_text(encoding="utf-8"))[args.stack]
+    if args.docker and not (DOCKER / args.stack).is_dir():
+        raise Falta(f"o --docker não tem modelo para a stack {args.stack}: monte sem ele e escreva o Dockerfile à mão, "
+                    "a partir dos modelos de assets/docker/ (references/stacks.md, \"A imagem\")")
     base = Path(args.base)
     conferir_base(base)
     valores = valores_de(args, comandos)
-    ctx = {"stack": args.stack, "conta": args.conta}
+    ctx = {"stack": args.stack, "conta": args.conta, "docker": "sim" if args.docker else "nao"}
     destino.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=destino.parent) as tmp:
         obra = Path(tmp) / "obra"
         copiar(MODELOS, obra)
         if (STACKS / args.stack).is_dir():
             copiar(STACKS / args.stack, obra)
+        if args.docker:
+            copiar(DOCKER / "comum", obra)
+            copiar(DOCKER / args.stack, obra)
         copiar(base, obra / "knowledge")
         diagramas(obra / "onboarding" / "diagramas")
         for arq in sorted(p for p in obra.rglob("*") if p.is_file()):
@@ -188,8 +198,9 @@ def main(argv=None) -> int:
     p.add_argument("--dono", required=True)
     p.add_argument("--base", required=True, help="a pasta com arquitetura.md, plano.md e decisions/001-*.md e 002-*.md")
     p.add_argument("--conta", choices=["user", "org"], default="user")
-    p.add_argument("--responsavel", help="opcional: o usuário do GitHub atribuído aos PRs do Dependabot (sem ele, o alerta chega a quem acompanha o repositório)")
+    p.add_argument("--responsavel", help="opcional: o usuário do GitHub atribuído aos PRs do Dependabot e, com --docker, às issues do vigia da imagem (sem ele, o aviso chega a quem acompanha o repositório)")
     p.add_argument("--comandos")
+    p.add_argument("--docker", action="store_true", help="o projeto publica imagem: o Dockerfile, o build no CI, a publicação na tag e o vigia da imagem base")
     p.add_argument("--data", default=dt.date.today().isoformat())
     p.add_argument("--ramo", default="main")
     p.add_argument("--sem-git", action="store_true")

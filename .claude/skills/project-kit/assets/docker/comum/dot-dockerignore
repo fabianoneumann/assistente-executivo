@@ -1,0 +1,25 @@
+# O que não vai à imagem: o git, a credencial, a base e as travas (que são do repositório, não do serviço).
+.git
+.github
+.claude
+.githooks
+knowledge
+onboarding
+.env
+.env.*
+!.env.example
+# [kit:stack=python-fastapi]
+__pycache__
+*.pyc
+.venv
+.pytest_cache
+.ruff_cache
+tests
+requirements-dev.txt
+# [kit:fim]
+# [kit:stack=node-ts]
+node_modules
+dist
+coverage
+test
+# [kit:fim]

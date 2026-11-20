@@ -7,6 +7,7 @@ A base guarda o **porquê** do projeto: o desenho, a arquitetura, o plano, as de
 - **Antes de uma tarefa,** ler o `index.md` e abrir só os arquivos cujo "ler quando" casa com ela.
 - **Ao aprender algo,** atualizar o arquivo certo, refletir no `index.md` se mudou o critério de leitura, e pôr uma entrada no fim do `log.md`.
 - **Decisão de arquitetura ou de ferramental** vira ADR em `decisions/<número>-<tema>.md`, copiado de `decisions/000-modelo.md`. Um número por decisão; a que substitui outra diz qual e o que sobrevive dela.
+- **O ADR é vivo.** Quando outro ADR muda parte dele, o de antes ganha no topo a linha "alterado pelo ADR N" (o que mudou, em uma frase), sem reescrever o resto; quando um ponto da implementação é entregue, ganha "feito na #N" ao lado. Quem lê o ADR sabe o que ainda vale e o que já existe sem abrir o histórico.
 - **A investigação que alimenta uma decisão** vai em `analysis/`, e a decisão fica no ADR ou no corpo da issue.
 
 ## As regras

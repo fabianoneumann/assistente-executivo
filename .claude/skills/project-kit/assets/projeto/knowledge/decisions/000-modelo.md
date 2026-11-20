@@ -23,4 +23,6 @@
 
 <Os casos que fogem à regra. Na supersessão, o que sobrevive desta decisão e o que caiu.>
 
+**O que ficou sem prova:** <o que a decisão assume e ninguém mediu ainda (o custo num servidor de verdade, o volume de produção), e o que mediria. "Nada" só quando tudo foi medido.>
+
 **Revê se:** <a condição que faria esta decisão mudar: um número, um evento, um prazo.>

@@ -18,7 +18,8 @@ Em blocos, no máximo cinco perguntas por vez, das que mudam o desenho para as q
 |---|---|---|
 | O resultado | O que o sistema faz, para quem, e o que muda para essa pessoa quando ele existe? | os arcos do plano e o que o primeiro marco entrega |
 | Quem usa | Quantas pessoas, de onde, com que frequência, e quem cuida dele depois? | a escala, o acesso, o onboarding e quem lê as notas da versão |
-| Onde roda | Na máquina de quem usa, num servidor do cliente, na nuvem de quem? Quem instala a versão? | o artefato da versão, a implantação e o que "chega a quem usa" na triagem de dependência |
+| Onde roda | Na máquina de quem usa, num servidor do cliente, na nuvem de quem? Quem instala a versão? | o artefato da versão, a implantação, se o projeto publica imagem (o `--docker` do `montar.py`) e o que "chega a quem usa" na triagem de dependência |
+| A vigia | Quando ele parar, ou uma rotina dele não rodar, quem fica sabendo, por onde e em quanto tempo? | a checagem de fora, o heartbeat das rotinas, o que o `/health` devolve e, se houver, a pilha de observabilidade (a seção "Como se sabe que parou" da arquitetura) |
 | O dado | Que dado ele guarda, de onde ele se recupera se sumir, e o que é pessoal? | o banco, o backup e o que não pode ir ao log nem ao repositório |
 | As integrações | Que sistemas de fora ele chama ou o chamam, e o que acontece quando um cai? | as fronteiras da arquitetura e os testes de contrato |
 | O relógio | Que datas de fora (cliente, lançamento) pesam sobre o projeto, e que escopo a equipe decide sozinha? | a primeira milestone e se há duas em paralelo |

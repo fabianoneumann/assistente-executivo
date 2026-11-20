@@ -6,6 +6,9 @@ name: CI
 # Só as ações oficiais (actions/*), fixadas pelo hash do commit, com a versão no comentário; o Dependabot de segurança
 # avisa quando uma delas tem alerta. Ação de terceiros não entra: o passo que precisaria dela vai como comando.
 # O teto é de 3 minutos: passou, o CI falha, e o passo lento se revê antes de subir o teto.
+# Filtro por caminho (paths) não vai no gatilho: este é o check obrigatório do PR, e o PR que não casa com o filtro
+# fica esperando um check que nunca roda, sem poder entrar. O passo que só vale para parte dos arquivos filtra dentro
+# do job (git diff contra a base), e o job termina verde.
 on:
   pull_request:
   push:
@@ -14,6 +17,12 @@ on:
 
 permissions:
   contents: read
+
+# No PR, o push novo cancela o run superado (ninguém lê o resultado de um commit que já mudou). No {{BASE}}, cada commit
+# roda até o fim: é o run que prova o que vai virar versão.
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   ci:
@@ -27,12 +36,18 @@ jobs:
         run: python3 .githooks/hooks.py log
       - name: Os diagramas do onboarding no esquema
         run: python3 onboarding/diagramas/esquema.py onboarding/diagramas/*.html
+      # [kit:docker=sim]
+      - name: O vigia da imagem base (os testes)
+        run: python3 -m unittest discover -s .github/scripts -p "test_*.py"
+      # [kit:fim]
       # [kit:stack=python-fastapi]
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: requirements-dev.txt
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
       # [kit:fim]
       # [kit:stack=node-ts]
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -50,3 +65,28 @@ jobs:
         run: {{CMD_SMOKE_JSON}}
       - name: Os testes
         run: {{CMD_TESTES_JSON}}
+  # [kit:docker=sim]
+
+  # A imagem: a verificação que mora no build precisa do build no CI. Constrói com --pull (sem ele, a imagem base sai
+  # do cache, velha), sobe o contêiner e confere que o /health responde e declara a procedência. Não publica nada:
+  # quem publica é o publicar-imagem.yml, na tag. Job à parte, com teto próprio, para o build não comer os 3 minutos.
+  imagem:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: O build
+        run: docker build --pull --build-arg VERSAO=ci --build-arg COMMIT="${GITHUB_SHA::7}" -t {{NOME}}:ci .
+      - name: A imagem sobe e responde
+        shell: bash
+        run: |
+          docker run -d --name app -p 127.0.0.1:{{PORTA}}:{{PORTA}} {{NOME}}:ci
+          for i in $(seq 1 30); do
+            corpo="$(curl -fsS http://127.0.0.1:{{PORTA}}/health)" && break
+            sleep 1
+          done
+          echo "$corpo"
+          esperado='{"status": "ok", "versao": "ci", "commit": "'"${GITHUB_SHA::7}"'"}'
+          python3 -c 'import json,sys; c=json.loads(sys.argv[1]); assert c==json.loads(sys.argv[2]), c' "${corpo:-null}" "$esperado" \
+            || { docker logs app; exit 1; }
+  # [kit:fim]

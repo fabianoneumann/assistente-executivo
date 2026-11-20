@@ -40,6 +40,19 @@ O modelo está em `.github/ISSUE_TEMPLATE/spec.md`. Os "Requisitos" dizem só o 
 - O PR de uma **etapa** leva `Refs #N` e diz o que ainda falta. É aí que a caixa parcial do corpo da issue ganha função; na entrega de uma tacada, marcar caixa é ruído, e marcar depois pode mentir.
 - **O PR que depende do deploy de outro sistema não entra no `main`** enquanto a dependência não estiver no ar: a versão nasce do `main`, e a funcionalidade quebrada iria na próxima. Ou se espera o deploy, ou se esconde a entrada.
 
+## O spike
+
+Quando a dúvida que trava uma decisão não se responde lendo (a documentação não diz, o custo depende do caso), um spike a responde antes do ADR:
+
+- **Uma pergunta só,** escrita antes de começar, com o número que a responde.
+- **Dado sintético,** nunca o de quem usa.
+- **As mesmas peças do produto** (a stack, a imagem, a configuração), para o resultado valer para ele.
+- **O resultado datado e com número,** onde foi medido e o que esse lugar tem de diferente do de produção.
+- **O que não ficou provado** vai ao "O que ficou sem prova" do ADR que o spike alimenta.
+- **O que vira produto sai do spike:** o código dele se reescreve no produto, com os testes, e não se promove como está.
+
+O spike mora em `spike/<tema>/`, com um README que tem a pergunta e o resultado. A pasta nasce no primeiro spike, e não vazia por antecipação.
+
 ## As trilhas à parte
 
 - **O PR do Dependabot** nasce de um alerta, sem issue e sem modelo; a triagem está em `versao-e-dependencias.md`.

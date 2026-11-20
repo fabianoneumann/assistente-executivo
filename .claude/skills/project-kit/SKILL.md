@@ -27,6 +27,7 @@ Um projeto de software novo, do zero até a primeira milestone com as specs: a a
 ## Sai
 
 - O repositório montado e conferido em 0 ERRO, com o primeiro commit no `main`: o `CLAUDE.md` roteador (até 150 linhas), o `AGENTS.md` curto, a base em `knowledge/` (o processo, os metadados, as travas, a versão, a arquitetura, o plano e os ADRs 001 e 002), os modelos de issue e de PR, o CI, o Dependabot, as travas com os testes, e o onboarding em `onboarding/index.html`, com `onboarding/diagramas/` (as páginas das travas, da prioridade e da sequência com o dado embutido, o motor de layout, os tokens e o `esquema.py`, que o CI roda nas páginas).
+- No projeto que publica imagem (`--docker`), também o `Dockerfile`, o build no CI, a publicação na tag e o vigia semanal da imagem base.
 - O repositório no GitHub, privado, com o CI verde, a regra de tag (ou o aviso de que o plano não a oferece), a primeira milestone e as specs dela.
 - O ponteiro de mão única do lado do ambiente, onde o `projeto.md` diz.
 
@@ -48,11 +49,11 @@ Na mesma pasta, em `decisions/`, a partir de `assets/projeto/knowledge/decisions
 
 ```
 python -X utf8 .claude/skills/project-kit/scripts/montar.py --destino <pasta> --nome <nome> --descricao "<frase>" \
-       --stack <stack> --dono <dono> --conta user|org [--responsavel <usuário>] --base <scratchpad>/<nome>/base [--comandos <json>]
+       --stack <stack> --dono <dono> --conta user|org [--responsavel <usuário>] --base <scratchpad>/<nome>/base [--comandos <json>] [--docker]
 python -X utf8 .claude/skills/project-kit/scripts/conferir.py <pasta>
 ```
 
-O `montar.py` copia os modelos, põe a stack e a base por cima, troca os marcadores, mantém só os blocos da stack e da conta, faz o `git init` com o `core.hooksPath` ligado e prepara os arquivos. O lugar da pasta está no `projeto.md`. Depois:
+O `montar.py` copia os modelos, põe a stack e a base por cima, troca os marcadores, mantém só os blocos da stack, da conta e da imagem, faz o `git init` com o `core.hooksPath` ligado e prepara os arquivos. O `--docker` vai quando o sistema se instala como imagem (o que a imagem traz: o `stacks.md`, "A imagem"). O lugar da pasta está no `projeto.md`. Depois:
 1. O `conferir.py` em 0 ERRO, com os AVISOs lidos. ERRO se corrige no kit ou na base, e não à mão no projeto, para o kit seguinte nascer certo; o que for do kit vai ao `licoes.md`.
 2. O `CMD_INSTALAR` da stack, os testes, o smoke, os testes das travas (`python -m unittest discover -s .claude/hooks -p "test_*.py"`, e o mesmo em `.githooks`) e o esquema dos diagramas (`python onboarding/diagramas/esquema.py "onboarding/diagramas/*.html"`, o mesmo passo do CI), todos em código 0. Mudar um diagrama do projeto é mudar o bloco JSON dentro da página; o modelo e a conferência da figura ficam no kit (`assets/diagramas/LEIA.md`).
 3. O primeiro commit, no `main`: `git add -A`, `git commit -m "O projeto nasce do kit: a base, as travas e o CI"`. O `pre-commit` do projeto já roda nele.
@@ -74,6 +75,7 @@ Pelo `projeto.md`, "O ponteiro de mão única": o registro do projeto do lado do
 - O `conferir.py` em 0 ERRO antes do primeiro commit (etapa 4) e depois de cada mudança nos modelos do kit.
 - Os testes do kit: `python -X utf8 -m unittest discover -s .claude/skills/project-kit/scripts -p "teste_*.py"` (as três stacks montadas e conferidas, os testes das travas dentro do projeto, e cada erro plantado acusado). Rodam a cada mudança no kit. Os dos diagramas rodam cada um por si (`python -X utf8 .claude/skills/project-kit/scripts/teste_diagrama_conferir.py` e `teste_diagrama_regressao.py`). Os testes e as conferências pedem o PyYAML e o Playwright com o Chromium, do `requirements.txt` da skill (`python -m pip install -r .claude/skills/project-kit/requirements.txt`, depois `python -m playwright install chromium`).
 - Os testes das travas vão junto com o projeto e rodam no CI dele.
+- Ao mexer no esqueleto de uma stack, ou num modelo que cai no formato ou no lint dela (um script em `.github/`, um YAML), o `scripts/ci_local.py` num projeto montado de cada stack, com as dependências instaladas: os testes do kit não rodam o formato, o lint nem os testes da stack (lição de 19/11).
 
 ## Ao terminar
 

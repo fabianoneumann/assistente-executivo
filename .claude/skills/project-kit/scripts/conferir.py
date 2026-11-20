@@ -5,7 +5,9 @@
 ERRO barra o commit; AVISO se lê e se diz. Confere: nenhum marcador `{{X}}`, `[kit:` ou `<!-- kit:` sobrou; os YAML
 e os JSON são válidos; o `CLAUDE.md` tem até 150 linhas; nenhum caminho absoluto nem menção ao ambiente de onde o kit
 veio; as ações do CI fixadas por hash; o Dependabot só de segurança; o `.gitattributes` com `eol=lf` e o log em
-`merge=union`; o `settings.json` com o `deny` e sem `ask`; as cascas em LF; os arquivos que o fluxo cita existem.
+`merge=union`; o `settings.json` com o `deny` e sem `ask`; as cascas em LF; os arquivos que o fluxo cita existem; e,
+no projeto com imagem, que as peças dela vieram juntas (o `Dockerfile` não nasce sem o vigia, nem o vigia sem ele) e
+que o Trivy do vigia está fixado pelo hash.
 Código 0 sem ERRO, 1 com ERRO.
 """
 
@@ -35,6 +37,12 @@ ORIGEM = re.compile(r"assistente-executivo", re.I)
 ISSUE = re.compile(r"(?:\b(?:a|na|da|issue|PR|PRs)\s+#|\(#)\d{2,5}\b")  # número de issue de outro repositório nos modelos de página
 VAULT = re.compile(r"\bvault\b", re.I)  # só AVISO: um projeto pode ter um "Vault" de verdade (o de segredos)
 SHA = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.M)
+# As peças da imagem saem dos próprios modelos (assets/docker/comum, mais o Dockerfile da stack), para a lista não
+# divergir quando o kit ganhar uma peça.
+_MODELOS_DOCKER = Path(__file__).resolve().parents[1] / "assets" / "docker" / "comum"
+DOCKER = ["Dockerfile"] + sorted(
+    "/".join(("." + p[4:]) if p.startswith("dot-") else p for p in arq.relative_to(_MODELOS_DOCKER).parts)
+    for arq in _MODELOS_DOCKER.rglob("*") if arq.is_file() and "__pycache__" not in arq.parts)
 SEM_TETO = {"knowledge/log.md", "knowledge/index.md", "onboarding/diagramas/elk-LICENSE.md"}  # a licença é texto de terceiro
 
 
@@ -91,6 +99,7 @@ def conferir(pasta: Path) -> tuple[list[str], list[str]]:
     conferir_yaml(pasta, erros, avisos)
     conferir_json(pasta, erros)
     conferir_ci(pasta, erros, avisos)
+    conferir_docker(pasta, erros)
     attrs = texto_de(pasta / ".gitattributes") or ""
     if "eol=lf" not in attrs:
         erros.append(".gitattributes sem eol=lf")
@@ -146,16 +155,34 @@ def conferir_json(pasta: Path, erros: list[str]) -> None:
 
 
 def conferir_ci(pasta: Path, erros: list[str], avisos: list[str]) -> None:
+    for wf in sorted(pasta.glob(".github/workflows/*.y*ml")):
+        for m in SHA.finditer(texto_de(wf) or ""):
+            ref = m.group(1)
+            if not re.search(r"@[0-9a-f]{40}$", ref):
+                erros.append(f"{wf.name}: a ação {ref} não está fixada pelo hash do commit")
     ci = texto_de(pasta / ".github/workflows/ci.yml") or ""
-    for m in SHA.finditer(ci):
-        ref = m.group(1)
-        if not re.search(r"@[0-9a-f]{40}$", ref):
-            erros.append(f"ci.yml: a ação {ref} não está fixada pelo hash do commit")
     teto = re.search(r"timeout-minutes:\s*(\d+)", ci)
     if not teto:
         avisos.append("ci.yml sem timeout-minutes (o teto do CI é de 3 minutos)")
     elif int(teto.group(1)) > 3:
         avisos.append(f"ci.yml com teto de {teto.group(1)} minutos, acima dos 3 de partida")
+
+
+def conferir_docker(pasta: Path, erros: list[str]) -> None:
+    """A imagem vem inteira ou não vem: o Dockerfile sem o vigia é a imagem base sem ninguém olhando, e o vigia sem a
+    imagem varre o que não existe."""
+    presentes = [rel for rel in DOCKER if (pasta / rel).is_file()]
+    if not presentes:
+        return
+    for rel in DOCKER:
+        if rel not in presentes:
+            erros.append(f"o projeto tem {presentes[0]} e falta {rel}: a imagem vem inteira (montar.py --docker)")
+    ci = texto_de(pasta / ".github/workflows/ci.yml") or ""
+    if "docker build --pull" not in ci:
+        erros.append("ci.yml sem o build da imagem (docker build --pull): a verificação que mora no build precisa dele")
+    vigia = texto_de(pasta / ".github/workflows/vigiar-imagem.yml") or ""
+    if not re.search(r"^\s*TRIVY_SHA256:\s*[0-9a-f]{64}\s*$", vigia, re.M):
+        erros.append("vigiar-imagem.yml sem o TRIVY_SHA256 de 64 caracteres: o Trivy baixado não seria conferido")
 
 
 def main(argv: list[str]) -> int:

@@ -1,6 +1,5 @@
-# As dependências de desenvolvimento, fixadas (ADR 002). As de produção entram em requirements.txt quando o código nascer.
-fastapi==0.163.2
-uvicorn==0.54.0
+# As dependências de desenvolvimento, fixadas (ADR 002), por cima das de produção (requirements.txt).
+-r requirements.txt
 httpx==0.28.1
 pytest==9.2.0
 ruff==0.17.5

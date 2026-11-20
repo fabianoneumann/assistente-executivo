@@ -12,7 +12,8 @@
     "CMD_E2E": "python -m pytest -q",
     "FORMATADOR": ["python", "-m", "ruff", "format", "--stdin-filename", "{arquivo}", "-"],
     "EXTENSOES": [".py"],
-    "ECOSSISTEMA": "pip"
+    "ECOSSISTEMA": "pip",
+    "PORTA": 8000
   },
   "node-ts": {
     "STACK_DESCRICAO": "Node 24, TypeScript (o Node roda o .ts direto), node:test e Prettier",
@@ -26,6 +27,7 @@
     "CMD_E2E": "npm run e2e",
     "FORMATADOR": ["npx", "--no-install", "prettier", "--stdin-filepath", "{arquivo}"],
     "EXTENSOES": [".ts", ".js", ".mjs", ".json", ".css", ".html"],
-    "ECOSSISTEMA": "npm"
+    "ECOSSISTEMA": "npm",
+    "PORTA": 3000
   }
 }
