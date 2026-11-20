@@ -35,3 +35,7 @@ O estado do Claude Design revisto nas páginas oficiais: dentro das conversas, d
 ## [2026-11-20] lint | mais itens no kit de projeto novo
 
 Entraram nos modelos do `project-kit` a spec com o teste do essencial, o bloqueio, o que não pode acontecer e a alternativa descartada; a premissa e o dado de fora na discussão inicial; o passo de procedimento de `docs/` e a volta escrita antes de instalar; a lente de tela, a consequência do achado e o que se pulou no PR; a passagem entre sessões; e o `conferir_base.py` no CI do projeto. Na skill, a régua do genérico e a lista de automações (`references/automacoes.md`). O que não entrou e o porquê estão em `decisions/kit-de-projeto-novo.md`.
+
+## [2026-11-20] lint | duas páginas reconferidas
+
+Os padrões de esforço por modelo (o Fable 5.2 entra na linha do `medium`), o ultracode e o `effortLevel` reconferidos na documentação do Claude Code, em `anthropic-claude/niveis-de-esforco.md`; e os sinais do Instagram e a originalidade, sem mudar os três sinais, em `content-design/o-que-prediz-desempenho-instagram.md`.

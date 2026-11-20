@@ -1,6 +1,6 @@
 # Níveis de esforço no Claude Code: o que controlam, o padrão de cada modelo e quando subir
 
-Síntese para uso diário e para explicar o tema. Os padrões por modelo mudam a cada lançamento: reverificar na documentação antes de citar. Fontes: *Using Claude Code: Spending your effort*, de Thariq Shihipar (time do Claude Code, Anthropic) (https://claude.dev/blog/spending-your-effort/) (dados e regra prática), *Anthropic: Effort (parâmetro de esforço na Claude API)*, de Anthropic (documentação oficial da Claude API) (https://platform.claude.com/docs/en/build-with-claude/effort) (definição e padrões na API), *Claude Code: configuração de modelo, seção de esforço (níveis, padrões, /effort, ultracode)*, de Anthropic (documentação oficial do Claude Code) (https://code.claude.com/docs/en/model-config) (comandos e padrões no Claude Code), *Anthropic Academy: Choosing the right effort level in Claude Code*, de Anthropic Academy (tutorial oficial, sem autor nomeado) (https://academy.claude.com/tutorials/choosing-the-right-effort-level-in-claude-code) (método de ajuste). O short que trouxe o tema, fiel à fonte em todos os números conferidos, está em *The Truth About Claude Code Effort Levels (short): explicador em motion graphics de 3 minutos, sem corte*, de DIY Smart Code (canal no YouTube); análise de quadros pelo assistente (https://www.youtube.com/shorts/JYyzYnvad50).
+Síntese para uso diário e para explicar o tema. Os padrões por modelo mudam a cada lançamento: reverificar na documentação antes de citar (os padrões, o ultracode e o `effortLevel` foram reconferidos em 2026-11-18, na página de configuração de modelo do Claude Code). Fontes: *Using Claude Code: Spending your effort*, de Thariq Shihipar (time do Claude Code, Anthropic) (https://claude.dev/blog/spending-your-effort/) (dados e regra prática), *Anthropic: Effort (parâmetro de esforço na Claude API)*, de Anthropic (documentação oficial da Claude API) (https://platform.claude.com/docs/en/build-with-claude/effort) (definição e padrões na API), *Claude Code: configuração de modelo, seção de esforço (níveis, padrões, /effort, ultracode)*, de Anthropic (documentação oficial do Claude Code) (https://code.claude.com/docs/en/model-config) (comandos e padrões no Claude Code), *Anthropic Academy: Choosing the right effort level in Claude Code*, de Anthropic Academy (tutorial oficial, sem autor nomeado) (https://academy.claude.com/tutorials/choosing-the-right-effort-level-in-claude-code) (método de ajuste). O short que trouxe o tema, fiel à fonte em todos os números conferidos, está em *The Truth About Claude Code Effort Levels (short): explicador em motion graphics de 3 minutos, sem corte*, de DIY Smart Code (canal no YouTube); análise de quadros pelo assistente (https://www.youtube.com/shorts/JYyzYnvad50).
 
 ## O que é esforço
 
@@ -25,7 +25,7 @@ A analogia do Thariq, do time do Claude Code, serve direto para explicar: esfor�
 | Onde | Padrão |
 |---|---|
 | Claude Code, maioria dos modelos (Fable 5.1, Fable 5, Opus 5, Sonnet 5, Opus 4.8) | `high` |
-| Claude Code, Opus 5.5, Sonnet 5.5 e Haiku 5.5 | `medium` |
+| Claude Code, Fable 5.2, Opus 5.5, Sonnet 5.5 e Haiku 5.5 | `medium` |
 | Claude Code, Opus 4.7 | `xhigh` |
 | API, maioria dos modelos, **inclusive Sonnet 5.5** | `high` |
 | API, Opus 5.5 e Haiku 5.5 | `medium` |
