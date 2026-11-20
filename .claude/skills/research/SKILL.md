@@ -2,14 +2,16 @@
 name: research
 description: >-
   Pesquisa profissional de dados, estudos e estatísticas em fontes confiáveis
-  (via Perplexity/Sonar, Gemini, a busca web nativa e, opcional, o Codex), com síntese,
-  reconciliação de contradições e registro rastreável na base `knowledge/`. USE SEMPRE
-  que a pessoa pedir para pesquisar, buscar dados/estatísticas/estudos/fontes, embasar
-  uma ideia de conteúdo ou aula, levantar o estado de um tema, ou "ver o que existe"
-  sobre um assunto, mesmo que não diga "pesquisa" nem "skill", e mesmo que só mencione
-  uma ideia de `marketing/social-media/ideas/` que precise de lastro. NÃO use para
-  conversa/opinião sem coleta de dados, nem para perguntas que você já responde bem
-  sem buscar fontes externas.
+  (via Perplexity/Sonar, Gemini, a busca web nativa e, opcional, o Codex), com síntese, reconciliação de contradições e
+  registro rastreável na base `knowledge/`. USE SEMPRE que a pessoa pedir para pesquisar,
+  buscar dados/estatísticas/estudos/fontes, embasar uma ideia de conteúdo ou
+  aula, levantar o estado de um tema, atualizar uma síntese da base com dados
+  novos de fora, conferir o que alguém que a base acompanha publicou de novo, ou "ver o
+  que existe" sobre um assunto —
+  mesmo que não diga "pesquisa" nem "skill", e mesmo que só mencione uma
+  ideia de `marketing/social-media/ideas/` que precise de lastro. NÃO use para
+  conversa/opinião sem coleta de dados, nem para perguntas que você já responde
+  bem sem buscar fontes externas.
 ---
 
 # Skill: research

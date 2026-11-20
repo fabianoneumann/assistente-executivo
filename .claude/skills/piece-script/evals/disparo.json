@@ -1,0 +1,23 @@
+[
+ {"query": "refaz o arco do post B da Vaughan", "should_trigger": true, "esperada": "piece-script", "origem": "tabela de near-misses (4-descricao-das-skills.md)"},
+ {"query": "roteiriza o post A do Weizenbaum a partir da pauta que já tá no arquivo da ideia", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "escreve o texto das telas do carrossel do Ng, a escaleta já foi aprovada na mesa", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "reescreve o texto da tela 7, ficou comprido demais", "should_trigger": true, "esperada": "piece-script", "origem": "disparo.json da visual-form"},
+ {"query": "monta a escaleta dos Stories de quarta: objetivo é levar pro post de sexta, uma pergunta só no fim", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "escreve a fala do Reel sobre o Gemini que concorda com confiança, uns 40 segundos, por blocos", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "a cena do curta com voz precisa da folha: frase a frase, o que aparece na tela e o tipo de cada frase", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "o fecho do educativo não paga a abertura, refaz a escaleta e depois o texto", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "escreve o roteiro dos Stories de resposta com o que veio da caixinha de quinta", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "a tela 2 não se entende sem a capa, mexe no roteiro pra ela ficar de pé sozinha", "should_trigger": true, "esperada": "piece-script"},
+ {"query": "faz o post B da Vaughan", "should_trigger": false, "esperada": "piece-creation", "origem": "evals.json da piece-creation, 2.1"},
+ {"query": "faz os Stories de terça", "should_trigger": false, "esperada": "piece-creation", "origem": "tabela de near-misses"},
+ {"query": "isso rende post?", "should_trigger": false, "esperada": "story-angle", "origem": "tabela de near-misses"},
+ {"query": "quero um ângulo pro tema do Hermes, vamos desenvolver essa ideia", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "pesquisa quando o Weizenbaum escreveu o ELIZA e em que máquina rodava, preciso do lastro", "should_trigger": false, "esperada": "research"},
+ {"query": "dá uma olhada se tem algo errado no roteiro", "should_trigger": false, "esperada": "review", "origem": "tabela de near-misses"},
+ {"query": "deixa a tela 4 mais forte", "should_trigger": false, "esperada": "visual-form", "origem": "tabela de near-misses"},
+ {"query": "monta o slides.html do post do Ng com o texto travado", "should_trigger": false, "esperada": "visual-form"},
+ {"query": "gera o desenho a lápis da prova corrigida pra capa", "should_trigger": false, "esperada": "image-gen"},
+ {"query": "exporta o carrossel e sobe pro bucket, tá pronto", "should_trigger": false, "esperada": "slides-export"},
+ {"query": "o que a base tem que eu não usei nesse roteiro?", "should_trigger": false, "esperada": "base-enrichment"}
+]

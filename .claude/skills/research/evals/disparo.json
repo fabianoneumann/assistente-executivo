@@ -1,0 +1,23 @@
+[
+ {"query": "pesquisa quanto a Meta passou a cobrar pelas mensagens de serviço do WhatsApp em 2026, com fonte", "should_trigger": true, "esperada": "research"},
+ {"query": "preciso de dados sobre quanto tempo as pessoas passam num carrossel do Instagram, estudos de 2025 ou 2026", "should_trigger": true, "esperada": "research"},
+ {"query": "levanta o estado da arte de busca semântica num vault de markdown, o que existe hoje", "should_trigger": true, "esperada": "research"},
+ {"query": "pesquisa quando o Weizenbaum escreveu o ELIZA e em que máquina rodava, preciso do lastro", "should_trigger": true, "esperada": "research"},
+ {"query": "vê o que existe de estatística sobre adoção de agentes de código nas empresas brasileiras", "should_trigger": true, "esperada": "research"},
+ {"query": "busca fontes confiáveis sobre o prêmio salarial de quem sabe IA, quero embasar a aula 3", "should_trigger": true, "esperada": "research"},
+ {"query": "atualiza a síntese de Managed Agents com o que mudou desde o mês passado", "should_trigger": true, "esperada": "research"},
+ {"query": "a ideia do caça-palavras de IA precisa de lastro: tem estudo sobre jogo de palavras e retenção?", "should_trigger": true, "esperada": "research"},
+ {"query": "pesquisa a fundo, no profundo, como os modelos de vídeo atuais lidam com personagem consistente", "should_trigger": true, "esperada": "research"},
+ {"query": "o que o Karpathy publicou de novo desde a última vez? traz as fontes", "should_trigger": true, "esperada": "research"},
+ {"query": "isso rende post?", "should_trigger": false, "esperada": "story-angle", "origem": "tabela de near-misses"},
+ {"query": "vamos desenvolver a ideia do manual de avião, quero um ângulo pra virar pauta", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "anota essa ideia: o prompt que vira cartão de tarefa", "should_trigger": false, "esperada": "idea-capture"},
+ {"query": "o que você acha de usar o Codex como segundo revisor?", "should_trigger": false, "esperada": null},
+ {"query": "dá uma olhada se tem algo errado nessa síntese antes de eu validar", "should_trigger": false, "esperada": "review"},
+ {"query": "o que a base tem que eu não usei nesta aula?", "should_trigger": false, "esperada": "base-enrichment", "origem": "tabela de near-misses"},
+ {"query": "quantos salvamentos teve o post do Ng?", "should_trigger": false, "esperada": "ig-metrics"},
+ {"query": "testa o Jev pra classificar fonte nas pesquisas", "should_trigger": false, "esperada": "jev-use-case"},
+ {"query": "me explica melhor o que é um heartbeat de monitoramento", "should_trigger": false, "esperada": null},
+ {"query": "roteiriza o post A do Weizenbaum", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "faz o post B da Vaughan", "should_trigger": false, "esperada": "piece-creation"}
+]

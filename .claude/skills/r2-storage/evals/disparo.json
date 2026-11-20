@@ -1,0 +1,22 @@
+[
+ {"query": "sobe a pasta courses/meu-curso/assets/aula-3 pro R2", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "sobe o vídeo marketing/social-media/stories/2026-11-21/cena-1.mp4 pro bucket conteudo", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "lista o que tem no bucket conteudo dentro de stories/publicado", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "baixa do bucket a capa original do Weizenbaum A", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "me dá uma URL pública do talks/2026-11-12-evento/palestra.pdf, pra mandar pra organização", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "gera um link assinado de 1 dia pro material do curso", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "remove do bucket o slide-09.jpg velho que ficou depois que a tela virou vídeo", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "publica o context/brand/kit-de-marca.zip na Cloudflare pra eu mandar o link", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "sobe a prévia da passada 2 dos Stories pro bucket com nome próprio", "should_trigger": true, "esperada": "r2-storage"},
+ {"query": "exporta o carrossel e sobe pro bucket, tá pronto", "should_trigger": false, "esperada": "slides-export", "origem": "descrição: fechar a peça é da slides-export"},
+ {"query": "gera uma imagem da prova corrigida e guarda", "should_trigger": false, "esperada": "image-gen"},
+ {"query": "publica o carrossel do Ng no Instagram", "should_trigger": false, "esperada": "ig-publish"},
+ {"query": "faz o deploy do Worker do relógio na Cloudflare", "should_trigger": false, "esperada": null},
+ {"query": "quanto tá custando o R2 por mês?", "should_trigger": false, "esperada": null},
+ {"query": "regera a tela 3 do Ng e sobe de novo", "should_trigger": false, "esperada": "slides-export"},
+ {"query": "pesquisa a diferença de preço entre R2 e S3", "should_trigger": false, "esperada": "research"},
+ {"query": "quantos salvamentos teve o post?", "should_trigger": false, "esperada": "ig-metrics"},
+ {"query": "salva esse arquivo no vault, fora do git", "should_trigger": false, "esperada": null},
+ {"query": "move o ZIP do Claude Design pro disco F", "should_trigger": false, "esperada": null},
+ {"query": "faz o post B da Vaughan", "should_trigger": false, "esperada": "piece-creation"}
+]

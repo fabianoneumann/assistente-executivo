@@ -50,5 +50,5 @@ Não trata de LLM como juiz, de revisão humana do trabalho do modelo, de vária
 
 - **Analogia de mercado de trabalho:** a pergunta implícita é de economia do trabalho. O critério de 1980 explicava quais funções (digitador, guarda-livros, calculador humano) a computação engoliria; o de hoje explicaria quais funções a IA engole primeiro.
 - **"Praticar" como chave:** a imagem é a do aprendiz que melhora repetindo com retorno. Sem retorno automático e barato, não há prática em escala, e o modelo depende do que já sabe generalizar.
-- **Tempo assistindo vídeo como exemplo de verificável:** ele lista uma métrica de engajamento ("amount of time spent watching videos") ao lado de matemática e código, ou seja, verificável inclui qualquer métrica que uma máquina mede sozinha, não só correção lógica.
+- **Tempo assistindo vídeo como exemplo de verificável:** ele lista uma métrica de engajamento (o tempo gasto vendo vídeos) ao lado de matemática e código, ou seja, verificável inclui qualquer métrica que uma máquina mede sozinha, não só correção lógica.
 - **Ligação com a série dele:** o texto é um dos três que ele aponta depois, na retrospectiva de 2025, como aprofundamento da seção "Ghosts vs. Animals / Jagged Intelligence" (os outros: "Animals vs. Ghosts" e "The Space of Minds"; ficha em `2026-10-29-karpathy-retrospectiva-llm-2025.md`).

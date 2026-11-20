@@ -143,9 +143,9 @@ A página põe o Vision como entrada barata no mocap: gravar antes, com o corpo 
 
 ## Citações
 
-- "You may not use any assets [...] for the purpose of developing, training, or enhancing machine learning and/or AI models or algorithms" (termos, 5.4)
-- "to sub-license this to third parties in an anonymized form never to be redistributed in its original form" (termos, 3.4)
-- "Export and use in any of your projects, including commercial ones." (preços, dica da biblioteca de movimentos)
+- "You may not use any assets obtained or provided under this agreement for the purpose of developing, training, or enhancing machine learning and/or AI models or algorithms" (termos, 5.4)
+- A Rokoko pode sublicenciar isso a terceiros de forma anonimizada, sem redistribuir nunca na forma original (termos, 3.4).
+- Exportar e usar em qualquer projeto, inclusive comercial (preços, dica da biblioteca de movimentos).
 
 ## Lacuna
 

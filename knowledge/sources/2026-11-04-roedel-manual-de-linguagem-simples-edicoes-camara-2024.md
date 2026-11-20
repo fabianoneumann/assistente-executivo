@@ -90,9 +90,9 @@ Sobre título, o restante está espalhado: títulos e intertítulos entram na li
 |---|---|---|
 | Só o necessário (p. 54) | o supérfluo fica sem leitura e ainda esconde o que importa | 25 palavras por frase como teto de referência, artigos e preposições incluídos; o documento final pode ficar maior que o original, porque explicação e glossário entram |
 | Voz ativa (p. 57) | clareza, proximidade do modelo mental, mostra o responsável; a passiva costuma trazer verbo substantivado | a passiva não é condenada: serve para pôr o foco no que se faz; converter pode exigir apurar quem fez |
-| Ordem direta (p. 58) | a inversa custa mais processamento | "Os idosos precisam se vacinar antes." |
+| Ordem direta (p. 58) | a inversa custa mais processamento | o exemplo põe sujeito, verbo e complemento na ordem (os idosos, antes, precisam se vacinar) |
 | Sem intercaladas (p. 59) | interrompem o raciocínio e alongam | o aviso da biblioteca perde um acréscimo no meio e outro no fim |
-| Afirmativas (p. 60) | para ler o "não" pensa-se antes no positivo; a dupla negativa pesa mais | ficam só as negações necessárias: "O eleitor só poderá tirar passaporte quando regularizar sua situação." |
+| Afirmativas (p. 60) | para ler o "não" pensa-se antes no positivo; a dupla negativa pesa mais | ficam só as negações necessárias: o exemplo troca a negação por uma condição afirmativa (o eleitor tira o passaporte quando regularizar a situação) |
 
 ### Palavras
 
@@ -176,7 +176,7 @@ As duas tabelas, como impressas, não têm a faixa de 30 a 40, e as duas usam es
 - **Mídia de demanda (p. 24):** redes sociais entram, ao lado de sites e streaming, entre as novas mídias em que o usuário escolhe o que acessa, em que ordem e até onde.
 - **Sem demanda (p. 35):** entre as características de público, o conteúdo que chega sem ter sido pedido aparece exemplificado pelas redes sociais. As duas passagens estão assim no texto, sem conciliação.
 - **Quem produz (p. 30):** redes sociais constam entre os documentos da equipe de comunicação.
-- **Exemplo de reescrita (p. 62):** num contexto marcado "postagem em rede social", uma frase passiva sobre projeto apresentado, com "admissão" e "manutenção do vínculo empregatício", vira "Novo projeto de lei proíbe empregador de exigir que o trabalhador seja vacinado contra a Covid-19." É o único exemplo com esse rótulo.
+- **Exemplo de reescrita (p. 62):** num contexto marcado "postagem em rede social", uma frase passiva sobre projeto apresentado, com "admissão" e "manutenção do vínculo empregatício", vira uma frase ativa e curta, com o projeto de lei como sujeito, dizendo que ele proíbe o empregador de exigir do trabalhador a vacina contra a Covid-19. É o único exemplo com esse rótulo.
 - **Teste (p. 95):** a passagem já registrada sobre a falta de tempo hábil na produção diária.
 - **Conteúdo de exemplo (p. 64):** um aviso eleitoral menciona redes sociais do governo, sem tratar delas como formato.
 
@@ -187,8 +187,8 @@ Não há orientação específica sobre carrossel, Stories, legenda, gancho ou t
 - **Atenção, leitura e tempo:** Mark, *Attention Span* (Toronto: Harlequin, 2023); Nielsen, "How little do users read" (2008), "How long do users stay on web pages" (2011), "How users read on the web" (1997); Nielsen et al., *How people read online: the eyetracking evidence* (2013), todos em nngroup.com.
 - **Dados brasileiros:** IBGE, Pnad Contínua, acesso à internet 2022 (publicado em 2023); Inaf, Instituto Paulo Montenegro (2018); OECD, Pisa 2018; Fiesp, *Pulso Brasil: burocracia* (2017). Os 73% e os 75% da Câmara não têm referência.
 - **Mídia de oferta e demanda:** Wolton, *Internet et après* (1999).
-- **Teste e tamanho de amostra:** Nielsen e Landauer, "A mathematical model of the finding of usability problems" (1993, ACM); Henriques et al., *UX Research com sotaque brasileiro* (2022).
-- **Cloze e apreensibilidade (p. 105):** Cunha e Santos, "Validade por processo de resposta no teste de Cloze" (*Fractal*, 2009; a referência saiu impressa com a marca editorial "[PLdC1]"); Santos et al., "O teste de Cloze na avaliação da compreensão em leitura" (*Psicologia: Reflexão e Crítica*, 2002); Martins e Filgueiras, "Métodos de avaliação de apreensibilidade das informações textuais" (2007). As fórmulas não têm referência própria.
+- **Teste e tamanho de amostra:** Nielsen e Landauer, *"A mathematical model of the finding of usability problems"* (1993, ACM); Henriques et al., *UX Research com sotaque brasileiro* (2022).
+- **Cloze e apreensibilidade (p. 105):** Cunha e Santos, *"Validade por processo de resposta no teste de Cloze"* (*Fractal*, 2009; a referência saiu impressa com a marca editorial "[PLdC1]"); Santos et al., "O teste de Cloze na avaliação da compreensão em leitura" (*Psicologia: Reflexão e Crítica*, 2002); Martins e Filgueiras, *"Métodos de avaliação de apreensibilidade das informações textuais"* (2007). As fórmulas não têm referência própria.
 - **Efeito da técnica, em "Para saber mais" (p. 28 e 29):** Cuesta et al. sobre o programa colombiano (BID, 2019); Roseth et al. (BID, 2018); Fischer (2017 e 2021, PUC-Rio, com o caso de um benefício do INSS); textos da própria autora (p. 18 e 29).
 - **Guias e normas (p. 18, 92):** ABNT NBR ISO 24495-1; ISO 24495-1:2023; Center for Plain Language; Clarity; International Plain Language Federation; Plain Language Association International; Rede Linguagem Simples Brasil; Abep-TIC (2022); Fiocruz/Icict (2023); plainlanguage.gov; apostila da Prefeitura de São Paulo (2020); Nesta; Schriver (1996).
 - **Exemplos da Câmara (p. 107):** PL 1366/2022, a página de votação nominal e "Entenda o processo legislativo".

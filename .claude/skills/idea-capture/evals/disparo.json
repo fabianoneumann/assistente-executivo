@@ -1,0 +1,22 @@
+[
+ {"query": "anota essa ideia: o prompt que vira cartão de tarefa", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "quero registrar uma ideia: a agenda que se monta sozinha com o assistente", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "registre a seguinte ideia: um carrossel comparando o primeiro chatbot com os de hoje", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "tive uma ideia de conteúdo que quero registrar, rapidinho: o erro que ensina mais que o acerto", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "guarda essa ideia pra depois: Stories mostrando o vault por dentro", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "antes que eu esqueça, anota: um Reel do agente rodando de madrugada enquanto eu durmo", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "registra essa ideia crua, sem pesquisar nada: a régua de cálculo como metáfora de ferramenta", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "me lembrei de uma ideia, quero guardar: série de caça-palavras com termos de IA", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "anota aí uma ideia de post e volta pro que a gente tava fazendo: o custo invisível de um prompt grande", "should_trigger": true, "esperada": "idea-capture"},
+ {"query": "isso rende post?", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "vamos desenvolver a ideia do manual de avião", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "tive uma ideia agora: o prompt que vira cartão de tarefa. acho que rende um carrossel, faz ele", "should_trigger": false, "esperada": "piece-creation", "origem": "disparo.json da piece-creation"},
+ {"query": "o que você acha dessa ideia de post sobre o Hermes?", "should_trigger": false, "esperada": null, "origem": "descrição: opinião sem pedir registro"},
+ {"query": "pensei numa coisa: e se o vigia das rotinas avisasse pelo Telegram?", "should_trigger": false, "esperada": null, "origem": "descrição: mencionar sem pedir registro"},
+ {"query": "pesquisa se já fizeram carrossel sobre o ELIZA", "should_trigger": false, "esperada": "research"},
+ {"query": "aprofunda a ideia da agenda que se monta sozinha, com ângulos", "should_trigger": false, "esperada": "story-angle"},
+ {"query": "roteiriza a ideia do erro que ensina", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "cria uma issue pra eu lembrar de revisar as fichas antigas", "should_trigger": false, "esperada": null},
+ {"query": "gera uma imagem da agenda que se monta sozinha", "should_trigger": false, "esperada": "image-gen"},
+ {"query": "dá uma olhada se a ideia que registrei ontem tá bem escrita", "should_trigger": false, "esperada": "review"}
+]

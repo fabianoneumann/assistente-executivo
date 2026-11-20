@@ -104,7 +104,7 @@ O plugin `code-review` é o único lugar com o roteiro escrito. Teve duas formas
    - Critério para os quatro, em caixa alta no comando: só **alto sinal**. Entra: código que não compila ou não faz parse; código que dá resultado errado qualquer que seja a entrada; violação clara do `CLAUDE.md` em que dá para **citar a regra exata**. Não entra: estilo, problema que depende de entrada ou estado específico, sugestão subjetiva. "If you are not certain an issue is real, do not flag it. False positives erode trust and waste reviewer time."
 5. **Para cada problema, subagentes em paralelo validam**: recebem título, descrição do PR e o problema, e confirmam com alta confiança que ele existe (exemplo do comando: se acusaram "variável não definida", conferir no código que ela não está definida; se é regra do `CLAUDE.md`, conferir que a regra vale para aquele arquivo e foi de fato violada). **Opus para bug e lógica, Sonnet para `CLAUDE.md`.** O texto diz "problemas achados pelos agentes 3 e 4", mas os exemplos incluem regra de `CLAUDE.md`; a ambiguidade é do original.
 6. **Descarta o que não foi validado.** O que sobra é a lista de alto sinal.
-7. Resumo no terminal; se não achou nada, "No issues found. Checked for bugs and CLAUDE.md compliance." Sem `--comment`, para aqui.
+7. Resumo no terminal; se não achou nada, diz que não achou problemas e que checou bugs e a aderência ao CLAUDE.md. Sem `--comment`, para aqui.
 8. Com `--comment`: monta para si a lista de comentários antes de postar (não publica a lista).
 9. Posta um comentário inline por problema: descrição curta; sugestão "commitável" só para correção pequena e completa (a de 6 linhas ou mais, estrutural ou espalhada, vira descrição); **um comentário por problema único, sem duplicar**.
 
@@ -134,7 +134,7 @@ Quando a revisão guardou o raciocínio, o achado tem uma seção recolhida "Why
 
 Deduplicação: o serviço deduplica no estágio de ordenação [visão geral]; o plugin manda "um comentário por problema único" [plugin]. Teto: no `/code-review` local, quando os achados saem pela ferramenta de achados, o limite é 32; `--max-findings` muda (v2.1.288) [local]. O exemplo de `REVIEW.md` também limita nits (abaixo).
 
-**Re-revisão** [no PR]: a revisão disparada por push foca no que mudou desde a anterior e posta menos nits e pré-existentes; o corpo conta o que deixou de fora ("outside the scope of this re-review and not posted"; "found and not posted"). Ela lê as respostas do autor aos achados anteriores e pode resolver o fio ou postar uma réplica; resolve sozinha o fio quando julga o problema corrigido. Se o push não muda as linhas e nenhum Important foi resolvido, o serviço mantém o resultado anterior em vez de revisar de novo ("Code review skipped — no new changes" ou "not repeated — earlier findings still open"). Uma revisão pedida por `@claude review` cobre o PR inteiro de novo. Desde a v2.1.305 (20/10/2026), a re-revisão não abre com "LGTM" enquanto achados bloqueantes anteriores seguem abertos.
+**Re-revisão** [no PR]: a revisão disparada por push foca no que mudou desde a anterior e posta menos nits e pré-existentes; o corpo conta o que deixou de fora (o que ficou fora do escopo da nova revisão e o que foi achado e não postado). Ela lê as respostas do autor aos achados anteriores e pode resolver o fio ou postar uma réplica; resolve sozinha o fio quando julga o problema corrigido. Se o push não muda as linhas e nenhum Important foi resolvido, o serviço mantém o resultado anterior em vez de revisar de novo (avisa que pulou a revisão por não haver mudança nova, ou que não repetiu porque os achados anteriores seguem abertos). Uma revisão pedida por `@claude review` cobre o PR inteiro de novo. Desde a v2.1.305 (20/10/2026), a re-revisão não abre com "LGTM" enquanto achados bloqueantes anteriores seguem abertos.
 
 ## Níveis de profundidade e o que muda entre eles
 
@@ -189,7 +189,7 @@ A documentação não diz o que muda por dentro (número de agentes, lentes, rod
 - **Não aprova e não bloqueia o PR**; a decisão de merge fica com o time [visão geral; no PR]. O check run termina como neutro (ou pulado), **nunca como falha**, então uma revisão terminada não derruba um check obrigatório. Quem quer travar o merge lê as contagens e decide no próprio CI [no PR].
 - Não executa nem compila o código; não faz commit; dentro da revisão, só lê [visão geral].
 - Não responde na hora à réplica do autor; a próxima revisão lê as réplicas [no PR].
-- O post de lançamento diz o mesmo: "It won't approve PRs — that's still a human call" [blog].
+- O post de lançamento diz o mesmo: a revisão não aprova PR, que segue sendo decisão humana [blog].
 - O ultrareview que posta no PR posta um comentário simples da conta do usuário, que "não é uma revisão nem uma aprovação", e só quando o usuário escolhe naquela execução [ultra].
 - O Claude não inicia um ultrareview sozinho [ultra]; o `/code-review` comum pode ser iniciado pelo Claude quando pedido em linguagem natural, e isso se desliga com `skillOverrides` [local].
 - Nenhum achado não quer dizer código correto: "A review with no findings doesn't mean your code is error-free or secure" [visão geral].

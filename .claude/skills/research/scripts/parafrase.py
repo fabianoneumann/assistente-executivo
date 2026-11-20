@@ -34,8 +34,10 @@ as mesmas ideias, e não vê tradução (ficha em português de fonte em inglês
 quando traduz frase a frase; o script avisa quando as línguas diferem). Não substitui a lente de conteúdo
 próprio da revisão nem a conferência lado a lado de quem escreve: aponta onde olhar. O limiar e o K se
 calibram contra fichas revisadas à mão (0,7 e 3 guiaram a reescrita de fichas de livro, e a re-revisão
-ainda achou espelhamento por sinônimos); a calibração está por fazer e pede um gabarito de fichas revisadas à
-mão. O teste sem rede, com os casos que têm de reprovar e os que têm de passar com
+ainda achou espelhamento por sinônimos); em 2026-11-20 foram medidos contra 179 fichas com veredito e mantidos:
+na mesma língua, 0,7 e 3 têm o maior acerto (0,90) e nenhum falso positivo; a paráfrase frase a frase com
+sinônimos fica abaixo do limiar, e na tradução o script não acha a ficha que segue a fonte de perto (o
+`calibra_parafrase.py`, nesta pasta, mede de novo). O teste sem rede, com os casos que têm de reprovar e os que têm de passar com
 0,7 e 3: `teste_conferidores.py`, nesta pasta (rodar a cada edição, e de novo quando a calibração mudar os padrões).
 
   python -X utf8 .claude/skills/research/scripts/parafrase.py --ficha <ficha.md> --fonte <texto.txt>

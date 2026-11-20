@@ -37,7 +37,7 @@ Entrevistas individuais, semiestruturadas e em profundidade, feitas por pesquisa
 
 ### Tipos de pergunta de sondagem (Tabela 1 do guia)
 
-Seleção de categoria ("por que escolheu esta resposta?"); compreensão ("o que entende por 'atividade profissional de alta responsabilidade'?"); confiança ("quão seguro está?"); dificuldade ("foi fácil ou difícil responder? por quê?"); emergente (sobre uma reação observada, como franzir a testa); geral ("algum comentário sobre esta pergunta?"); de processo ("como chegou a essa resposta?"); de memória ("contou ou estimou as consultas?"); de escala ("por que esse valor e não o de cima ou o de baixo?"); de sensibilidade ("pergunta algo privado demais?"); e específica (sobre um ponto exato da resposta).
+Seleção de categoria ("por que escolheu esta resposta?"); compreensão (perguntar o que a pessoa entende por um termo da pergunta, como "atividade profissional de alta responsabilidade"); confiança ("quão seguro está?"); dificuldade (se foi fácil ou difícil responder, e por quê); emergente (sobre uma reação observada, como franzir a testa); geral ("algum comentário sobre esta pergunta?"); de processo ("como chegou a essa resposta?"); de memória ("contou ou estimou as consultas?"); de escala (por que aquele valor, e não o vizinho de cima ou de baixo); de sensibilidade ("pergunta algo privado demais?"); e específica (sobre um ponto exato da resposta).
 
 ### Condução
 

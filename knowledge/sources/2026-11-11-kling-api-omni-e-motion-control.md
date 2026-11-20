@@ -100,7 +100,7 @@ O prompt aceita descrições positivas e negativas, até 2.500 caracteres, e pod
 
 **O vídeo do movimento.** Quem está no quadro: de preferência uma pessoa real e só uma, de meio corpo ou corpo inteiro, com cabeça e membros sempre à vista e sem nada na frente; figura estilizada ou humanoide pode servir se os membros tiverem proporção aceitável, e, havendo mais gente, "the motion of the character occupying the largest proportion of the frame will be used". Como é a tomada: uma só, contínua, sem corte e sem câmera em movimento, com o personagem o tempo todo no quadro, ou o vídeo pode ser aparado; gesto liso e estável rende mais que o muito rápido. Formato: de 3 s até 30 s (orientação `video`) ou 10 s (orientação `image`), MP4 ou MOV, até 100 MB, lados entre 340 e 3.850 px. O sistema valida o conteúdo e devolve código de erro quando algo não serve.
 
-**Saída mais curta.** Com movimento difícil ou rápido, o vídeo gerado pode sair mais curto que o enviado, porque o modelo usa só o trecho de movimento aproveitável, e gera desde que haja pelo menos 3 s seguidos; "Deduction is calculated based on the output video duration."
+**Saída mais curta.** Com movimento difícil ou rápido, o vídeo gerado pode sair mais curto que o enviado, porque o modelo usa só o trecho de movimento aproveitável, e gera desde que haja pelo menos 3 s seguidos; a cobrança se calcula pela duração do vídeo de saída.
 
 **Element.** No máximo um; com ele, o vídeo gerado segue sempre a orientação do personagem do vídeo de referência.
 

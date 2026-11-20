@@ -32,7 +32,7 @@ Moderar, por sua vez, pede que quem conduz conheça o terreno sem virar especial
 
 ## Que tarefa dar?
 
-**É da pessoa?** Parte-se de tarefas genéricas e ajusta-se na conversa inicial, até escrevendo outra na hora; num site como o Investopedia, iniciante e avançado pedem tarefas diferentes. Quanto mais a pessoa se importa, mais natural o comportamento. Achar um dado fechado ("Find the contact name for Press Relations") dá para fingir; explorar um assunto, não, e por isso o cenário precisa casar com o que ela vive agora.
+**É da pessoa?** Parte-se de tarefas genéricas e ajusta-se na conversa inicial, até escrevendo outra na hora; num site como o Investopedia, iniciante e avançado pedem tarefas diferentes. Quanto mais a pessoa se importa, mais natural o comportamento. Achar um dado fechado (como o nome do contato de imprensa) dá para fingir; explorar um assunto, não, e por isso o cenário precisa casar com o que ela vive agora.
 
 **É aberta?** A tarefa dirigida (exemplo da autora: "Find the opening hours for the Fremont public library") tem resposta certa; a aberta não, e serve para julgar qualidade e relevância, vendo o caminho, as dúvidas e a expectativa de formato. Sem ponto final, o participante não sabe como usar o tempo; o remédio é avisar de início que siga sem pressa.
 

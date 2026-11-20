@@ -23,7 +23,7 @@ Cada arquivo abre com um bloco "AI Agent Context" que aponta para o índice da d
 
 ## O guia de vídeo: o Veo saiu da Gemini API
 
-Desde **22 de outubro de 2026** a Gemini API não tem mais Veo: os três IDs de prévia, `veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview` e `veo-3.1-lite-generate-preview`, foram desligados ("The Veo 3.1 Preview in the Gemini API has been shut down."). A página de geração de vídeo indica duas saídas, o Gemini Omni Flash (`gemini-omni-1.2-flash`), que ela passa a apresentar como o modelo de geração e de edição conversacional de vídeo da API, e os modelos GA da Gemini Enterprise Agent Platform, com link para a página do Veo 3.1 no Google Cloud. Fora isso, traz um resumo do Omni Flash (vídeos de 3 a 15 s com áudio nativo, até 6 imagens de referência, edição e extensão em vários turnos pela Interactions API) e manda quem quer analisar vídeo, e não gerar, para o guia de entendimento de vídeo.
+Desde **22 de outubro de 2026** a Gemini API não tem mais Veo: os três IDs de prévia, `veo-3.1-generate-preview`, `veo-3.1-fast-generate-preview` e `veo-3.1-lite-generate-preview`, foram desligados (a página diz que a prévia do Veo 3.1 na Gemini API foi encerrada). A página de geração de vídeo indica duas saídas, o Gemini Omni Flash (`gemini-omni-1.2-flash`), que ela passa a apresentar como o modelo de geração e de edição conversacional de vídeo da API, e os modelos GA da Gemini Enterprise Agent Platform, com link para a página do Veo 3.1 no Google Cloud. Fora isso, traz um resumo do Omni Flash (vídeos de 3 a 15 s com áudio nativo, até 6 imagens de referência, edição e extensão em vários turnos pela Interactions API) e manda quem quer analisar vídeo, e não gerar, para o guia de entendimento de vídeo.
 
 ## O guia do Gemini Omni Flash, na ordem da página
 
@@ -70,7 +70,7 @@ Desde **22 de outubro de 2026** a Gemini API não tem mais Veo: os três IDs de 
 **O que se escreve no prompt:**
 
 - Negativos simples para tirar o indesejado ("No dialogue", "No extra sound effects").
-- Momentos marcados, em linguagem natural ("After 3 seconds, a woman enters the scene") ou em trechos de tempo (`[0-5s]`, `[5-10s]`, `[10-15s]`); um dos exemplos pede troca de cena a cada meio segundo, "12 frames at 24fps".
+- Momentos marcados, em linguagem natural (como dizer que, depois de 3 segundos, uma mulher entra em cena) ou em trechos de tempo (`[0-5s]`, `[5-10s]`, `[10-15s]`); um dos exemplos pede troca de cena a cada meio segundo, "12 frames at 24fps".
 - Pedidos de qualidade geral, o "meta-prompt": microdetalhe, expressão, figurino, fundo rico.
 - Texto na tela, que o modelo escreve legível quando pedido; convém dizer o que deve estar escrito até em placas e letreiros do fundo.
 

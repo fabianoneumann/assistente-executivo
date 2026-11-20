@@ -61,7 +61,7 @@ A FAQ dos termos da Unity define o cliente de indústria como quem usa a Unity e
 | Setores, numa lista que não se esgota | automotivo, aeroespacial, manufatura, governo, arquitetura, engenharia, construção, energia e varejo |
 | Prestador de serviço, plataforma, agência, revendedor e afins | pode precisar de outra concessão de direitos ou de autorização por escrito da Unity |
 | Dúvida sobre a elegibilidade | falar com a equipe de vendas da Unity |
-| Leituras ligadas | "How can I contact Unity?", "Which Unity Editor license should I use/purchase?" e a FAQ dos termos (U1) |
+| Leituras ligadas | *"How can I contact Unity?"*, *"Which Unity Editor license should I use/purchase?"* e a FAQ dos termos (U1) |
 
 ## O que a fonte recomenda
 

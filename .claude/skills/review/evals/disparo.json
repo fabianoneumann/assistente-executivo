@@ -1,0 +1,23 @@
+[
+ {"query": "dá uma olhada se tem algo errado no roteiro do post B, o texto.md tá na pasta 2026-11-20_ng-educativo, antes de eu travar", "should_trigger": true, "esperada": "review", "origem": "tabela de near-misses, com o alvo (sem ele, o pedido não é substantivo: a sessão sai procurando o arquivo)"},
+ {"query": "revisa essa síntese de observabilidade antes de eu validar", "should_trigger": true, "esperada": "review"},
+ {"query": "passa um pente fino na pauta do Hermes, quero saber o que eu não tô vendo", "should_trigger": true, "esperada": "review"},
+ {"query": "critica esse plano da issue 299, acha os problemas", "should_trigger": true, "esperada": "review"},
+ {"query": "confere o texto das telas do post B contra as fichas de knowledge/sources que ele cita, antes de travar: quero a lista do que não bate", "should_trigger": true, "esperada": "review"},
+ {"query": "testa essa decisão de deixar o vigia só no Worker: onde ela quebra?", "should_trigger": true, "esperada": "review"},
+ {"query": "a correção da síntese voltou, faz a re-revisão do que mudou", "should_trigger": true, "esperada": "review"},
+ {"query": "revisa o SKILL.md novo da visual-form, com a lente de efeito nas outras skills", "should_trigger": true, "esperada": "review"},
+ {"query": "dá uma conferida na issue 299 como spec: o pronto quando prova o que o objetivo pede?", "should_trigger": true, "esperada": "review"},
+ {"query": "revisão profunda da decisão de levar o processo do CRM pro kit, é difícil de desfazer", "should_trigger": true, "esperada": "review"},
+ {"query": "o que a base tem que eu não usei nesta aula?", "should_trigger": false, "esperada": "base-enrichment", "origem": "tabela de near-misses"},
+ {"query": "traz mais um ponto de vista da base sobre esse roteiro, o que estamos deixando de usar", "should_trigger": false, "esperada": "base-enrichment"},
+ {"query": "reescreve o texto da tela 7, ficou comprido", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "a peça tá pronta pra exportar? roda o portão de qualidade", "should_trigger": false, "esperada": null},
+ {"query": "exporta o carrossel e roda as conferências", "should_trigger": false, "esperada": "slides-export"},
+ {"query": "pesquisa se tem estudo novo sobre tempo de leitura em vídeo", "should_trigger": false, "esperada": "research"},
+ {"query": "faz o post B da Vaughan", "should_trigger": false, "esperada": "piece-creation"},
+ {"query": "deixa a tela 4 mais limpa", "should_trigger": false, "esperada": "visual-form"},
+ {"query": "confere se a coleta das métricas tá rodando", "should_trigger": false, "esperada": "ig-metrics"},
+ {"query": "ensaia a publicação do carrossel de sexta, sem publicar", "should_trigger": false, "esperada": "ig-publish"},
+ {"query": "isso rende post?", "should_trigger": false, "esperada": "story-angle"}
+]

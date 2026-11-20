@@ -229,8 +229,8 @@ Antes de publicar qualquer coisa com o Minecraft, tratar como uso comercial: tir
 ## Citações
 
 - Quem decide compartilhar o conteúdo com a comunidade, pretenda ganhar dinheiro ou não, está fazendo, para a Mojang, "what we consider to be a commercial thing".
-- "You add enough of your own unique content to the video or stream to make it reasonable for you to make money"
-- "Minecraft blocks used to build a world or characters from a movie"
+- Você acrescenta conteúdo próprio e original suficiente ao vídeo ou à transmissão para que seja razoável ganhar dinheiro com ele.
+- Blocos do Minecraft usados para construir um mundo ou personagens de um filme.
 
 ## Lacuna
 

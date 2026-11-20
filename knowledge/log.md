@@ -43,3 +43,7 @@ Os padrões de esforço por modelo (o Fable 5.2 entra na linha do `medium`), o u
 ## [2026-11-20] lint | duas fichas que seguiam a fonte frase a frase, reescritas
 
 `sources/2026-11-04-agencia-lupa-politica-de-correcoes.md` e `sources/2026-11-04-aos-fatos-nosso-metodo.md` seguiam a página na ordem dela; foram reescritas em estrutura própria (quadros de casos, critérios e quem decide), com até três citações curtas, conferidas contra a captura de 2026-11-04.
+
+## [2026-11-20] lint | a calibragem do parafrase.py, o teste de disparo das skills e as fichas em até três citações
+
+O `parafrase.py` da `research` foi medido contra 179 fichas com veredito, e o limiar 0,7 com K 3 ficou (o `calibra_parafrase.py` mede de novo); as skills ganharam os casos do teste de disparo (`evals/disparo.json`), e as descrições da `research` e da `review` cobrem mais pedidos; várias fichas de obra protegida desceram a até três citações, em palavras próprias.

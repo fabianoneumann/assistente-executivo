@@ -1,0 +1,22 @@
+[
+ {"query": "a régua de cálculo como metáfora de ferramenta: isso rende post?", "should_trigger": true, "esperada": "story-angle", "origem": "tabela de near-misses, com o tema (sozinho, o pedido não diz de quê)"},
+ {"query": "vamos desenvolver a ideia do manual de avião, quero um ângulo pra virar pauta", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "o que dá pra contar sobre o Weizenbaum que ninguém conta? quero transformar em pauta", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "transforma isso em pauta: o Gemini que erra e concorda com confiança", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "quero um ângulo pro tema dos agentes que rodam de madrugada, pra virar conteúdo", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "marketing/social-media/ideas/o-truque-do-manual-de-aviao.md\n\napura isso e me traz a mesa de ângulos", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "a ideia do caça-palavras de IA: será que rende uma série? apura e vê os ângulos", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "o efeito ELIZA dá post? quero ver os ângulos concorrentes antes de decidir", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "tenho o tema do Claude Design saindo do beta, quero virar conteúdo: qual o ângulo?", "should_trigger": true, "esperada": "story-angle"},
+ {"query": "isso rende post? se render, faz", "should_trigger": false, "esperada": "piece-creation", "origem": "descrição da story-angle: 'mesmo com se render, faz'"},
+ {"query": "anota essa ideia: o prompt que vira cartão de tarefa", "should_trigger": false, "esperada": "idea-capture"},
+ {"query": "tive uma ideia de conteúdo que quero registrar: a agenda que se monta sozinha", "should_trigger": false, "esperada": "idea-capture"},
+ {"query": "me explica melhor o que é o efeito ELIZA", "should_trigger": false, "esperada": null, "origem": "descrição: aprofundar/explicar não dispara"},
+ {"query": "pesquisa o ano exato em que o ELIZA foi publicado", "should_trigger": false, "esperada": "research"},
+ {"query": "roteiriza o post A do Weizenbaum a partir da pauta", "should_trigger": false, "esperada": "piece-script"},
+ {"query": "faz os Stories de terça", "should_trigger": false, "esperada": "piece-creation"},
+ {"query": "dá uma olhada se tem algo errado nessa pauta", "should_trigger": false, "esperada": "review"},
+ {"query": "quais posts do nicho tiveram mais envios essa semana?", "should_trigger": false, "esperada": "ig-metrics"},
+ {"query": "o que a base tem que eu não usei nessa pauta?", "should_trigger": false, "esperada": "base-enrichment"},
+ {"query": "aprofunda pra mim o tema de memória em agentes, quero entender melhor", "should_trigger": false, "esperada": null, "origem": "descrição: aprofundar/explicar não dispara"}
+]
