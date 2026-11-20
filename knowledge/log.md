@@ -39,3 +39,7 @@ Entraram nos modelos do `project-kit` a spec com o teste do essencial, o bloquei
 ## [2026-11-20] lint | duas páginas reconferidas
 
 Os padrões de esforço por modelo (o Fable 5.2 entra na linha do `medium`), o ultracode e o `effortLevel` reconferidos na documentação do Claude Code, em `anthropic-claude/niveis-de-esforco.md`; e os sinais do Instagram e a originalidade, sem mudar os três sinais, em `content-design/o-que-prediz-desempenho-instagram.md`.
+
+## [2026-11-20] lint | duas fichas que seguiam a fonte frase a frase, reescritas
+
+`sources/2026-11-04-agencia-lupa-politica-de-correcoes.md` e `sources/2026-11-04-aos-fatos-nosso-metodo.md` seguiam a página na ordem dela; foram reescritas em estrutura própria (quadros de casos, critérios e quem decide), com até três citações curtas, conferidas contra a captura de 2026-11-04.

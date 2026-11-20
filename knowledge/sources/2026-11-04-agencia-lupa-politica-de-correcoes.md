@@ -12,39 +12,37 @@ licenca: "sem nota de licença no trecho lido; texto institucional da Agência L
 
 # Agência Lupa: política de correções
 
-Ficha em palavras próprias da página de política de correções da Lupa (cerca de 900 palavras), lida no HTML em 2026-11-04. A página é de 2015 e foi atualizada (uma atualização datada de 28 de julho de 2022 e uma medida de redes sociais "a partir de 2020"). Organizada por três decisões desta ficha (a mudança pede nota?, o que fica à vista, quando se pode apagar); a parte operacional vai resumida no fim. O integral não entra.
+Ficha em palavras próprias da página de política de correções da Lupa (cerca de 1.000 palavras), lida no HTML em 2026-11-04; reescrita em 2026-11-20, porque a versão anterior seguia a página frase a frase. A página é de 2015, com atualização datada de 28/07/2022 e uma regra de redes sociais adotada em 2020. O integral não entra; a estrutura e os quadros são desta ficha.
 
-## A mudança pede nota pública?
+## A regra em uma linha (leitura desta ficha)
 
-| O que a mudança faz à informação | Nota? | O que a nota diz |
-|---|---|---|
-| Havia erro | Sim, no site e na mesma rede em que ele foi cometido | O que estava errado, a etiqueta anterior quando for o caso, a hora |
-| Não havia erro, mas foi preciso atualizar (por exemplo, a pessoa ou instituição checada se manifestou depois) | Sim, no fim do texto | A hora e a modificação |
-| Só grafia ou gramática, sem efeito no sentido | Não | |
-| Grafia ou gramática, e "o sentido da afirmação possa ser interpretado de outra forma" | Sim | |
+Erro de informação ganha nota pública e deixa o texto errado à vista; deslize de forma passa sem nota, a menos que mude o que o leitor entende.
 
-A página escreve essa exceção duas vezes, com as mesmas palavras: na regra do site e na das redes sociais. É o único ponto em que ela condiciona a nota ao efeito do erro no sentido.
+## Quatro casos, quatro tratamentos
 
-## O que fica à vista depois de uma correção
+| Caso | Tratamento |
+|---|---|
+| Erro de informação numa checagem ou reportagem | Correção com aviso no topo, nota que diz o que mudou (inclusive a etiqueta antiga, se mudou) e a hora; o texto antigo segue publicado por inteiro, marcado como errado |
+| Fato novo sem erro anterior (por exemplo, a pessoa checada responde depois) | Nota no fim, com a hora e o acréscimo |
+| Deslize de ortografia ou gramática | Sem nota, salvo quando o deslize abre outra leitura da afirmação, ressalva que a página repete para o site e para as redes |
+| Erro em post das redes da Lupa | Nada some antes de a versão certa estar no ar; erro só na legenda segue a regra do site onde a rede deixa editar, e vira post novo onde não deixa (a página cita o Twitter); o aviso sai na mesma rede do erro |
 
-Na checagem ou reportagem, o leitor encontra um sinal no topo, depois a nota e, abaixo dela, o texto original inteiro, marcado como errado; manter o original é o que a Lupa chama de compromisso e de "ponto crucial" do código de princípios da International Fact-checking Network (IFCN), rede a que é associada. A Lupa também se reserva tréplica ou nota de redação diante de uma correção.
+Manter o original visível é, para a Lupa, exigência do código da International Fact-checking Network (IFCN), que ela assina. Ela também se dá o direito de responder a uma contestação com nota própria da redação.
 
-## Quando se pode apagar
+## Por que a regra das redes existe
 
-Nas redes sociais da Lupa, apagar tem uma condição de ordem: antes, a informação certa entra no lugar da errada, em qualquer meio, regra de 2020 para que card ou vídeo com a marca da empresa não ajude a espalhar desinformação. Se o erro está só no texto do post, e não no card, vale a política do site nas redes que deixam editar, e no Twitter sai nova publicação.
+Uma peça visual com a marca da agência, apagada sem substituto, pode seguir circulando como prova de algo falso; por isso, desde 2020, a troca vem antes da remoção.
 
-## O princípio e o alcance
+## Quem avisa e como
 
-"Se publica algo errado, a Lupa corrige e aponta o erro" é o princípio que ela diz manter enquanto revê as políticas, conforme o jornalismo, as instituições de que faz parte e as práticas do digital. Alcança site, perfis em redes e sites de parceiros e clientes, e vem de uma premissa declarada: jornalismo está sujeito a erro, e a correção, parte da ética e da transparência, deve sair "da maneira mais clara, ágil e justa possível".
-
-## Resumo operacional
-
-- **Avisar de um erro:** botão "Erramos? Informe à nossa redação" no fim da matéria, e-mail ou perfis (nas redes, também mensagem direta), dizendo qual afirmação e por quê, com fontes se houver ("quanto mais informação, melhor"). Dá para registrar queixa também na IFCN, pelas regras dela.
-- **Texto da Lupa em outro veículo:** os contratos preveem correção o mais rápido possível, pelos padrões das duas partes, e o leitor pode procurar qualquer uma delas.
-- **Marcações no Facebook e no Instagram:** quem foi marcado segue o recurso da plataforma, cujas regras valem aqui, e manda à Lupa o link da peça já corrigida, sem o qual a etiqueta não muda; quem discorda manda o link e tem a marcação reavaliada; marcação errada da inteligência artificial do Facebook pode levar até 24 horas para sair.
+O leitor aponta o erro pelo formulário no fim do texto, por e-mail ou pelas redes, dizendo qual afirmação e por quê, com fonte se tiver; pode ainda reclamar direto à IFCN. Texto da Lupa republicado por parceiro se corrige pelos padrões dos dois, pelo canal de qualquer um deles. Nas marcações do Facebook e do Instagram, manda a regra da plataforma: quem corrigiu o post envia o link para a etiqueta mudar, quem discorda pede reavaliação, e a marcação errada feita pela máquina da plataforma leva até um dia para sair.
 
 ## O que a fonte não diz
 
-Definição de "erro" e graus de gravidade. Prazo para publicar a correção. Quem na redação decide se houve erro ou se ele muda o sentido. Como os erros são contados ou registrados internamente.
+O que conta como erro e como se mede a gravidade. O prazo para corrigir. Quem decide se houve erro ou se ele muda o sentido. Se os erros são contados ou registrados.
 
-Contagem lado a lado (2026-11-04, refeita depois da re-revisão), contando a frase ou célula que acompanha uma frase da fonte, ou vizinhas na mesma ordem: cerca de 14 das cerca de 45 frases do corpo da página (no quadro, as células da nota de erro, da atualização sem erro e da grafia; fora dele, as do que fica à vista, da tréplica, do apagar, do erro só no texto do post, do princípio, da premissa, dos contratos, das marcações, do alcance, de como avisar e da IFCN). As 16 frases operacionais estão resumidas.
+## Citações (até três)
+
+- "se publica algo errado, a Lupa corrige e aponta o erro" (o princípio declarado).
+- "da maneira mais clara, ágil e justa possível" (como a correção deve sair).
+- "Quanto mais informação, melhor." (o pedido a quem aponta o erro).
