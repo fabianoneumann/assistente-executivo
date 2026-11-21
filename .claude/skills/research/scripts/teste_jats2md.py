@@ -86,11 +86,14 @@ class TesteJats(unittest.TestCase):
         self.assertIn("### References", md)
         self.assertIn("- 1. Autor A. Título. 2020.", md)
 
-    @unittest.expectedFailure
     def test_rotulo_da_formula_sem_parentese_dobrado(self):
-        # o rótulo que já vem com parênteses sai com dois, "((1))" (achado menor): quando corrigir, tire o expectedFailure
+        # o rótulo que já vem com parênteses saía com dois, "((1))" (achado menor, corrigido em 21/11)
         r, md = self.converter(XML)
         self.assertIn("(a)/(b) (1)\n", md)
+        self.assertNotIn("((1))", md)
+        # o rótulo sem parênteses ganha os parênteses uma vez só
+        r, md = self.converter(XML.replace("<label>(1)</label><mml:math>", "<label>2</label><mml:math>"))
+        self.assertIn("(a)/(b) (2)\n", md)
 
     def test_sem_corpo_para(self):
         r, md = self.converter('<article><front><article-meta><abstract><p>só o resumo</p></abstract></article-meta></front></article>')

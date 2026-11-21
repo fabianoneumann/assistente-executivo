@@ -214,7 +214,8 @@ class Conv:
             label = el.find("label")
             m = [c for c in el.iter() if local(c.tag) == "math"]
             s = math_text(m[0]) if m else ws(inline(el))
-            self.para(s + (f"   ({ws(label.text)})" if label is not None else ""))
+            rotulo = ws(label.text).strip("()").strip() if label is not None else ""  # o "(1)" do XML não sai "((1))"
+            self.para(s + (f"   ({rotulo})" if rotulo else ""))
         elif t == "disp-quote":
             for p in el:
                 if local(p.tag) == "p":

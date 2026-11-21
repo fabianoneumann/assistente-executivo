@@ -8,7 +8,8 @@ palavras cada; `knowledge/sources/README.md`, "A ficha de estudo" e o item 2 de 
   python -X utf8 .claude/skills/research/scripts/conta_citacoes.py --mostra --ficha <arquivo.md>  # os trechos
 
 Ficha protegida: o campo `licenca` do frontmatter não é livre. Livre (o integral pode entrar) é Creative Commons sem
-a cláusula NC (BY, BY-SA, BY-ND, CC0), MIT, Apache, BSD, GPL, domínio público e obra do governo dos EUA, e o campo
+a cláusula NC (BY, BY-SA, BY-ND, CC0, também escrito "CC 0" ou "CC-0"), MIT, Apache, BSD, GPL (com LGPL e AGPL),
+domínio público e obra do governo dos EUA, e o campo
 que diz que o integral está no arquivo. A palavra de quem gravou vem antes do nome da licença: o campo que começa por
 "protegido" ou "em dúvida", ou diz "só a ficha" ou "sem o integral", é protegido mesmo citando CC0 de outra coisa (os
 assets de um site, o código de um repositório), e a licença negada na mesma frase ("sem licença Creative Commons") não
@@ -49,8 +50,8 @@ LIMITE = 3
 
 # --- licença -------------------------------------------------------------------------------------------------------
 LIVRE = re.compile(
-    r"\bCC[\s-]?BY\b|\bCC0\b|creative commons attribution|creative commons atribui|\bMIT\b|\bApache\b|\bBSD\b|"
-    r"\bGPL\b|dom[ií]nio p[uú]blico|public domain|governo (?:federal )?dos EUA|U\.S\.C\.|\bobra do governo",
+    r"\bCC[\s-]?BY\b|\bCC[\s-]?0\b|creative commons attribution|creative commons atribui|\bMIT\b|\bApache\b|\bBSD\b|"
+    r"\b[LA]?GPL\b|dom[ií]nio p[uú]blico|public domain|governo (?:federal )?dos EUA|U\.S\.C\.|\bobra do governo",
     re.I,
 )
 NC = re.compile(r"\bNC\b|n[aã]o[- ]?comercial|noncommercial|non-commercial", re.I)

@@ -28,6 +28,12 @@ LIVRES = [
     "página sem nota de licença; obra do governo federal dos EUA, sem copyright nos EUA (17 U.S.C. §105)",
     "lei federal, texto oficial no portal do Planalto, sem direito autoral: Lei 9.610/1998, art. 8º, IV",
     "CC BY 4.0 (indicada na página do arXiv, para o preprint; a versão publicada na PNAS tem CC BY-NC-ND 4.0)",
+    # 21/11: o "\bGPL\b" não pegava LGPL nem AGPL, e "CC 0" separado não casava com CC0 (achado)
+    "LGPL-3.0, no repositório (API do GitHub)",
+    "AGPL-3.0 (arquivo LICENSE do repositório)",
+    "GPL-3.0, no repositório",
+    "CC 0 1.0 (indicada no rodapé da documentação)",
+    "CC-0, no repositório",
 ]
 PROTEGIDAS = [
     None,
@@ -39,6 +45,8 @@ PROTEGIDAS = [
     "protegido (rodapé das três páginas: '© Quaternius'); as páginas dizem que os modelos são CC0",
     "em dúvida: a revista declara hoje CC BY 4.0 no DOAJ, mas o PDF de 1994 não traz licença",
     "licença não exclusiva do arXiv (arxiv.org/licenses/nonexclusive-distrib/1.0/); entra só a ficha",
+    "sem LGPL nem outra licença aberta declarada",   # a licença negada na mesma frase não conta
+    "ACC 0 é o nome do produto; todos os direitos reservados",   # "ACC 0" não é CC0
 ]
 for lic in LIVRES:
     confere(f"livre: {lic[:50]}", cc.eh_livre(lic), True)
