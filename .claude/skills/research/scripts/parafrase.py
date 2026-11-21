@@ -41,7 +41,14 @@ sinônimos fica abaixo do limiar, e na tradução o script não acha a ficha que
 0,7 e 3: `teste_conferidores.py`, nesta pasta (rodar a cada edição, e de novo quando a calibração mudar os padrões).
 
   python -X utf8 .claude/skills/research/scripts/parafrase.py --ficha <ficha.md> --fonte <texto.txt>
-         [--limiar 0.7] [--k 3] [--janela 12] [--palavras-celula 8] [--saida pasta]
+         [--limiar 0.7] [--k 3] [--janela 12] [--palavras-celula 8] [--aviso 0.5] [--saida pasta]
+
+A passada de aviso (2026-11-21): além do corte de 0,7, o script refaz o corte de trechos com o
+limiar de `--aviso` (padrão 0,5, o mesmo K) e lista, à parte, os trechos "a olhar" que o corte principal não pegou.
+Na calibração de 2026-11-20, 0,5 e K 3 acharam as duas fichas que seguiam a fonte frase a frase com sinônimos
+(antes da reescrita delas), com 3 falsos em 17 fichas boas na mesma língua: é um ponto onde
+olhar, não reprovação, e por isso o aviso não muda o código de saída. `--aviso 0` desliga a passada. O trecho do
+aviso que divide uma linha com um trecho colado sai da lista inteiro, porque a linha já vai ser lida pelo colado.
 
 A fonte é texto (`.txt`, `.md`); `.html` tem as tags tiradas; `.pdf` passa pelo `pdftotext` (precisa estar no
 PATH; o erro dele aparece). Saída: o resumo e os trechos no stdout; com `--saida`, `<ficha>-parafrase.json` e
@@ -55,6 +62,7 @@ que ela achar mesmo assim vale (código 1).
 A entrada é uma ficha e uma fonte, sem caminho fixo; as células de fato e as frases curtas saem da conta.
 """
 import argparse
+import copy
 import html
 import json
 import re
@@ -318,6 +326,8 @@ def principal():
     ap.add_argument("--k", type=int, default=3, help="coladas seguidas que fazem um trecho")
     ap.add_argument("--janela", type=int, default=12, help="quanto a fonte pode andar entre duas coladas")
     ap.add_argument("--palavras-celula", type=int, default=8, help="abaixo disso, a célula conta como fato")
+    ap.add_argument("--aviso", type=float, default=0.5,
+                    help="limiar da passada só de aviso, que lista trechos a olhar sem mudar o código (0 desliga)")
     ap.add_argument("--saida", help="pasta para o JSON e o markdown do resultado")
     a = ap.parse_args()
 
@@ -344,7 +354,12 @@ def principal():
 
     itens, fora = unidades(tf, a.palavras_celula)
     al, curtas = alinha(itens, fs, ws, inv)
+    al_aviso = copy.deepcopy(al)  # o corte de trechos grava a frase da fonte escolhida em cada unidade
     tr, col = trechos(al, a.limiar, a.k, a.janela, fs)
+    aviso = []
+    if 0 < a.aviso < a.limiar:
+        ja = {l for t in tr for l in t["linhas"]}
+        aviso = [t for t in trechos(al_aviso, a.aviso, a.k, a.janela, fs)[0] if not set(t["linhas"]) & ja]
     integral = linhas_do_integral(tf)
     lf = lingua(" ".join(s for n, s, _ in itens if n not in integral))  # a língua do corpo, fora o integral
     lx = lingua(tx[:20000])
@@ -357,6 +372,7 @@ def principal():
         "coladas": sum(col), "frac_coladas": round(sum(col) / max(1, len(al)), 3),
         "lingua_ficha": lf, "lingua_fonte": lx, "linhas_do_texto_integral_fora_da_lingua": len(integral),
         "trechos": tr,
+        "aviso": {"limiar": a.aviso if 0 < a.aviso < a.limiar else None, "trechos": aviso},
         "linhas_coladas": sorted({x["linha"] for x, c in zip(al, col) if c}),
         "unidades": al,
     }
@@ -382,6 +398,15 @@ def principal():
         for p in t["pares"]:
             L.append(f"  [{p['cobertura']:.2f}] ficha: {p['ficha']}")
             L.append(f"         fonte: {p['fonte']}")
+    if 0 < a.aviso < a.limiar:
+        L.append("")
+        L.append(f"A olhar (aviso, limiar {a.aviso}, K {a.k}; não muda o código de saída): {len(aviso)} trecho(s)"
+                 + ("" if aviso else ", nenhum"))
+        for t in aviso:
+            L.append(f"  Trecho a olhar, linhas {', '.join(map(str, t['linhas']))}:")
+            for p in t["pares"]:
+                L.append(f"    [{p['cobertura']:.2f}] ficha: {p['ficha']}")
+                L.append(f"           fonte: {p['fonte']}")
     soltas = [x for x, c in zip(al, col) if c and x["linha"] not in {l for t in tr for l in t["linhas"]}]
     if soltas:
         L.append("")

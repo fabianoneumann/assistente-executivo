@@ -34,10 +34,16 @@ de pelo menos 6 palavras. Fica fora:
     traduções).
 Onde erra (calibrado à mão em 19/11/2026): `licoes.md` da `research`, a entrada do `conta_citacoes.py`.
 
+A ficha listada que é citada por uma peça com data de hoje em diante (a pasta de `marketing/` com um arquivo da
+produção, como a `legenda.md`, o `roteiro.md` ou a `escaleta.md`, e a data no nome) sai com um AVISO: ficha que sustenta peça em produção não se reescreve antes da
+publicação (2026-11-21; `knowledge/sources/README.md`). O aviso não muda o código de saída;
+`--hoje AAAA-MM-DD` troca a data de referência.
+
 Código de saída: 0 sem ficha acima de três, 1 com alguma.
 O teste sem rede: `teste_conta_citacoes.py`, nesta pasta.
 """
 import argparse
+from datetime import date
 import json
 import re
 import sys
@@ -327,9 +333,54 @@ def mede(caminho, todos=False):
     return r
 
 
+PECAS = RAIZ / "marketing"
+DATA_DA_PASTA = re.compile(r"^(\d{4}-\d{2}-\d{2})")
+FICHA_CITADA = re.compile(r"\b(20\d{2}-\d{2}-\d{2}-[a-z0-9][a-z0-9-]*[a-z0-9])")
+MARCAS_DE_PECA = ("legenda.md", "roteiro.md", "escaleta.md", "texto.md", "conceitos-e-imagens.md")
+
+
+def data_iso(s):
+    """O `--hoje` tem de ser uma data AAAA-MM-DD de verdade: a comparação é por texto."""
+    try:
+        return date.fromisoformat(s).isoformat()
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"data inválida: {s!r} (use AAAA-MM-DD)")
+
+
+def pecas_futuras(hoje):
+    """As fichas citadas por uma peça com data de hoje em diante: {nome da ficha: [(pasta da peça, data)]}.
+
+    A peça é a pasta de `marketing/` com um dos arquivos da produção (`legenda.md`, `roteiro.md`, `escaleta.md`,
+    `texto.md`, `conceitos-e-imagens.md`; o carrossel em produção pode ter só a escaleta, o /code-review de 21/11) e
+    a data no começo do nome (o carrossel `2026-11-24_...`, os Stories `2026-11-10-...`); a ficha é citada quando o
+    nome dela (sem o `.md`) aparece em qualquer markdown da pasta, fora `versions/`. Hoje conta como futuro: a peça das
+    18h ainda não saiu de manhã (2026-11-21: ficha que sustenta peça em produção não se reescreve
+    antes da publicação). A pauta que ainda está em `ideas/`, sem pasta de peça, fica fora."""
+    out, vistas = {}, set()
+    for marca in MARCAS_DE_PECA:
+        for arq in PECAS.rglob(marca):
+            pasta = arq.parent
+            m = DATA_DA_PASTA.match(pasta.name)
+            if not m or m.group(1) < hoje or pasta in vistas:
+                continue
+            vistas.add(pasta)
+            nomes = set()
+            for md in pasta.rglob("*.md"):
+                if "versions" in md.relative_to(pasta).parts:
+                    continue
+                nomes |= set(FICHA_CITADA.findall(md.read_text(encoding="utf-8", errors="replace")))
+            for nome in nomes:
+                par = (pasta.relative_to(RAIZ).as_posix(), m.group(1))
+                if par not in out.setdefault(nome, []):
+                    out[nome].append(par)
+    return out
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--hoje", default=None, type=data_iso,
+                    help="a data de hoje (AAAA-MM-DD), para o aviso da peça futura; padrão: hoje")
     ap.add_argument("--todas", action="store_true", help="lista todas as protegidas, não só as acima de três")
     ap.add_argument("--mostra", action="store_true", help="mostra os trechos, os contados e os que ficaram fora")
     ap.add_argument("--ficha", nargs="+", help="só estas fichas")
@@ -343,6 +394,9 @@ def main(argv=None):
         medidas = [m for m in medidas if not m["pago"]]
     acima = [m for m in medidas if m["citacoes"] > LIMITE]
     saida = medidas if (a.todas or a.ficha) else acima
+    futuras = pecas_futuras(a.hoje or date.today().isoformat())
+    for m in saida:
+        m["pecas_futuras"] = [{"peca": p, "data": d} for p, d in futuras.get(Path(m["ficha"]).stem, [])]
     if a.json:
         print(json.dumps({"protegidas": len(medidas), "acima": len(acima), "fichas": saida}, ensure_ascii=False,
                          indent=1))
@@ -352,6 +406,8 @@ def main(argv=None):
             marca = " (licenca ausente)" if m["licenca"] == "ausente" else ""
             longas = f", {m['longas']} longas" if m["longas"] else ""
             print(f"{m['citacoes']:3d}{longas}  {nome}{marca}  linhas {', '.join(str(c['linha']) for c in m['linhas'])}")
+            for p in m["pecas_futuras"]:
+                print(f"      AVISO: sustenta a peça de {p['data']} ({p['peca']}); não reescrever antes de ela ser publicada")
             if a.mostra:
                 for c in m["linhas"]:
                     print(f"      cita  {c['linha']:4d} ({c['palavras']}) {c['trecho']}")

@@ -132,9 +132,49 @@ with tempfile.TemporaryDirectory() as d:
     confere("frontmatter sem fechamento: lê os campos", campos.get("licenca"), "todos os direitos reservados")
     confere("frontmatter sem fechamento: o corpo começa depois dos campos", corpo, 3)
 
+# a peça com data futura que cita a ficha (2026-11-21)
+with tempfile.TemporaryDirectory() as d:
+    raiz = Path(d)
+    pecas_antes, raiz_antes = cc.PECAS, cc.RAIZ
+    cc.PECAS, cc.RAIZ = raiz / "marketing", raiz
+    try:
+        futura = raiz / "marketing/carousels/2026-11-24_peca-futura"
+        futura.mkdir(parents=True)
+        (futura / "legenda.md").write_text("# Legenda\n", encoding="utf-8")
+        (futura / "escaleta.md").write_text("Fonte: `knowledge/sources/2026-11-13-ficha-da-peca.md`\n", encoding="utf-8")
+        (futura / "versions").mkdir()
+        (futura / "versions/escaleta-v1.md").write_text("2026-11-01-so-na-versao-velha\n", encoding="utf-8")
+        passada = raiz / "marketing/stories/2026-11-10-sequencia-passada"
+        passada.mkdir(parents=True)
+        (passada / "roteiro.md").write_text("2026-11-13-ficha-da-peca e 2026-11-05-outra\n", encoding="utf-8")
+        sem_marca = raiz / "marketing/ideas/2026-12-01-ideia"
+        sem_marca.mkdir(parents=True)
+        (sem_marca / "notas.md").write_text("2026-11-05-outra\n", encoding="utf-8")
+        f = cc.pecas_futuras("2026-11-21")
+        confere("peça futura: a ficha citada na escaleta aparece com a peça e a data",
+                f.get("2026-11-13-ficha-da-peca"), [("marketing/carousels/2026-11-24_peca-futura", "2026-11-24")])
+        confere("peça passada: a ficha que só ela cita não aparece", f.get("2026-11-05-outra"), None)
+        confere("peça futura: o que só está em versions/ não conta", f.get("2026-11-01-so-na-versao-velha"), None)
+        confere("peça de hoje conta como futura", bool(cc.pecas_futuras("2026-11-24").get("2026-11-13-ficha-da-peca")), True)
+        confere("depois da data, a peça já não segura a ficha",
+                cc.pecas_futuras("2026-11-25").get("2026-11-13-ficha-da-peca"), None)
+        so_escaleta = raiz / "marketing/carousels/2026-11-30_so-escaleta"
+        so_escaleta.mkdir(parents=True)
+        (so_escaleta / "escaleta.md").write_text("ver 2026-11-14-ficha-em-producao\n", encoding="utf-8")
+        confere("peça em produção só com a escaleta também segura a ficha",
+                cc.pecas_futuras("2026-11-21").get("2026-11-14-ficha-em-producao"),
+                [("marketing/carousels/2026-11-30_so-escaleta", "2026-11-30")])
+        try:
+            cc.data_iso("21/11/2026")
+            confere("--hoje fora do formato é recusado", False, True)
+        except Exception:
+            confere("--hoje fora do formato é recusado", True, True)
+    finally:
+        cc.PECAS, cc.RAIZ = pecas_antes, raiz_antes
+
 if falhas:
     print("FALHOU:")
     for f in falhas:
         print("  " + f)
     sys.exit(1)
-print(f"ok: {len(LIVRES) + len(PROTEGIDAS) + len(CASOS) + 12} conferências")
+print(f"ok: {len(LIVRES) + len(PROTEGIDAS) + len(CASOS) + 19} conferências")

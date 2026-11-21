@@ -222,6 +222,18 @@ def teste_parafrase(base):
          cod == 0 and "coladas: 4" in out, out)
     cod, out = mede("duas-e-duas-k2", misturada, "--k", "2")
     caso("paráfrase: as mesmas com --k 2 reprovam (código 1)", cod == 1, out)
+    # a passada de aviso (2026-11-21): com o corte principal acima de qualquer cobertura, só o aviso de 0,5 vê o trecho
+    cod, out = mede("aviso", " ".join(COLADA) + "\n", "--limiar", "1.01")
+    caso("paráfrase: o trecho que só o aviso de 0,5 vê sai como \"a olhar\" e não muda o código (0)",
+         cod == 0 and "Trecho a olhar" in out and "Trecho colado" not in out, out)
+    cod, out = mede("aviso-desligado", " ".join(COLADA) + "\n", "--limiar", "1.01", "--aviso", "0")
+    caso("paráfrase: --aviso 0 desliga a passada", cod == 0 and "A olhar" not in out, out)
+    cod, out = mede("aviso-propria", PROPRIA)
+    caso("paráfrase: a ficha em palavras próprias não tem trecho a olhar", cod == 0 and "nenhum" in out
+         and "Trecho a olhar" not in out, out)
+    cod, out = mede("aviso-sem-repetir", " ".join(COLADA) + "\n")
+    caso("paráfrase: o trecho que o corte principal já pegou não se repete no aviso",
+         cod == 1 and "Trecho colado" in out and "Trecho a olhar" not in out, out)
     aspas = "\n\n".join(f"“{s}”" for s in COLADA) + "\n"  # um parágrafo por citação: sem tirar as aspas, reprovaria
     cod, out = mede("aspas", aspas)
     caso("paráfrase: a frase entre aspas é citação e fica fora da conta (código 0)", cod == 0, out)
