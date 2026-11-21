@@ -12,6 +12,7 @@ As lições que valem para mais de uma skill. **Leia ao criar, editar ou testar 
 
 ## Viraram regra
 
+- **O agente bifurcado (fork) não revisa o próprio trabalho: ele para antes da revisão e devolve o que revisar, e quem o lançou dispara os dois agentes da `review` e, quando há código, o `/code-review`.** Por quê: o fork não lança outros agentes, e a revisão que ele faz em sequência, no próprio contexto, não é independente (`.claude/skills/review/references/agente.md`).
 - **A mesa de escolhas parte do modelo `.claude/modelos/mesa-modelo.html` e passa pelo `teste_mesa_modelo.py` ao lado antes do link:** o comentário grava enquanto se digita, nunca por um botão, e o clique numa opção não redesenha a página nem apaga texto. Por quê: uma mesa que refazia a página a cada clique, com o comentário gravado só por botão, apagou os comentários que a pessoa ainda não tinha gravado.
 - **Chame a skill pela ferramenta Skill, nunca siga os passos de memória.** Por quê: seguida de memória, a skill perde os passos que não se lembram, e ninguém vê que ela não rodou.
 - **Criar ou editar uma skill passa pela `review` (com a lente "efeito nas outras skills") e, quando a mudança é de estrutura (passo novo, divisão, mudança de entrada ou saída), pela `skill-creator`; o código da skill passa também pelo `/code-review`.** Por quê: cada revisão pega o que a outra não olha.
