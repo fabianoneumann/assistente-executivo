@@ -47,3 +47,7 @@ Os padrões de esforço por modelo (o Fable 5.2 entra na linha do `medium`), o u
 ## [2026-11-20] lint | a calibragem do parafrase.py, o teste de disparo das skills e as fichas em até três citações
 
 O `parafrase.py` da `research` foi medido contra 179 fichas com veredito, e o limiar 0,7 com K 3 ficou (o `calibra_parafrase.py` mede de novo); as skills ganharam os casos do teste de disparo (`evals/disparo.json`), e as descrições da `research` e da `review` cobrem mais pedidos; várias fichas de obra protegida desceram a até três citações, em palavras próprias.
+
+## [2026-11-21] ingest | o "você", o favor com lucro e a linguagem formal, lidos no texto
+
+Três fichas novas: Sun et al. 2024 (o experimento pré-registrado com 1.601 pessoas, que sustenta o efeito do "você" como causal, pequeno), Arnestad et al. 2024 (um cenário imaginado de favor entre amigos, em que a desculpa leva a reação ao meio do caminho) e Trope e Liberman 2010 (a linguagem formal e educada cria distância). A síntese `psychology/palavras-que-aproximam-e-afastam.md` e o índice da área foram atualizados.
