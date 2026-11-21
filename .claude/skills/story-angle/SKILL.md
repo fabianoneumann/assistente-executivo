@@ -81,6 +81,8 @@ Os achados confirmados entram na mesa, na seção "Contradições e o que não f
 
 ## Fase 3: a mesa (a única parada), nesta ordem
 
+A página parte do modelo `.claude/modelos/mesa-modelo.html`, com o `teste_mesa_modelo.py` ao lado rodado antes do link (`decisions/mesas-de-design.md`).
+
 1. **O que a apuração encontrou:** narrativa curta: o que já se sabia, o que mudou, o que surpreendeu.
 2. **Rendimento por movimento:** o que cada um trouxe e quais vieram secos.
 3. **Contradições e o que não fecha.**

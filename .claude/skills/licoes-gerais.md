@@ -12,6 +12,7 @@ As lições que valem para mais de uma skill. **Leia ao criar, editar ou testar 
 
 ## Viraram regra
 
+- **A mesa de escolhas parte do modelo `.claude/modelos/mesa-modelo.html` e passa pelo `teste_mesa_modelo.py` ao lado antes do link:** o comentário grava enquanto se digita, nunca por um botão, e o clique numa opção não redesenha a página nem apaga texto. Por quê: uma mesa que refazia a página a cada clique, com o comentário gravado só por botão, apagou os comentários que a pessoa ainda não tinha gravado.
 - **Chame a skill pela ferramenta Skill, nunca siga os passos de memória.** Por quê: seguida de memória, a skill perde os passos que não se lembram, e ninguém vê que ela não rodou.
 - **Criar ou editar uma skill passa pela `review` (com a lente "efeito nas outras skills") e, quando a mudança é de estrutura (passo novo, divisão, mudança de entrada ou saída), pela `skill-creator`; o código da skill passa também pelo `/code-review`.** Por quê: cada revisão pega o que a outra não olha.
 - **Script improvisado que vai servir de novo sai da pasta temporária na mesma entrega**, para a pasta `scripts/` da skill que o usa ou para `scripts/` na raiz. Por quê: o script deixado na pasta temporária se perde, e a medida que ele fazia não se repete igual.

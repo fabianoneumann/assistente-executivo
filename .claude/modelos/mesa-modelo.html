@@ -1,0 +1,136 @@
+<!--
+  Modelo de mesa de escolhas (regra em decisions/mesas-de-design.md, entrada de 2026-11-21).
+  Como usar: copie este arquivo para o scratchpad da tarefa, troque o <title>, o cabeçalho e a lista ITENS, e publique
+  com capabilities: {"db": {}}. Não mexa na parte "não mude" sem refazer a conferência abaixo.
+
+  O que o modelo garante:
+  - cada clique numa opção grava no banco do artifact (coleção "escolhas", um documento por item), junto com o
+    comentário que estiver no campo naquele momento;
+  - o comentário grava enquanto se digita (600 ms depois da última tecla) e de novo ao sair do campo; não há botão
+    "gravar";
+  - clicar numa opção não redesenha a página nem apaga texto de nenhum campo (a página é montada uma vez só);
+  - ao recarregar, a página repinta o que já está no banco, sem sobrescrever o campo em que se está digitando;
+  - todo item tem "nenhuma destas"; a sugestão do assistente (campo sug) só aparece depois do primeiro clique no item.
+
+  A conferência antes de entregar o link (obrigatória):
+  1. digitar um comentário num item, sem sair do campo, e clicar noutra opção do mesmo item: o texto fica;
+  2. digitar noutro item e clicar numa opção de um terceiro: os dois textos ficam;
+  3. recarregar a página: as escolhas e os dois comentários voltam;
+  4. ler o banco (ArtifactData, action "list", coleção "escolhas"): os documentos têm a escolha e o comentário.
+-->
+<title>Mesa de escolhas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: uma coluna; cada item é um cartão com o contexto, as opções em linha, o comentário e a sugestão escondida até o clique */
+:root{
+  --bg:#f6f7f9; --surface:#ffffff; --fg:#1b2330; --muted:#5a6577; --line:#dde2ea; --accent:#2f5fb3; --accent-soft:#e6f0ff; --ok:#1f7a4d;
+  --f-display:"Space Grotesk","Segoe UI",system-ui,sans-serif; --f-body:"Inter","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12161d; --surface:#1a2029; --fg:#e7ebf1; --muted:#9aa5b6; --line:#2b3340; --accent:#86aef2; --accent-soft:#1d2c47; --ok:#5fcf98; color-scheme:dark }}
+:root[data-theme="dark"]{ --bg:#12161d; --surface:#1a2029; --fg:#e7ebf1; --muted:#9aa5b6; --line:#2b3340; --accent:#86aef2; --accent-soft:#1d2c47; --ok:#5fcf98; color-scheme:dark }
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+main{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;line-height:1.25}
+h1{font-size:1.8rem} h2{font-size:1.25rem;padding-bottom:6px;border-bottom:1px solid var(--line)} h3{font-size:1rem}
+p{margin:0}
+.lede{color:var(--muted)}
+#estado{font-size:.88rem;color:var(--muted)}
+#estado.ok{color:var(--ok)}
+.grupo{display:flex;flex-direction:column;gap:14px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.tag{font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.ctx{font-size:.93rem}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts label{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-size:.9rem;background:var(--bg)}
+.opts input{accent-color:var(--accent)}
+.opts label:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.opts label:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+textarea{width:100%;box-sizing:border-box;min-height:44px;border:1px solid var(--line);border-radius:6px;padding:8px 10px;font:inherit;font-size:.9rem;background:var(--bg);color:var(--fg);resize:vertical}
+textarea:focus-visible{outline:2px solid var(--accent)}
+.sug{border-left:3px solid var(--accent);padding:8px 12px;background:var(--bg);border-radius:0 6px 6px 0;font-size:.92rem}
+.salvo{font-size:.78rem;color:var(--ok);min-height:1em}
+</style>
+
+<main>
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Mesa de escolhas</h1>
+    <p class="lede">Troque este texto pelo que a mesa decide. Cada clique e cada comentário ficam gravados sozinhos; "nenhuma destas" e o comentário servem para o que não couber.</p>
+    <p id="estado">Conectando ao banco da mesa…</p>
+  </header>
+  <div id="grupos" style="display:flex;flex-direction:column;gap:28px"></div>
+</main>
+
+<script>
+/* ===== Troque daqui ===== */
+const GRUPOS = [{id:"g1", titulo:"Primeiro bloco"}];
+const ITENS = [
+  {g:"g1", id:"q1", tag:"exemplo", t:"A pergunta do item", c:"O contexto em duas linhas.", o:["Opção recomendada","Outra opção"], sug:"(opcional) A sugestão, que só aparece depois do clique."},
+  {g:"g1", id:"q2", tag:"exemplo", t:"Segunda pergunta", c:"Outro contexto.", o:["Sim","Não"]},
+  {g:"g1", id:"q3", tag:"exemplo", t:"Terceira pergunta", c:"Mais um contexto.", o:["Agora","Depois","Não"]}
+];
+/* ===== até aqui. Daqui para baixo, não mude sem refazer a conferência do topo. ===== */
+const estado = document.getElementById("estado");
+let col = null;
+const timers = {};
+function esc(x){ return String(x).replace(/[&<>"]/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch])); }
+function montar(){
+  const raiz = document.getElementById("grupos");
+  for (const g of GRUPOS){
+    const sec = document.createElement("section"); sec.className = "grupo";
+    sec.innerHTML = `<h2>${esc(g.titulo)}</h2>`; sec.id = "grupo-" + g.id; raiz.appendChild(sec);
+  }
+  for (const it of ITENS){
+    const box = document.createElement("div"); box.className = "item"; box.id = it.id;
+    const opts = it.o.map((o,i)=>`<label><input type="radio" name="${it.id}" id="${it.id}-${i}" value="${esc(o)}"> ${esc(o)}</label>`).join("")
+      + `<label><input type="radio" name="${it.id}" id="${it.id}-n" value="nenhuma destas"> Nenhuma destas</label>`;
+    box.innerHTML = `${it.tag ? `<span class="tag">${esc(it.tag)}</span>` : ""}<h3>${esc(it.t)}</h3>${it.c ? `<p class="ctx">${esc(it.c)}</p>` : ""}
+      <div class="opts" role="radiogroup" aria-label="${esc(it.t)}">${opts}</div>
+      <label for="${it.id}-c" class="tag" style="text-transform:none;letter-spacing:0">Comentário (opcional; grava enquanto você digita)</label>
+      <textarea id="${it.id}-c" placeholder="O que muda, ou a outra opção"></textarea>
+      ${it.sug ? `<p class="sug" hidden>${esc(it.sug)}</p>` : ""}
+      <span class="salvo" aria-live="polite"></span>`;
+    document.getElementById("grupo-" + it.g).appendChild(box);
+    box.querySelectorAll("input[type=radio]").forEach(r => r.addEventListener("change", () => { mostrarSug(it.id); salvar(it); }));
+    const ta = box.querySelector("textarea");
+    ta.addEventListener("input", () => { clearTimeout(timers[it.id]); timers[it.id] = setTimeout(() => salvar(it), 600); });
+    ta.addEventListener("blur", () => { clearTimeout(timers[it.id]); salvar(it); });
+  }
+}
+function mostrarSug(id){ const s = document.querySelector(`#${id} .sug`); if (s) s.hidden = false; }
+function valorDe(it){
+  const box = document.getElementById(it.id);
+  const r = box.querySelector("input[type=radio]:checked");
+  return {item: it.id, titulo: it.t, escolha: r ? r.value : null, comentario: box.querySelector("textarea").value, em: new Date().toISOString()};
+}
+async function salvar(it){
+  const s = document.querySelector(`#${it.id} .salvo`);
+  if (!col){ s.textContent = "Sem banco: não foi gravado."; return; }
+  try { await col.doc(it.id).set(valorDe(it)); s.textContent = "Gravado"; }
+  catch(e){ s.textContent = "Não gravou: " + (e && e.code ? e.code : "erro"); }
+}
+function repintar(id, d){
+  const box = document.getElementById(id); if (!box || !d) return;
+  if (d.escolha){ box.querySelectorAll("input[type=radio]").forEach(r => { if (r.value === d.escolha) r.checked = true; }); mostrarSug(id); }
+  const ta = box.querySelector("textarea");
+  // só preenche o campo vazio e fora de foco: o texto que está sendo digitado nunca é trocado pelo do banco
+  if (document.activeElement !== ta && typeof d.comentario === "string" && ta.value === "") ta.value = d.comentario;
+}
+montar();
+const limite = setTimeout(() => { if (!col) estado.textContent = "O banco não respondeu: as escolhas não serão gravadas nesta abertura."; }, 10000);
+(async () => {
+  try {
+    const db = await window.claude?.use?.("db");
+    if (!db){ clearTimeout(limite); estado.textContent = "Sem acesso ao banco nesta visualização: a mesa abre só para leitura."; return; }
+    col = db.collection("escolhas");
+    col.onSnapshot(snap => {
+      clearTimeout(limite);
+      const docs = snap.docs || snap; let n = 0;
+      (docs || []).forEach(doc => { const d = typeof doc.data === "function" ? doc.data() : (doc.data || doc); const id = doc.id || d.item; repintar(id, d); if (d && d.escolha) n++; });
+      estado.textContent = `Gravando sozinho. ${n} de ${ITENS.length} itens respondidos.`; estado.className = "ok";
+    }, err => { clearTimeout(limite); estado.textContent = "O banco recusou a leitura: " + (err && err.code ? err.code : "erro"); });
+  } catch(e){ clearTimeout(limite); estado.textContent = "Não foi possível ligar o banco."; }
+})();
+</script>

@@ -106,6 +106,15 @@ with tempfile.TemporaryDirectory() as tmp:
         r = sl.medir(str(pasta / "salto.mp4"))
         caso("14. saltos.py: a troca súbita sai como pico, e o fim parado se conta",
              any(35 <= q <= 39 for q, _ in r["picos"]) and 8 <= r["parado_quadros"] <= 13)
+        # 21 e 22. o fim parado que o export lê para o AVISO fim_parado
+        p = tv.fim_parado(pasta / "salto.mp4")
+        caso("21. fim_parado: o salto.mp4 para em 2,5 s de 3 s e sai abaixo dos 3 s da convenção",
+             p is not None and 0.3 <= p <= 0.6 and p < tv.FIM_PARADO_S, p)
+        antigo = tv.SALTOS
+        tv.SALTOS = pasta / "nao-existe.py"
+        caso("22. fim_parado: sem o saltos.py, devolve None (o export diz que não mediu, sem quebrar)",
+             tv.fim_parado(pasta / "salto.mp4") is None)
+        tv.SALTOS = antigo
     else:
         print("pulado 13 e 14: o saltos.py da object-anatomy não está no projeto")
 

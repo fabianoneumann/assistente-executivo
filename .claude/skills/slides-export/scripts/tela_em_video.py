@@ -45,6 +45,25 @@ from fontes import CARREGAR_FONTES  # noqa: E402
 # porque o carrossel corta todos os itens pela proporcao do primeiro.
 MIN_S, MAX_S = 3.0, 60.0
 REC_MIN_S, REC_MAX_S = 5.0, 8.0          # a duracao recomendada da tela em video (fora dela, aviso)
+# o quadro final parado da tela em video que nao e laco: a convencao da serie e 3 s; abaixo disso, AVISO, nunca ERRO
+FIM_PARADO_S = 3.0
+SALTOS = Path(__file__).resolve().parents[2] / "object-anatomy" / "scripts" / "saltos.py"
+
+
+def fim_parado(mp4: Path) -> float | None:
+    """Os segundos parados no fim do MP4, pela medida do saltos.py da object-anatomy (a diferenca entre quadros, sem o
+    ruido do quadro-chave); None quando o saltos.py, o numpy ou o ffmpeg nao estao, ou a medida falhou."""
+    if not SALTOS.is_file() or not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
+        return None
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("saltos_object_anatomy", SALTOS)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        r = mod.medir(str(mp4))
+    except Exception:  # noqa: BLE001 - a medida e um aviso: sem ela, o export segue e diz que nao mediu
+        return None
+    return float(r.get("parado_s", 0.0)) if r.get("quadros") else None
 MAX_BYTES = 100 * 1024 * 1024
 MIN_W, MAX_W = 320, 1440
 MIN_RATIO, MAX_RATIO = 0.8, 1.91
