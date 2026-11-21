@@ -107,14 +107,31 @@ with tempfile.TemporaryDirectory() as tmp:
         caso("14. saltos.py: a troca súbita sai como pico, e o fim parado se conta",
              any(35 <= q <= 39 for q, _ in r["picos"]) and 8 <= r["parado_quadros"] <= 13)
         # 21 e 22. o fim parado que o export lê para o AVISO fim_parado
-        p = tv.fim_parado(pasta / "salto.mp4")
+        p, porque = tv.fim_parado(pasta / "salto.mp4")
         caso("21. fim_parado: o salto.mp4 para em 2,5 s de 3 s e sai abaixo dos 3 s da convenção",
-             p is not None and 0.3 <= p <= 0.6 and p < tv.FIM_PARADO_S, p)
+             p is not None and 0.3 <= p <= 0.6 and p < tv.FIM_PARADO_S and porque == "", (p, porque))
         antigo = tv.SALTOS
         tv.SALTOS = pasta / "nao-existe.py"
-        caso("22. fim_parado: sem o saltos.py, devolve None (o export diz que não mediu, sem quebrar)",
-             tv.fim_parado(pasta / "salto.mp4") is None)
+        p, porque = tv.fim_parado(pasta / "salto.mp4")
+        caso("22. fim_parado: sem o saltos.py, devolve None e diz por quê (o export diz que não mediu, sem quebrar)",
+             p is None and "saltos.py" in porque, (p, porque))
         tv.SALTOS = antigo
+        # 23. o MP4 de um quadro só (o arquivo cortado): não é "parado 0,00 s", é não medido, com o motivo
+        um = pasta / "um-quadro.mp4"
+        subprocess.run([tv.ffmpeg(), "-y", "-loglevel", "error", "-f", "lavfi", "-i", "color=c=white:size=108x192:rate=30",
+                        "-frames:v", "1", "-c:v", "libx264", "-pix_fmt", "yuv420p", str(um)], check=True)
+        p, porque = tv.fim_parado(um)
+        caso("23. fim_parado: o MP4 de um quadro não dá aviso falso de 0,00 s; volta None com o motivo",
+             p is None and "quadro" in porque, (p, porque))
+        # 24. sem o ffprobe no PATH (a máquina só com o ffmpeg do imageio): None, com o motivo
+        antigo_which = tv.shutil.which
+        tv.shutil.which = lambda n: None if n == "ffprobe" else antigo_which(n)
+        try:
+            p, porque = tv.fim_parado(pasta / "salto.mp4")
+        finally:
+            tv.shutil.which = antigo_which
+        caso("24. fim_parado: sem o ffprobe no PATH, volta None e diz que falta o ffprobe", p is None and "ffprobe" in porque,
+             (p, porque))
     else:
         print("pulado 13 e 14: o saltos.py da object-anatomy não está no projeto")
 

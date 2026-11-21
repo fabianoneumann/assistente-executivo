@@ -4,9 +4,12 @@ quadros seguidos. Um salto (troca súbita) aparece como um pico isolado; o fim p
 
   python -X utf8 saltos.py <arquivo.mp4> [...]
 
-Pede o ffmpeg e o ffprobe no PATH. O quadro-chave do H.264 (o GOP; na tela em vídeo, um por segundo) mexe uns pixels
+Pede o ffmpeg e o ffprobe no PATH (o `medir` aceita os dois por parâmetro). O quadro-chave do H.264 (o GOP; na tela em vídeo, um por segundo) mexe uns pixels
 mesmo sem movimento: o quadro dele e o seguinte não contam no "fim parado", e o pico que cai nele se marca à parte.
 Leitura, sem nível: quem decide se o salto é defeito é quem olha o vídeo.
+
+A `slides-export` usa o `medir` (o `tela_em_video.fim_parado`, o AVISO fim_parado da exportação): mudar a assinatura
+dele ou as chaves `quadros` e `parado_s` quebra aquele AVISO; o caso 21 do `teste_tela_em_video.py` de lá acusa.
 """
 import subprocess
 import sys
@@ -14,16 +17,16 @@ import sys
 import numpy as np
 
 
-def _probe(mp4: str):
-    r = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate",
+def _probe(mp4: str, ffprobe: str = "ffprobe"):
+    r = subprocess.run([ffprobe, "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height,r_frame_rate",
                         "-of", "csv=p=0", mp4], capture_output=True, text=True, check=True)
     w, h, fr = r.stdout.strip().split(",")[:3]
     num, _, den = fr.partition("/")
     return int(w), int(h), round(float(num) / float(den or 1))
 
 
-def quadros(mp4: str, w: int, h: int):
-    p = subprocess.Popen(["ffmpeg", "-loglevel", "error", "-i", mp4, "-f", "rawvideo", "-pix_fmt", "gray", "-"], stdout=subprocess.PIPE)
+def quadros(mp4: str, w: int, h: int, ffmpeg: str = "ffmpeg"):
+    p = subprocess.Popen([ffmpeg, "-loglevel", "error", "-i", mp4, "-f", "rawvideo", "-pix_fmt", "gray", "-"], stdout=subprocess.PIPE)
     while True:
         b = p.stdout.read(w * h)
         if len(b) < w * h:
@@ -32,12 +35,12 @@ def quadros(mp4: str, w: int, h: int):
     p.wait()
 
 
-def medir(mp4: str) -> dict:
+def medir(mp4: str, ffmpeg: str = "ffmpeg", ffprobe: str = "ffprobe") -> dict:
     """{quadros, fps, mediana, maximo, quadro_max, picos, picos_chave, parado_quadros, parado_s, chave}: picos são os
     quadros (a partir de 1) com um salto isolado fora do quadro-chave; picos_chave, os que caem no quadro-chave."""
-    w, h, fps = _probe(mp4)
+    w, h, fps = _probe(mp4, ffprobe)
     ant, d = None, []
-    for q in quadros(mp4, w, h):
+    for q in quadros(mp4, w, h, ffmpeg):
         if ant is not None:
             d.append(float(np.abs(q - ant).mean()))
         ant = q

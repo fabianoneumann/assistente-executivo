@@ -45,25 +45,6 @@ from fontes import CARREGAR_FONTES  # noqa: E402
 # porque o carrossel corta todos os itens pela proporcao do primeiro.
 MIN_S, MAX_S = 3.0, 60.0
 REC_MIN_S, REC_MAX_S = 5.0, 8.0          # a duracao recomendada da tela em video (fora dela, aviso)
-# o quadro final parado da tela em video que nao e laco: a convencao da serie e 3 s; abaixo disso, AVISO, nunca ERRO
-FIM_PARADO_S = 3.0
-SALTOS = Path(__file__).resolve().parents[2] / "object-anatomy" / "scripts" / "saltos.py"
-
-
-def fim_parado(mp4: Path) -> float | None:
-    """Os segundos parados no fim do MP4, pela medida do saltos.py da object-anatomy (a diferenca entre quadros, sem o
-    ruido do quadro-chave); None quando o saltos.py, o numpy ou o ffmpeg nao estao, ou a medida falhou."""
-    if not SALTOS.is_file() or not shutil.which("ffmpeg") or not shutil.which("ffprobe"):
-        return None
-    try:
-        import importlib.util
-        spec = importlib.util.spec_from_file_location("saltos_object_anatomy", SALTOS)
-        mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(mod)
-        r = mod.medir(str(mp4))
-    except Exception:  # noqa: BLE001 - a medida e um aviso: sem ela, o export segue e diz que nao mediu
-        return None
-    return float(r.get("parado_s", 0.0)) if r.get("quadros") else None
 MAX_BYTES = 100 * 1024 * 1024
 MIN_W, MAX_W = 320, 1440
 MIN_RATIO, MAX_RATIO = 0.8, 1.91
@@ -76,6 +57,39 @@ CODECS = ("h264", "hevc")
 # carrossel (4:5 a 1,91:1) nao vale aqui: reprovaria todo 9:16 (passada de enriquecimento dos Stories, 2026-11-19, F3)
 STORY_MIN_RATIO, STORY_MAX_RATIO, STORY_MAX_W = 0.1, 10.0, 1920
 STORY_RATIO = 9 / 16
+
+# o quadro final parado da tela em video que nao e laco: a convencao da serie e a do Ng A, 3 s. Abaixo disso, AVISO, nunca ERRO.
+FIM_PARADO_S = 3.0
+# a medida e a do saltos.py da object-anatomy (a docstring dele diz que a slides-export depende do `medir`)
+SALTOS = Path(__file__).resolve().parents[2] / "object-anatomy" / "scripts" / "saltos.py"
+
+
+def fim_parado(mp4: Path) -> tuple[float | None, str]:
+    """Os segundos parados no fim do MP4, pela medida do saltos.py da object-anatomy (a diferenca entre quadros, sem o
+    ruido do quadro-chave), e o motivo quando nao mediu: (segundos, "") ou (None, o que faltou ou falhou). O ffmpeg e o
+    da gravacao (o do PATH ou o do imageio_ffmpeg); o ffprobe tem de estar no PATH, porque o imageio nao o traz."""
+    if not SALTOS.is_file():
+        return None, "sem o saltos.py da object-anatomy"
+    probe = shutil.which("ffprobe")
+    if not probe:
+        return None, "sem o ffprobe no PATH"
+    try:
+        exe = ffmpeg()
+    except Exception:  # noqa: BLE001 - sem ffmpeg nenhum, a gravacao ja teria parado antes
+        return None, "sem o ffmpeg"
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("saltos_object_anatomy", SALTOS)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        r = mod.medir(str(mp4), ffmpeg=exe, ffprobe=probe)
+    except Exception as e:  # noqa: BLE001 - a medida e um aviso: sem ela, o export segue e diz por que nao mediu
+        return None, f"a medida falhou ({type(e).__name__})"
+    n = int(r.get("quadros") or 0)
+    if n < 2 or "parado_s" not in r:
+        return None, f"o MP4 tem {n} quadro(s) decodificado(s), sem o que medir"
+    return float(r["parado_s"]), ""
+
 
 QUADRO = """([t, idx]) => { window.quadro(t, idx);
   return document.getAnimations().filter(a => a.playState === 'running').length; }"""

@@ -670,9 +670,9 @@ def main() -> None:
                 print(f"[--] tela {n}: em laço (o último quadro igual ao primeiro); o estado parado é o da página sem quadro")
             if not g["parada"] and not g.get("laco"):
                 # o tempo parado no fim, que nenhuma conferência media (um quadro final de 0,85 s só se viu na leitura)
-                p = tv.fim_parado(saida_de(n))
+                p, porque = tv.fim_parado(saida_de(n))
                 if p is None:
-                    print(f"[--] tela {n}: o quadro final parado não foi medido (o saltos.py da object-anatomy, o numpy ou o ffmpeg)")
+                    print(f"[--] tela {n}: o quadro final parado não foi medido ({porque})")
                 elif p < tv.FIM_PARADO_S:
                     print(f"[AVISO] tela {n} fim_parado: o quadro final fica parado {p:.2f} s, menos que os "
                           f"{tv.FIM_PARADO_S:g} s da convenção da série; a animação acaba perto do fim do vídeo")
