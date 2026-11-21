@@ -68,8 +68,15 @@ def main(args):
               f"{r['parado_quadros']} ({r.get('parado_s', 0):.2f} s); diferença nos quadros-chave: {r.get('chave', [])}")
 
 
+def argumentos(argv):
+    """Os MP4 da linha de comando. O `--help`/`-h` mostra o uso e sai com 0, em vez de virar o nome de um arquivo;
+    sem arquivo, mostra o uso e sai com 2 (o código de antes). O `--` deixa passar um arquivo que começa por hífen."""
+    import argparse
+    p = argparse.ArgumentParser(prog="saltos.py", description=__doc__.split("\n\n")[0],
+                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("mp4", nargs="+", help="um ou mais arquivos MP4")
+    return p.parse_args(argv).mp4
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print(__doc__.split("\n\n")[1], file=sys.stderr)
-        sys.exit(2)
-    main(sys.argv[1:])
+    main(argumentos(sys.argv[1:]))
