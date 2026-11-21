@@ -62,6 +62,26 @@ Ao terminar, `resumo.md` na pasta, com até 30 linhas: critérios ambíguos, o q
 - **O alarme falso que conta é o efetivo:** o apontamento que chegou a quem decide e que ela não acatou, certo ou errado. Cada um entra no `refinamentos.md` da peça com o `tipo` e, no mesmo dia, numa linha de `marketing/licoes.md` (etapa avaliação, área avaliador), que é o lugar único das recusas entre peças: ali se vê o tipo recusado de novo em outra peça, sem depender de alguém lembrar. O tipo recusado em duas peças vai à revisão das regras do juiz, porque, quando a primeira ocorrência de um tipo é recusada, as seguintes quase sempre são, e o verificador cujos apontamentos ninguém usa passa a ser ignorado inteiro (a mesma síntese, seção 1).
 - **O que a lista não resolve:** quando quase toda peça sai pronta, a contagem de defeitos também se amontoa em zero; o sinal está no perfil dos tipos somado sobre muitas peças, não na soma de cada uma (`defeitos-no-lugar-da-nota.md`, seção 4).
 
+## As cinco dimensões, fora da soma
+
+Cinco dimensões têm critério verificável escrito, e entram no portão como **conferências com evidência**, não como notas novas na soma da rubrica, que segue congelada. Cada uma vai primeiro à camada que mede sem julgar, e o juiz só entra onde o código não chega:
+
+| Dimensão | O que se confere | Quem confere, na ordem |
+|---|---|---|
+| **Técnica e contexto** | cada afirmação da peça sai confirmada, contradita ou não verificável contra o dossiê de fontes da peça; a conclusão que o leitor tira não falha quando ele a usa | código extrai as afirmações; o juiz confere contra o dossiê, citando a ficha; quem decide diz o que bloqueia |
+| **Didática** | as perguntas de evidência, escritas antes a partir do briefing, se respondem só com o que está nas telas, com a citação da tela; uns quatro elementos novos por tela, no máximo | código conta e confere a citação; o juiz responde às perguntas |
+| **Função visual** | todo desvio tem régua (token, irmã, design system, lei perceptiva com consequência), no estilo computado | o `conferir_telas.py` e o `medidas_forma.py`; o juiz só no par às cegas, nas duas ordens |
+| **Originalidade** | sem cópia literal das fontes; sem paráfrase próxima, trecho a trecho | o código e o `parafrase.py` da `research` (0,7 e K 3) |
+| **O arco e o ritmo** | o fecho paga a abertura e cada promessa tem a unidade que a paga; a carga alterna, e o penúltimo bloco tem sinal oposto ao do fecho | o `confere_contrato.py` da `piece-script` na tabela de plantas e pagamentos; o juiz só por junção |
+
+**O gosto** (a "cara de IA", o "autoral ou genérico?") fica com quem decide, com a lista do D6 da rubrica de design como conferência e não como medida: não há estudo que sustente um detector.
+
+**Por que fora da soma, e como isso não soma alarme.** Um juiz que já discorda da nota de quem decide só soma alarme se ganhar mais dimensões para pontuar. Três travas evitam isso:
+
+1. **Nenhuma dimensão ganha nota.** Ela não entra na soma nem muda o limiar do veredito; o que ela acha chega como apontamento, com o tipo e a severidade, pelo ciclo de sempre.
+2. **Sem evidência conferível, não entra na triagem.** O apontamento do juiz numa destas dimensões só vale com a prova que quem orquestra confere: a ficha citada, a tela citada, a medida. Sem ela, vai à lista do que a triagem não aplicou, como menor, e quem decide vê depois da leitura dele.
+3. **Cada dimensão conta o próprio alarme falso efetivo.** Nas três primeiras peças, ela é sinal provisório: o `refinamentos.md` anota, por dimensão, o que chegou a quem decide e o que não foi acatado. Depois disso, a dimensão cujo alarme falso efetivo passar dos acertos sai do juiz e fica só no código, ou com quem decide.
+
 ## O ciclo do portão (quem orquestra)
 
 **Estado: a testar.** Revisar depois de duas ou três peças, comparando com as marcas de quem decide. Nasceu de um portão em que foram sete passadas, com telas boas regredindo por causa de outros ajustes e o avaliador sempre achando algo novo.
